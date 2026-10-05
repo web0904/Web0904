@@ -1,4 +1,4 @@
-const CACHE = 'rt09rw04-v6';
+const CACHE = 'rt09rw04-v7';
 const ASSETS = [
   './',
   './index.html',
@@ -13,7 +13,7 @@ const ASSETS = [
 self.addEventListener('install', function(e) {
   e.waitUntil(
     caches.open(CACHE)
-    .then(function(c) { return c.addAll(ASSETS).catch(function() {}); })
+    .then(function(c) { return c.addAll(ASSETS).catch(function(err) { console.warn('Cache addAll err:', err); }); })
     .then(function() { return self.skipWaiting(); })
   );
 });
@@ -31,19 +31,30 @@ self.addEventListener('activate', function(e) {
 
 self.addEventListener('fetch', function(e) {
   if (e.request.method !== 'GET') return;
-  var url = new URL(e.request.url);
-  
-  // Skip request ke Firebase Auth (harus selalu ke network)
-  if (url.hostname.indexOf('identitytoolkit') > -1 || url.hostname.indexOf('securetoken') > -1) {
+  var url;
+  try { url = new URL(e.request.url); } catch(err) { return; }
+
+  // Skip Firebase Auth (harus network)
+  if (url.hostname.indexOf('identitytoolkit') > -1 ||
+      url.hostname.indexOf('securetoken') > -1 ||
+      url.hostname.indexOf('firestore.googleapis.com') > -1) {
     return;
   }
-  
-  // HTML & JSON → network-first
-  if (url.origin === location.origin && (url.pathname.endsWith('/') || url.pathname.indexOf('.html') > -1 || url.pathname.indexOf('.json') > -1)) {
+
+  // Skip non-http (chrome-extension, dsb)
+  if (url.protocol !== 'http:' && url.protocol !== 'https:') return;
+
+  // HTML & manifest → network-first
+  if (url.origin === location.origin && (
+      url.pathname.endsWith('/') ||
+      url.pathname.indexOf('.html') > -1 ||
+      url.pathname.indexOf('.json') > -1)) {
     e.respondWith(
       fetch(e.request).then(function(res) {
-        var clone = res.clone();
-        caches.open(CACHE).then(function(c) { c.put(e.request, clone); });
+        if (res && res.status === 200) {
+          var clone = res.clone();
+          caches.open(CACHE).then(function(c) { c.put(e.request, clone); });
+        }
         return res;
       }).catch(function() {
         return caches.match(e.request);
@@ -51,12 +62,12 @@ self.addEventListener('fetch', function(e) {
     );
     return;
   }
-  
+
   // Asset statis → cache-first
   e.respondWith(
     caches.match(e.request).then(function(cached) {
       return cached || fetch(e.request).then(function(res) {
-        if (res.status === 200 && res.type === 'basic') {
+        if (res && res.status === 200 && res.type === 'basic') {
           var clone = res.clone();
           caches.open(CACHE).then(function(c) { c.put(e.request, clone); });
         }
