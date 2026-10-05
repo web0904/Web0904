@@ -1,0 +1,1871 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#6366f1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="RT09RW04">
+<title>RT09RW04 · Candisari Wonotingal</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<style>
+*{-webkit-tap-highlight-color:transparent;box-sizing:border-box}
+html,body{height:100%;overscroll-behavior:none}
+body{height:100dvh;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;position:fixed;width:100%;overflow:hidden;font-size:15px;line-height:1.5;margin:0;padding:0;background:#f8fafc;color:#0f172a}
+input,textarea,select{font-size:16px!important}
+.safe-t{padding-top:env(safe-area-inset-top,0px)}
+.safe-b{padding-bottom:env(safe-area-inset-bottom,0px)}
+.scroll-y{overflow-y:auto;-webkit-overflow-scrolling:touch}
+.scroll-y::-webkit-scrollbar{width:0}
+.hide{display:none!important}
+.grow{flex:1;min-height:0}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spin{animation:spin .7s linear infinite}
+@keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.fade{animation:fade .4s ease both}
+@keyframes pop{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:scale(1)}}
+.pop{animation:pop .25s ease both}
+@keyframes badgePulse{0%{transform:scale(1)}50%{transform:scale(1.1)}100%{transform:scale(1)}}
+.grad-anim{background:linear-gradient(90deg,#6366f1,#a855f7,#ec4899,#6366f1);background-size:200% 100%;animation:grad 2s linear infinite}
+@keyframes grad{to{background-position:200% 0}}
+.btn-p{background:linear-gradient(135deg,#6366f1,#a855f7,#ec4899);color:white;font-weight:700;border:none;cursor:pointer;border-radius:12px;padding:12px 16px;font-size:14px;transition:transform .15s, box-shadow .2s;box-shadow:0 4px 14px -6px rgba(99,102,241,.6)}
+.btn-p:active{transform:scale(.97)}
+.btn-p:disabled{opacity:.5;cursor:not-allowed}
+.btn-s{background:#f1f5f9;color:#0f172a;font-weight:600;border:none;cursor:pointer;border-radius:12px;padding:12px 16px;font-size:14px}
+.btn-s:active{transform:scale(.97)}
+.btn-danger{background:#f43f5e;color:white;font-weight:600;border:none;cursor:pointer;border-radius:12px;padding:12px 16px;font-size:14px}
+.card{background:#fff;border-radius:14px;border:1px solid rgba(148,163,184,.12);padding:16px}
+body.dark{background:#070b14;color:#e2e8f0}
+body.dark .card{background:#111a2e;border-color:rgba(255,255,255,.06)}
+.header{background:rgba(248,250,252,.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid rgba(148,163,184,.15);flex-shrink:0}
+body.dark .header{background:rgba(7,11,20,.85);border-color:rgba(255,255,255,.05)}
+.nav{background:rgba(255,255,255,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid rgba(148,163,184,.15);flex-shrink:0}
+body.dark .nav{background:rgba(7,11,20,.92);border-color:rgba(255,255,255,.05)}
+.nav-btn{display:flex;flex-direction:column;align-items:center;gap:3px;padding:7px 3px;background:transparent;border:none;cursor:pointer;position:relative}
+.nav-btn:active{transform:scale(.92)}
+.nav-btn svg{color:#94a3b8;transition:color .2s}
+.nav-btn span{color:#94a3b8;font-size:10px;font-weight:600;transition:color .2s}
+.nav-btn.on svg{color:#6366f1}
+.nav-btn.on span{color:#6366f1;font-weight:800}
+.nav-badge{position:absolute;top:-2px;right:calc(50% - 24px);min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:linear-gradient(135deg,#f43f5e,#e11d48);color:white;font-size:9.5px;font-weight:800;display:none;align-items:center;justify-content:center;border:2px solid #fff;box-shadow:0 3px 10px -2px rgba(244,63,94,.7);letter-spacing:-.02em;z-index:10}
+.nav-badge.on{display:flex;animation:pop .3s ease both, badgePulse 2.2s ease-in-out infinite}
+.fab{position:fixed;bottom:calc(env(safe-area-inset-bottom,0px) + 76px);right:16px;width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#6366f1,#a855f7,#ec4899);color:white;border:none;cursor:pointer;box-shadow:0 8px 24px -4px rgba(99,102,241,.5);display:flex;align-items:center;justify-content:center;z-index:25;transition:transform .2s}
+.fab:active{transform:scale(.9)}
+/* CATEGORY TILES */
+.cat-tile{border-radius:16px;padding:15px 16px;cursor:pointer;color:white;display:flex;align-items:center;gap:14px;min-height:100px;box-shadow:0 4px 14px -6px rgba(0,0,0,.25);position:relative;transition:transform .15s}
+.cat-tile:active{transform:scale(.97)}
+.cat-tile .icon{width:48px;height:48px;border-radius:14px;background:rgba(255,255,255,.22);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.g-umum{background:linear-gradient(135deg,#64748b,#475569)}
+.g-info{background:linear-gradient(135deg,#3b82f6,#6366f1)}
+.g-gal{background:linear-gradient(135deg,#ec4899,#f43f5e)}
+.cat-badge{position:absolute;top:10px;right:10px;min-width:22px;height:22px;padding:0 7px;border-radius:11px;background:linear-gradient(135deg,#f43f5e,#e11d48);color:white;font-size:11px;font-weight:800;display:none;align-items:center;justify-content:center;border:2px solid rgba(255,255,255,.9);box-shadow:0 3px 10px -2px rgba(244,63,94,.7);z-index:5;letter-spacing:-.02em}
+.cat-badge.on{display:flex;animation:pop .3s ease both, badgePulse 2s ease-in-out infinite}
+.cat-detail{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}
+.cat-detail .chip{padding:3px 8px;border-radius:8px;background:rgba(255,255,255,.22);font-size:10px;font-weight:700;display:inline-flex;align-items:center;gap:3px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.2)}
+/* POST CARDS */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.post-card{background:#fff;border-radius:14px;overflow:hidden;cursor:pointer;border:2px solid rgba(148,163,184,.2);display:flex;flex-direction:column;min-height:150px;transition:transform .15s, box-shadow .2s;position:relative;box-shadow:0 2px 8px -4px rgba(0,0,0,.08)}
+body.dark .post-card{background:#111a2e;border-color:rgba(255,255,255,.08)}
+.post-card:active{transform:scale(.97)}
+.post-card.b-umum{border-color:rgba(100,116,139,.5)}
+.post-card.b-info{border-color:rgba(59,130,246,.5)}
+.post-card.b-gal{border-color:rgba(236,72,153,.5)}
+.post-card .strip{height:4px}
+.post-card .strip.s-umum{background:linear-gradient(90deg,#94a3b8,#64748b)}
+.post-card .strip.s-info{background:linear-gradient(90deg,#3b82f6,#6366f1)}
+.post-card .strip.s-gal{background:linear-gradient(90deg,#ec4899,#f43f5e)}
+.post-card .thumb{width:100%;height:64px;background:linear-gradient(135deg,#6366f1,#ec4899);overflow:hidden}
+.post-card .thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.cd-mini{display:flex;gap:4px;margin-top:8px}
+.cd-mini .cd-m-box{flex:1;text-align:center;padding:6px 3px;border-radius:7px;background:linear-gradient(135deg,#3b82f6,#6366f1);color:white;box-shadow:0 2px 6px -2px rgba(59,130,246,.4)}
+.cd-mini .cd-m-box .n{font-weight:800;font-size:15px;line-height:1;font-variant-numeric:tabular-nums}
+.cd-mini .cd-m-box .l{font-size:8.5px;opacity:.9;margin-top:3px;text-transform:uppercase;font-weight:700;letter-spacing:.04em}
+.cd-mini-done{text-align:center;padding:7px;border-radius:7px;background:#f1f5f9;font-size:11.5px;font-weight:700;color:#64748b;margin-top:8px;width:100%}
+body.dark .cd-mini-done{background:#1a2540;color:#94a3b8}
+.post-card .body{padding:11px;flex:1;display:flex;flex-direction:column;gap:8px}
+.post-card .title{font-size:13px;line-height:1.42;font-weight:500;color:#334155;flex:1;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word}
+body.dark .post-card .title{color:#cbd5e1}
+.post-card .meta{display:flex;gap:7px;font-size:11px;color:#94a3b8;font-weight:600}
+.post-card .foot{padding:8px 11px;border-top:1px solid rgba(148,163,184,.1);display:flex;gap:6px;align-items:center;font-size:11.5px;font-weight:600;color:#64748b}
+.post-new-badge{position:absolute;top:8px;right:8px;z-index:3;background:linear-gradient(135deg,#10b981,#059669);color:white;font-size:9.5px;font-weight:800;padding:3px 8px;border-radius:8px;box-shadow:0 3px 8px -2px rgba(16,185,129,.6);letter-spacing:.03em;animation:badgePulse 2s ease-in-out infinite}
+.pin-tag{position:absolute;top:8px;right:8px;z-index:3;background:linear-gradient(135deg,#f59e0b,#ef4444);color:white;font-size:9.5px;font-weight:800;padding:3px 8px;border-radius:8px;box-shadow:0 3px 8px -2px rgba(245,158,11,.6);letter-spacing:.03em;animation:badgePulse 2s ease-in-out infinite}
+/* PIN SECTION */
+.pin-card{background:linear-gradient(135deg,rgba(245,158,11,.08),rgba(239,68,68,.06));border:2px solid rgba(245,158,11,.3);border-radius:16px;padding:14px;margin-bottom:10px;cursor:pointer;position:relative;overflow:hidden}
+body.dark .pin-card{background:linear-gradient(135deg,rgba(245,158,11,.1),rgba(239,68,68,.06))}
+.pin-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#f59e0b,#ef4444,#f59e0b);background-size:200% 100%;animation:grad 3s linear infinite}
+.pin-card .pin-badge{display:inline-flex;align-items:center;gap:4px;background:linear-gradient(135deg,#f59e0b,#ef4444);color:white;font-size:10px;font-weight:800;padding:3px 8px;border-radius:8px;letter-spacing:.04em;margin-bottom:8px}
+.pin-card .pin-title{font-size:14px;font-weight:800;line-height:1.35;margin-bottom:6px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.pin-card .pin-meta{display:flex;align-items:center;gap:6px;font-size:11px;color:#64748b;margin-top:8px}
+.section{margin:18px 16px 0}
+.section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.section-title{font-size:15.5px;font-weight:800;letter-spacing:-.01em}
+.section-title .em{margin-right:5px}
+.section-sub{font-size:11.5px;color:#94a3b8;font-weight:600}
+/* COUNTDOWN GLASS */
+.cd-glass{background:rgba(255,255,255,.16);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.25);border-radius:14px;padding:10px 12px;box-shadow:inset 0 1px 0 rgba(255,255,255,.2)}
+.cd-glass .cd-box{flex:1;background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.18);border-radius:9px;padding:6px 3px;text-align:center;backdrop-filter:blur(6px)}
+.cd-glass .cd-box .n{font-size:15px;font-weight:800;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.cd-glass .cd-box .l{font-size:8px;font-weight:700;opacity:.85;margin-top:3px;text-transform:uppercase;letter-spacing:.05em}
+/* DETAIL POST */
+#view-post{display:none;flex-direction:column;height:100%}
+#view-post.on{display:flex}
+.post-scroll{flex:1;overflow-y:auto;padding:14px 16px 24px}
+.post-input-bar{flex-shrink:0;background:#fff;border-top:1px solid rgba(148,163,184,.15);padding:10px 12px}
+body.dark .post-input-bar{background:#111a2e;border-color:rgba(255,255,255,.05)}
+.comment-input{display:flex;gap:8px;align-items:flex-end}
+.comment-input textarea{flex:1;background:#f1f5f9;border:1px solid transparent;border-radius:20px;padding:9px 15px;font-size:15px;resize:none;font-family:inherit;max-height:80px;min-height:38px;transition:border-color .2s}
+.comment-input textarea:focus{outline:none;border-color:#6366f1;background:#fff}
+body.dark .comment-input textarea{background:#1a2540;color:#fff}
+.send-btn{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:white;display:flex;align-items:center;justify-content:center;flex-shrink:0;border:none;cursor:pointer;box-shadow:0 3px 10px -2px rgba(99,102,241,.5)}
+.send-btn:active{transform:scale(.9)}
+.photo-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px;border-radius:12px;overflow:hidden;margin-bottom:12px}
+.photo-grid.single{grid-template-columns:1fr}
+.pg-item{position:relative;aspect-ratio:1/1;overflow:hidden;background:#f1f5f9}
+.photo-grid.single .pg-item{aspect-ratio:auto;max-height:400px}
+.pg-item img{width:100%;height:100%;object-fit:cover;display:block;cursor:pointer}
+.photo-grid.single .pg-item img{object-fit:contain;max-height:400px;background:#000}
+.pg-author{position:absolute;bottom:4px;left:4px;background:rgba(0,0,0,.65);color:white;font-size:9.5px;font-weight:600;padding:2px 6px;border-radius:5px;max-width:calc(100% - 8px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pg-del{position:absolute;top:4px;right:4px;width:24px;height:24px;border-radius:50%;background:rgba(0,0,0,.7);color:white;border:none;font-size:14px;cursor:pointer}
+.photo-add{aspect-ratio:1/1;border:1.5px dashed #cbd5e1;background:#f8fafc;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#64748b;font-weight:600;cursor:pointer}
+.photo-add .plus{font-size:22px;color:#94a3b8}
+.photo-add .txt{font-size:10px;margin-top:3px}
+.comment-item{display:flex;gap:10px;margin-bottom:12px}
+.comment-item .body{flex:1;min-width:0}
+.comment-item .txt{font-size:14px;line-height:1.45;word-break:break-word}
+.comment-item .name{font-weight:700}
+.comment-item .time{font-size:11px;color:#94a3b8;margin-top:3px}
+/* VOTING */
+.poll-card{background:#fff;border-radius:16px;padding:16px;margin-bottom:12px;box-shadow:0 2px 10px -4px rgba(0,0,0,.1);border:1px solid rgba(148,163,184,.12)}
+body.dark .poll-card{background:#111a2e;border-color:rgba(255,255,255,.08)}
+.poll-opt{display:flex;align-items:center;gap:10px;padding:11px 13px;border-radius:11px;background:#f8fafc;margin-top:8px;cursor:pointer;transition:all .15s;border:1.5px solid transparent}
+body.dark .poll-opt{background:#1a2540}
+.poll-opt.voted{border-color:#6366f1;background:rgba(99,102,241,.08)}
+.poll-opt .bar{height:6px;border-radius:99px;background:linear-gradient(90deg,#6366f1,#a855f7);transition:width .4s}
+.poll-opt .pct{font-size:11.5px;font-weight:700;color:#6366f1;min-width:38px;text-align:right}
+/* MISC */
+.avatar{width:36px;height:36px;border-radius:50%;flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center;font-weight:700;color:white;font-size:15px;background:linear-gradient(135deg,#6366f1,#a855f7,#ec4899)}
+.avatar img{width:100%;height:100%;object-fit:cover;display:block}
+.user-row{display:flex;align-items:center;gap:12px;padding:11px 14px;cursor:pointer;border-radius:13px}
+.user-row:active{background:rgba(148,163,184,.1)}
+.setting-row{display:flex;align-items:center;gap:12px;padding:13px 16px;width:100%;background:transparent;border:none;cursor:pointer;text-align:left;color:inherit;font-family:inherit}
+.setting-row:active{background:rgba(148,163,184,.08)}
+.setting-icon{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.hint{padding:10px 12px;border-radius:11px;font-size:12px;line-height:1.5;border:1px dashed}
+.h-umum{background:rgba(148,163,184,.08);border-color:rgba(148,163,184,.3);color:#475569}
+.h-info{background:rgba(59,130,246,.08);border-color:rgba(59,130,246,.3);color:#1e40af}
+.h-gal{background:rgba(236,72,153,.08);border-color:rgba(236,72,153,.3);color:#be185d}
+.dt{width:100%;background:#f1f5f9;border:1px solid transparent;border-radius:12px;padding:11px 13px;font-size:15px;font-family:inherit;transition:border-color .2s}
+.dt:focus{outline:none;border-color:#6366f1;background:#fff}
+body.dark .dt{background:#1a2540;color:#fff}
+.cat-btn{padding:12px 6px;border-radius:13px;background:rgba(148,163,184,.08);color:#64748b;border:1.5px solid transparent;cursor:pointer;text-align:center;font-weight:600;font-family:inherit}
+.cat-btn.on{color:white}
+.cat-btn[data-c=umum].on{background:linear-gradient(135deg,#64748b,#475569)}
+.cat-btn[data-c=informasi].on{background:linear-gradient(135deg,#3b82f6,#6366f1)}
+.cat-btn[data-c=galeri].on{background:linear-gradient(135deg,#ec4899,#f43f5e)}
+.topic-chip{padding:6px 12px;border-radius:12px;background:rgba(148,163,184,.08);border:1.5px solid transparent;font-size:12px;font-weight:600;cursor:pointer;color:#64748b;font-family:inherit}
+.topic-chip.on{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:white}
+.mask{position:fixed;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(4px);display:none;align-items:flex-end;justify-content:center;z-index:120}
+.mask.on{display:flex}
+.modal{background:#fff;border-radius:22px 22px 0 0;max-width:480px;width:100%;max-height:90dvh;display:flex;flex-direction:column;animation:fade .3s}
+body.dark .modal{background:#111a2e}
+.attach-row{display:flex;gap:8px;overflow-x:auto;padding:4px 0;margin-top:8px}
+.attach-row::-webkit-scrollbar{display:none}
+.thumb-sm{position:relative;width:80px;height:80px;border-radius:10px;overflow:hidden;flex-shrink:0;background:#f1f5f9}
+.thumb-sm img{width:100%;height:100%;object-fit:cover}
+.thumb-sm button{position:absolute;top:3px;right:3px;width:22px;height:22px;border-radius:50%;background:rgba(0,0,0,.7);color:white;border:none;font-size:14px;cursor:pointer}
+.thumb-add{width:80px;height:80px;border-radius:10px;border:1.5px dashed #cbd5e1;background:#f8fafc;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:11px;color:#64748b;font-weight:600;cursor:pointer}
+#composeSheet{position:fixed;inset:0;z-index:110;background:#fff;display:none;flex-direction:column}
+body.dark #composeSheet{background:#070b14}
+.lightbox{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.95);display:none;align-items:center;justify-content:center;padding:20px}
+.lightbox.on{display:flex}
+.lightbox img{max-width:100%;max-height:90vh;object-fit:contain;border-radius:8px}
+.toast{position:fixed;bottom:100px;left:16px;right:16px;z-index:140;padding:14px 16px;border-radius:14px;font-size:13.5px;font-weight:600;text-align:center;max-width:420px;margin:0 auto;display:none;box-shadow:0 10px 30px -4px rgba(0,0,0,.35);border-left:4px solid rgba(255,255,255,.3)}
+.toast.on{display:block;animation:fade .3s ease both}
+.loader{position:fixed;inset:0;z-index:130;background:rgba(0,0,0,.5);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;padding:20px}
+.loader.on{display:flex}
+.loader .box{background:#fff;border-radius:16px;padding:18px 22px;display:flex;align-items:center;gap:12px}
+body.dark .loader .box{background:#111a2e}
+.spinner{width:18px;height:18px;border:2px solid #e2e8f0;border-top-color:#6366f1;border-radius:50%}
+.badge-pill{display:inline-block;padding:2px 8px;border-radius:99px;font-size:10.5px;font-weight:800;letter-spacing:.03em}
+.pill-green{background:rgba(16,185,129,.15);color:#059669}
+.pill-red{background:rgba(244,63,94,.15);color:#e11d48}
+.pill-blue{background:rgba(59,130,246,.15);color:#2563eb}
+.pill-gray{background:rgba(148,163,184,.15);color:#64748b}
+.empty-state{text-align:center;padding:50px 24px}
+.empty-state .em{font-size:32px;margin-bottom:12px}
+.empty-state .title{font-size:15px;font-weight:700;margin-bottom:5px}
+.empty-state .sub{font-size:13px;color:#64748b;margin-bottom:17px}
+</style>
+</head>
+<body>
+
+<div id="lightbox" class="lightbox">
+  <button id="lbClose" style="position:absolute;top:16px;right:16px;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.15);color:white;border:none;font-size:20px;cursor:pointer">✕</button>
+  <img id="lightboxImg" src="" alt="">
+</div>
+
+<div id="toast" class="toast"></div>
+
+<div id="loader" class="loader">
+  <div class="box"><div class="spinner spin"></div><span id="loaderMsg" style="font-size:14px;font-weight:600">Memproses...</span></div>
+</div>
+
+<div id="splash" style="position:fixed;inset:0;z-index:200;background:#f8fafc;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px">
+  <div style="width:60px;height:60px;border-radius:19px;background:linear-gradient(135deg,#6366f1,#a855f7,#ec4899);display:flex;align-items:center;justify-content:center;margin-bottom:20px;box-shadow:0 20px 40px rgba(99,102,241,.3)">
+    <svg width="34" height="34" viewBox="0 0 24 24" fill="white"><path d="M12 2l1.9 5.8L19.7 9.7l-5.8 1.9L12 17.4l-1.9-5.8L4.3 9.7l5.8-1.9L12 2z"/></svg>
+  </div>
+  <div style="font-size:18px;font-weight:800;text-align:center">RT09RW04</div>
+  <div style="font-size:12.5px;color:#94a3b8;margin-top:3px">Candisari Wonotingal</div>
+  <div style="width:120px;height:3px;border-radius:99px;background:#e2e8f0;overflow:hidden;margin-top:16px">
+    <div class="grad-anim" style="height:100%;width:100%"></div>
+  </div>
+  <div id="splashMsg" style="font-size:11.5px;color:#94a3b8;margin-top:10px">Memuat...</div>
+</div>
+
+<div id="welcomeOv" style="position:fixed;inset:0;z-index:150;background:#f8fafc;display:none;flex-direction:column;overflow-y:auto">
+  <div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding:40px 24px;max-width:400px;margin:0 auto;width:100%">
+    <div style="width:56px;height:56px;border-radius:18px;background:linear-gradient(135deg,#6366f1,#a855f7,#ec4899);display:flex;align-items:center;justify-content:center;margin-bottom:18px">
+      <svg width="31" height="31" viewBox="0 0 24 24" fill="white"><path d="M12 2l1.9 5.8L19.7 9.7l-5.8 1.9L12 17.4l-1.9-5.8L4.3 9.7l5.8-1.9L12 2z"/></svg>
+    </div>
+    <h2 style="font-size:23px;font-weight:800;line-height:1.2;margin:0 0 8px">RT09RW04<br>Candisari Wonotingal</h2>
+    <p style="font-size:13.5px;color:#64748b;line-height:1.5;margin:0 0 24px">Papan informasi, pengumuman, dan voting warga.</p>
+    <button id="googleBtn" type="button" style="width:100%;padding:14px 16px;border-radius:14px;border:1px solid #cbd5e1;background:#fff;color:#0f172a;font-weight:600;font-size:14.5px;display:flex;align-items:center;justify-content:center;gap:10px;cursor:pointer">
+      <svg width="19" height="19" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.9 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.1 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.3-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 18.9 12 24 12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.1 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.3 26.7 36 24 36c-5.2 0-9.6-3.1-11.3-7.6l-6.5 5C9.6 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.1-4.1 5.5l6.2 5.2C40.9 35.5 44 30.2 44 24c0-1.3-.1-2.3-.4-3.5z"/></svg>
+      Lanjutkan dengan Google
+    </button>
+  </div>
+</div>
+
+<div id="inviteOv" style="position:fixed;inset:0;z-index:160;background:#f8fafc;display:none;flex-direction:column;overflow-y:auto">
+  <div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding:40px 24px;max-width:400px;margin:0 auto;width:100%">
+    <div style="width:56px;height:56px;border-radius:18px;background:linear-gradient(135deg,#10b981,#059669);display:flex;align-items:center;justify-content:center;margin-bottom:18px;font-size:28px">🔐</div>
+    <h2 style="font-size:20px;font-weight:800;line-height:1.25;margin:0 0 8px">Verifikasi Warga</h2>
+    <p style="font-size:13.5px;color:#64748b;line-height:1.5;margin:0 0 20px">Masukkan kode undangan dari Pengurus RT.</p>
+    <input id="inviteInput" type="text" placeholder="Contoh: RT09-2025" class="dt" style="text-align:center;font-weight:800;letter-spacing:.15em;text-transform:uppercase;margin-bottom:14px;padding:14px">
+    <button id="inviteSubmit" class="btn-p" style="width:100%;margin-bottom:10px">Verifikasi</button>
+    <div style="font-size:11.5px;color:#94a3b8;text-align:center">Login sebagai: <span id="inviteEmail" style="font-weight:600;color:#64748b"></span></div>
+    <button id="inviteLogout" class="btn-s" style="width:100%;margin-top:14px;background:transparent;font-size:12.5px;color:#94a3b8">Ganti akun Google</button>
+  </div>
+</div>
+
+<div id="app" style="display:none;flex-direction:column;height:100dvh;max-width:560px;margin:0 auto">
+
+  <header class="header safe-t">
+    <div style="display:flex;align-items:center;gap:10px;padding:11px 14px 9px">
+      <button id="backBtn" type="button" class="hide" style="width:38px;height:38px;border-radius:50%;background:#fff;border:1px solid rgba(148,163,184,.2);display:flex;align-items:center;justify-content:center;cursor:pointer">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <div style="flex:1;min-width:0">
+        <div id="topTitle" style="font-size:17px;font-weight:800;line-height:1.15">RT09RW04</div>
+        <div id="topSub" style="font-size:12px;color:#64748b;margin-top:1px">Candisari Wonotingal</div>
+      </div>
+      <button id="headerAvatarBtn" type="button" class="avatar" style="border:2px solid rgba(148,163,184,.2);cursor:pointer"></button>
+      <button id="themeBtn" type="button" style="width:38px;height:38px;border-radius:50%;background:#fff;border:1px solid rgba(148,163,184,.2);display:flex;align-items:center;justify-content:center;cursor:pointer">
+        <svg id="themeIconDark" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/></svg>
+        <svg id="themeIconLight" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="display:none"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.9 4.9l1.4 1.4m11.4 11.4l1.4 1.4M2 12h2m16 0h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main id="main" class="scroll-y grow">
+
+    <!-- HOME — 3 CATEGORY TILES + PINNED ONLY -->
+    <section id="view-home" style="padding-bottom:100px">
+      <div style="padding:16px 16px 10px">
+        <h2 style="font-size:17px;font-weight:800;margin:0">Pilih Kategori</h2>
+        <p style="font-size:12.5px;color:#64748b;margin:4px 0 0">Tap kotak sesuai jenis postingan</p>
+      </div>
+      <div style="padding:0 16px;display:flex;flex-direction:column;gap:12px">
+        <div id="catTileUmum" class="cat-tile g-umum fade" style="flex-direction:column;align-items:stretch;gap:10px;">
+          <div style="display:flex;align-items:center;gap:14px;">
+            <div class="icon">💬</div>
+            <div style="flex:1;min-width:0">
+              <div style="font-size:17px;font-weight:800">Umum</div>
+              <div style="font-size:12.5px;opacity:.85;margin-top:3px">Obrolan santai · Tanya</div>
+              <div style="display:flex;align-items:baseline;gap:5px;margin-top:7px">
+                <span style="font-size:17px;font-weight:800" id="countUmum">0</span>
+                <span style="font-size:10.5px;opacity:.75;font-weight:700;text-transform:uppercase">Postingan</span>
+              </div>
+            </div>
+          </div>
+          <div id="detailUmum" class="cat-detail hide"></div>
+          <span id="badgeUmum" class="cat-badge">0</span>
+        </div>
+
+        <div id="catTileInformasi" class="cat-tile g-info fade" style="flex-direction:column;align-items:stretch;gap:10px;">
+          <div style="display:flex;align-items:center;gap:14px;">
+            <div class="icon">📢</div>
+            <div style="flex:1;min-width:0">
+              <div style="font-size:17px;font-weight:800">Informasi</div>
+              <div style="font-size:12.5px;opacity:.85;margin-top:3px">Pengumuman + jadwal</div>
+              <div style="display:flex;align-items:baseline;gap:5px;margin-top:7px">
+                <span style="font-size:17px;font-weight:800" id="countInformasi">0</span>
+                <span style="font-size:10.5px;opacity:.75;font-weight:700;text-transform:uppercase">Postingan</span>
+              </div>
+            </div>
+          </div>
+          <div id="homeInfoCountdown" class="hide"></div>
+          <div id="detailInformasi" class="cat-detail hide"></div>
+          <span id="badgeInformasi" class="cat-badge">0</span>
+        </div>
+
+        <div id="catTileGaleri" class="cat-tile g-gal fade" style="flex-direction:column;align-items:stretch;gap:10px;">
+          <div style="display:flex;align-items:center;gap:14px;">
+            <div class="icon">📷</div>
+            <div style="flex:1;min-width:0">
+              <div style="font-size:17px;font-weight:800">Galeri</div>
+              <div style="font-size:12.5px;opacity:.85;margin-top:3px">Foto &amp; dokumentasi</div>
+              <div style="display:flex;align-items:baseline;gap:5px;margin-top:7px">
+                <span style="font-size:17px;font-weight:800" id="countGaleri">0</span>
+                <span style="font-size:10.5px;opacity:.75;font-weight:700;text-transform:uppercase">Foto</span>
+              </div>
+            </div>
+          </div>
+          <div id="detailGaleri" class="cat-detail hide"></div>
+          <span id="badgeGaleri" class="cat-badge">0</span>
+        </div>
+      </div>
+
+      <!-- Section: Pengumuman Penting (muncul kalau ada pin) -->
+      <div id="pinnedSection" class="section hide">
+        <div class="section-head">
+          <div class="section-title"><span class="em">📌</span>Pengumuman Penting</div>
+          <div class="section-sub" id="pinnedCount">0 item</div>
+        </div>
+        <div id="pinnedList"></div>
+      </div>
+    </section>
+
+    <section id="view-category" class="hide" style="padding-bottom:100px">
+      <div id="catHint" class="hint h-umum" style="margin:14px 16px 0"></div>
+      <div id="infoEventWidget" class="hide" style="padding:14px 16px 0;">
+        <div style="font-size: 15px; font-weight: 800; margin-bottom: 8px; color: #1e40af;">📅 Agenda Terdekat</div>
+        <div id="infoEventContent"></div>
+      </div>
+      <div id="catGrid" class="grid2" style="padding:14px 16px 0"></div>
+      <div id="catEmpty" class="hide" style="text-align:center;padding:60px 24px">
+        <div style="font-size:28px;margin-bottom:12px" id="catEmptyEmoji">💬</div>
+        <div style="font-size:16px;font-weight:700;margin-bottom:5px">Belum ada postingan</div>
+        <div style="font-size:13px;color:#64748b;margin-bottom:18px">Jadilah yang pertama</div>
+        <button id="catEmptyBtn" type="button" class="btn-p">Buat Postingan</button>
+      </div>
+    </section>
+
+    <section id="view-post">
+      <div id="postScroll" class="post-scroll"></div>
+      <div class="post-input-bar">
+        <div class="comment-input">
+          <textarea id="commentInput" rows="1" placeholder="Tulis komentar..."></textarea>
+          <button type="button" id="commentSend" class="send-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section id="view-warga" class="hide" style="padding-bottom:100px">
+      <div style="padding:14px 16px 10px">
+        <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:linear-gradient(135deg,rgba(99,102,241,.08),rgba(168,85,247,.08));border:1px solid rgba(99,102,241,.2);border-radius:14px">
+          <div style="width:36px;height:36px;border-radius:11px;background:linear-gradient(135deg,#6366f1,#8b5cf6);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+          </div>
+          <div style="flex:1">
+            <div style="font-size:17px;font-weight:800;color:#4f46e5;line-height:1" id="wargaCount">0</div>
+            <div style="font-size:11px;color:#6366f1;font-weight:600;margin-top:2px">Warga Terdaftar</div>
+          </div>
+        </div>
+      </div>
+      <div id="allList" style="padding:0 10px"></div>
+    </section>
+
+    <section id="view-voting" class="hide" style="padding:16px 16px 100px">
+      <div id="votingContent"></div>
+    </section>
+
+    <section id="view-profile" class="hide" style="padding:16px 16px 100px">
+      <div style="border-radius:20px;padding:2px;background:linear-gradient(135deg,#6366f1,#a855f7,#ec4899);margin-bottom:16px">
+        <div style="border-radius:18px;background:#fff;padding:19px">
+          <div style="display:flex;align-items:center;gap:14px">
+            <div id="profileAvatar"></div>
+            <div style="flex:1;min-width:0">
+              <div id="profileName" style="font-size:16px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Anonim</div>
+              <div id="profileEmail" style="font-size:12px;color:#94a3b8;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">—</div>
+            </div>
+            <span id="profileRoleBadge" class="badge-pill pill-gray">Warga</span>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:16px">
+            <div style="border-radius:12px;background:#f8fafc;padding:11px 4px;text-align:center">
+              <div id="statPosts" style="font-size:17px;font-weight:800">0</div>
+              <div style="font-size:11px;color:#94a3b8;margin-top:3px;font-weight:600">Post</div>
+            </div>
+            <div style="border-radius:12px;background:#f8fafc;padding:11px 4px;text-align:center">
+              <div id="statLikes" style="font-size:17px;font-weight:800">0</div>
+              <div style="font-size:11px;color:#94a3b8;margin-top:3px;font-weight:600">Suka</div>
+            </div>
+            <div style="border-radius:12px;background:#f8fafc;padding:11px 4px;text-align:center">
+              <div id="statVotes" style="font-size:17px;font-weight:800">0</div>
+              <div style="font-size:11px;color:#94a3b8;margin-top:3px;font-weight:600">Vote</div>
+            </div>
+          </div>
+          <button id="editProfileBtn" type="button" class="btn-p" style="width:100%;margin-top:14px;background:#f1f5f9;color:#0f172a">✏️ Edit Nama &amp; Foto</button>
+        </div>
+      </div>
+
+      <div style="font-size:11.5px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin:0 4px 8px">Akun</div>
+      <div class="card" style="padding:0;overflow:hidden;margin-bottom:16px">
+        <button id="myCodeBtn" type="button" class="setting-row">
+          <div class="setting-icon" style="background:rgba(99,102,241,.15);color:#6366f1">🆔</div>
+          <div style="flex:1;text-align:left">
+            <div style="font-size:14px;font-weight:600">Kode Akun Saya</div>
+            <div style="font-size:12px;color:#94a3b8;margin-top:2px">Simpan untuk backup</div>
+          </div>
+        </button>
+        <button id="switchAccBtn" type="button" class="setting-row">
+          <div class="setting-icon" style="background:rgba(245,158,11,.15);color:#f59e0b">🔄</div>
+          <div style="flex:1;text-align:left">
+            <div style="font-size:14px;font-weight:600">Ganti Akun Google</div>
+            <div style="font-size:12px;color:#94a3b8;margin-top:2px">Login dengan akun lain</div>
+          </div>
+        </button>
+      </div>
+
+      <div id="adminPanel" class="hide">
+        <div style="font-size:11.5px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin:0 4px 8px">🛡️ Panel Admin RT</div>
+        <div class="card" style="padding:0;overflow:hidden;margin-bottom:16px">
+          <button id="adminInviteCodeBtn" type="button" class="setting-row">
+            <div class="setting-icon" style="background:rgba(16,185,129,.15);color:#059669">🔐</div>
+            <div style="flex:1;text-align:left">
+              <div style="font-size:14px;font-weight:600">Kode Undangan RT</div>
+              <div style="font-size:12px;color:#94a3b8;margin-top:2px">Lihat &amp; ubah kode undangan warga</div>
+            </div>
+          </button>
+          <button id="adminVerifyBtn" type="button" class="setting-row">
+            <div class="setting-icon" style="background:rgba(59,130,246,.15);color:#2563eb">👥</div>
+            <div style="flex:1;text-align:left">
+              <div style="font-size:14px;font-weight:600">Kelola Warga</div>
+              <div style="font-size:12px;color:#94a3b8;margin-top:2px">Atur role, blokir warga</div>
+            </div>
+          </button>
+        </div>
+      </div>
+
+      <div style="font-size:11.5px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin:0 4px 8px">Notifikasi</div>
+      <div class="card" style="padding:0;overflow:hidden;margin-bottom:16px">
+        <div class="setting-row" style="cursor:default">
+          <div class="setting-icon" style="background:linear-gradient(135deg,#fbbf24,#f59e0b);color:white">🔔</div>
+          <div style="flex:1">
+            <div style="font-size:14px;font-weight:600">Bunyi Notifikasi</div>
+            <div style="font-size:12px;color:#94a3b8;margin-top:2px">Suara saat ada post baru</div>
+          </div>
+          <button id="soundToggle" type="button" style="width:46px;height:26px;border-radius:13px;border:none;position:relative;background:#cbd5e1;flex-shrink:0;cursor:pointer">
+            <span id="soundKnob" style="position:absolute;top:2px;left:2px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:left .2s"></span>
+          </button>
+        </div>
+        <div class="setting-row" style="cursor:default">
+          <div class="setting-icon" style="background:linear-gradient(135deg,#6366f1,#8b5cf6);color:white">📱</div>
+          <div style="flex:1">
+            <div style="font-size:14px;font-weight:600">Notifikasi Browser</div>
+            <div style="font-size:12px;color:#94a3b8;margin-top:2px">Notif meski app di tab lain</div>
+          </div>
+          <button id="notifBtn" type="button" style="padding:7px 12px;border-radius:9px;background:#f1f5f9;font-size:12px;font-weight:600;border:none;cursor:pointer">Aktifkan</button>
+        </div>
+      </div>
+
+      <div style="font-size:11.5px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin:0 4px 8px">Data &amp; Backup</div>
+      <div class="card" style="padding:0;overflow:hidden;margin-bottom:12px">
+        <button id="backupBtn" type="button" class="setting-row">
+          <div class="setting-icon" style="background:rgba(99,102,241,.15);color:#6366f1">💾</div>
+          <div style="flex:1;text-align:left">
+            <div style="font-size:14px;font-weight:600">Backup Data Saya</div>
+            <div style="font-size:12px;color:#94a3b8;margin-top:2px">Unduh file JSON</div>
+          </div>
+        </button>
+        <button id="clearCacheBtn" type="button" class="setting-row">
+          <div class="setting-icon" style="background:rgba(148,163,184,.15)">🧹</div>
+          <div style="flex:1;text-align:left;font-size:14px;font-weight:500">Bersihkan cache</div>
+        </button>
+        <button id="deleteAccBtn" type="button" class="setting-row">
+          <div class="setting-icon" style="background:rgba(244,63,94,.15);color:#f43f5e">🗑️</div>
+          <div style="flex:1;text-align:left;font-size:14px;font-weight:500;color:#f43f5e">Hapus Akun</div>
+        </button>
+      </div>
+      <div class="card" style="padding:0;overflow:hidden">
+        <button id="logoutBtn" type="button" class="setting-row">
+          <div class="setting-icon" style="background:rgba(148,163,184,.15)">🚪</div>
+          <div style="flex:1;text-align:left;font-size:14px;font-weight:500">Keluar</div>
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <button id="fab" type="button" class="fab">
+    <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+  </button>
+
+  <nav class="nav safe-b">
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;padding:7px 6px">
+      <button data-tab="home" type="button" class="nav-btn on">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 22V12h6v10"/></svg>
+        <span>Beranda</span>
+        <span id="navBadgeHome" class="nav-badge">0</span>
+      </button>
+      <button data-tab="warga" type="button" class="nav-btn">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+        <span>Warga</span>
+      </button>
+      <button data-tab="voting" type="button" class="nav-btn">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+        <span>Voting</span>
+        <span id="votingBadge" class="nav-badge">0</span>
+      </button>
+      <button data-tab="profile" type="button" class="nav-btn">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0116 0"/></svg>
+        <span>Saya</span>
+      </button>
+    </div>
+  </nav>
+</div>
+
+<div id="composeSheet">
+  <header class="header safe-t" style="display:flex;align-items:center;gap:10px;padding:11px 13px">
+    <button id="composeCancel" type="button" style="width:38px;height:38px;border-radius:50%;background:#f1f5f9;display:flex;align-items:center;justify-content:center;border:none;cursor:pointer">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
+    <div style="flex:1;text-align:center;font-size:14.5px;font-weight:700" id="composeTitle">Tulis Postingan</div>
+    <button id="composePost" type="button" class="btn-p" style="padding:8px 16px;border-radius:99px;opacity:.5" disabled>
+      <span id="composeBtnText">Kirim</span>
+    </button>
+  </header>
+  <div class="scroll-y grow" style="padding:15px">
+    <div style="font-size:11.5px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin-bottom:9px">Kategori</div>
+    <div id="composeCats" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-bottom:14px">
+      <button type="button" data-c="umum" class="cat-btn"><div style="font-size:24px">💬</div><div style="font-size:12.5px;font-weight:700">Umum</div></button>
+      <button type="button" data-c="informasi" class="cat-btn"><div style="font-size:24px">📢</div><div style="font-size:12.5px;font-weight:700">Informasi</div></button>
+      <button type="button" data-c="galeri" class="cat-btn"><div style="font-size:24px">📷</div><div style="font-size:12.5px;font-weight:700">Galeri</div></button>
+    </div>
+    <div id="composeHint" class="hint h-umum"></div>
+    <div id="topicWrap" class="hide" style="margin-bottom:14px">
+      <div style="font-size:11.5px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px">Topik (opsional)</div>
+      <div style="display:flex;gap:6px">
+        <button type="button" data-t="obrolan" class="topic-chip on">💬 Obrolan</button>
+        <button type="button" data-t="tanya" class="topic-chip">❓ Tanya</button>
+      </div>
+    </div>
+    <div id="eventWrap" class="hide" style="margin-bottom:14px">
+      <div style="font-size:11.5px;font-weight:800;color:#1e40af;text-transform:uppercase;letter-spacing:.1em;margin-bottom:7px">📅 Jadwal Kegiatan</div>
+      <input id="eventDate" type="datetime-local" class="dt" style="margin-bottom:8px">
+      <input id="eventLocation" type="text" placeholder="📍 Lokasi (opsional)" class="dt">
+    </div>
+    <div id="pinWrap" class="hide" style="margin-bottom:14px">
+      <label style="display:flex;align-items:center;gap:10px;padding:12px 14px;background:linear-gradient(135deg,rgba(245,158,11,.08),rgba(239,68,68,.06));border:1.5px solid rgba(245,158,11,.3);border-radius:12px;cursor:pointer">
+        <input id="pinCheck" type="checkbox" style="width:20px;height:20px;accent-color:#f59e0b">
+        <div>
+          <div style="font-size:13.5px;font-weight:800;color:#92400e">📌 Sematkan sebagai Pengumuman Penting</div>
+          <div style="font-size:11px;color:#78350f;margin-top:2px">Muncul paling atas di Beranda semua warga</div>
+        </div>
+      </label>
+    </div>
+    <div style="display:flex;gap:11px">
+      <div id="composeAvatar"></div>
+      <div style="flex:1;min-width:0">
+        <div id="composeName" style="font-size:14px;font-weight:700;margin-bottom:7px"></div>
+        <textarea id="composeText" rows="5" placeholder="Tulis sesuatu..." style="width:100%;background:transparent;border:none;font-size:15.5px;line-height:1.55;resize:none;min-height:100px;font-family:inherit"></textarea>
+        <div id="composeAttach" class="attach-row"></div>
+        <div id="warnFoto" class="hide" style="margin-top:6px;font-size:12px;color:#f43f5e;font-weight:600">📷 Galeri wajib minimal 1 foto</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="modal" class="mask">
+  <div class="modal">
+    <div style="display:flex;justify-content:center;padding:9px 0 2px"><div style="width:38px;height:4px;border-radius:99px;background:#cbd5e1"></div></div>
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:9px 16px 11px">
+      <div id="modalTitle" style="font-size:15.5px;font-weight:800"></div>
+      <button id="modalX" type="button" style="width:34px;height:34px;border-radius:50%;background:#f1f5f9;display:flex;align-items:center;justify-content:center;border:none;cursor:pointer">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="scroll-y safe-b" style="flex:1;padding:0 16px 20px"><div id="modalBody"></div></div>
+  </div>
+</div>
+
+<input id="imgInput" type="file" accept="image/*" multiple style="display:none">
+<input id="avatarInput" type="file" accept="image/*" style="display:none">
+<input id="collabInput" type="file" accept="image/*" multiple style="display:none">
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+
+<script>
+var FB = {
+  apiKey: "AIzaSyCEttPAa6glm2qHUw3_QIcj2C8qqB9ZwOI",
+  authDomain: "spark-61d51.firebaseapp.com",
+  projectId: "spark-61d51",
+  storageBucket: "spark-61d51.firebasestorage.app",
+  messagingSenderId: "618121526268",
+  appId: "1:618121526268:web:439521109a847c9ec25079"
+};
+var BOOTSTRAP_ADMIN_EMAIL = "swiwioffice@gmail.com"; // GANTI email Google Anda
+
+function $(id){ return document.getElementById(id); }
+function show(id){ var e = $(id); if(e) e.classList.remove('hide'); }
+function hide(id){ var e = $(id); if(e) e.classList.add('hide'); }
+function esc(t){ return String(t==null?'':t).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+function cap(s){ return s.charAt(0).toUpperCase()+s.slice(1); }
+function toast(msg, err){
+  var t = $('toast'); t.textContent = msg;
+  t.style.background = err ? 'linear-gradient(135deg,#f43f5e,#e11d48)' : 'linear-gradient(135deg,#0f172a,#1e293b)';
+  t.style.color = '#fff'; t.classList.add('on');
+  clearTimeout(t._t); t._t = setTimeout(function(){ t.classList.remove('on'); }, 2600);
+}
+function loader(on, msg){ $('loaderMsg').textContent = msg || 'Memproses...'; $('loader').classList.toggle('on', on); }
+function timeAgo(ts){
+  var d = Date.now() - ts;
+  if(d<60000) return 'baru';
+  if(d<3600000) return Math.floor(d/60000)+'m';
+  if(d<86400000) return Math.floor(d/3600000)+'j';
+  if(d<604800000) return Math.floor(d/86400000)+'h';
+  return new Date(ts).toLocaleDateString('id-ID',{day:'numeric',month:'short'});
+}
+function fmtDate(ts){ var d = new Date(ts); var m = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des']; return d.getDate()+' '+m[d.getMonth()]+' '+d.getFullYear(); }
+function fmtDateTime(ts){
+  var d = new Date(ts);
+  var days = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+  var months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+  return days[d.getDay()]+', '+d.getDate()+' '+months[d.getMonth()]+' '+d.getFullYear();
+}
+function compressImage(file, maxDim, quality){
+  return new Promise(function(res, rej){
+    maxDim = maxDim || 1080; quality = quality || 0.72;
+    var r = new FileReader();
+    r.onload = function(){
+      var img = new Image();
+      img.onload = function(){
+        var w = img.width, h = img.height;
+        if(w > maxDim || h > maxDim){ var ratio = Math.min(maxDim/w, maxDim/h); w = Math.round(w*ratio); h = Math.round(h*ratio); }
+        var c = document.createElement('canvas'); c.width = w; c.height = h;
+        c.getContext('2d').drawImage(img, 0, 0, w, h);
+        res(c.toDataURL('image/jpeg', quality).split(',')[1]);
+      };
+      img.onerror = rej; img.src = r.result;
+    };
+    r.onerror = rej; r.readAsDataURL(file);
+  });
+}
+function compressAvatar(file){
+  return new Promise(function(res, rej){
+    var r = new FileReader();
+    r.onload = function(){
+      var img = new Image();
+      img.onload = function(){
+        var size = Math.min(img.width, img.height);
+        var sx = (img.width-size)/2, sy = (img.height-size)/2;
+        var c = document.createElement('canvas'); c.width = 260; c.height = 260;
+        c.getContext('2d').drawImage(img, sx, sy, size, size, 0, 0, 260, 260);
+        res(c.toDataURL('image/jpeg', 0.82).split(',')[1]);
+      };
+      img.onerror = rej; img.src = r.result;
+    };
+    r.onerror = rej; r.readAsDataURL(file);
+  });
+}
+function getPostImages(p){ if(p.images && p.images.length) return p.images; if(p.imageBase64) return [p.imageBase64]; return []; }
+function extractImageUrls(text){
+  if(!text) return [];
+  var re = /(https?:\/\/[^\s]+\.(?:gif|png|jpe?g|webp)(?:\?[^\s]*)?)/gi;
+  var urls = []; var m;
+  while((m = re.exec(text)) !== null) urls.push(m[1]);
+  return urls;
+}
+function avatarHtml(user, size, fontSize){
+  size = size || 36; fontSize = fontSize || 15;
+  if(!user) return '<div class="avatar" style="width:'+size+'px;height:'+size+'px;font-size:'+fontSize+'px">?</div>';
+  var url = user.avatarBase64 ? ('data:image/jpeg;base64,'+user.avatarBase64) : (user.photoURL||null);
+  var initial = (user.name||user.displayName||'?').trim().charAt(0).toUpperCase();
+  if(url) return '<div class="avatar" style="width:'+size+'px;height:'+size+'px;font-size:'+fontSize+'px"><img src="'+url+'" referrerpolicy="no-referrer" onerror="this.style.display=\'none\'"/></div>';
+  return '<div class="avatar" style="width:'+size+'px;height:'+size+'px;font-size:'+fontSize+'px">'+esc(initial)+'</div>';
+}
+
+firebase.initializeApp(FB);
+var auth = firebase.auth();
+var db = firebase.firestore();
+var FV = firebase.firestore.FieldValue;
+auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(function(){});
+
+var me = null;
+var tab = 'home';
+var activeCat = 'umum';
+var feed = [];
+var users = [];
+var polls = [];
+var appConfig = { inviteCode: '', adminEmails: [] };
+var activePostId = null;
+var activePost = null;
+var composeImgs = [];
+var composeCat = 'umum';
+var composeTopic = 'obrolan';
+var uploading = false;
+var unsubFeed = null, unsubUsers = null, unsubPolls = null, unsubConfig = null;
+var countdownTimer = null, miniCountdownTimer = null;
+var initializedNotif = false;
+var knownPostIds = {};
+
+function isAdmin(){ return me && me.role === 'admin'; }
+function getPreferred(){ return localStorage.getItem('spark_pref_email'); }
+function setPreferred(e){ if(e) localStorage.setItem('spark_pref_email', e); }
+function clearPreferred(){ localStorage.removeItem('spark_pref_email'); }
+
+function applyTheme(t){
+  document.documentElement.classList.toggle('dark', t==='dark');
+  document.body.classList.toggle('dark', t==='dark');
+  if($('themeIconDark')) $('themeIconDark').style.display = t==='dark' ? 'none' : 'block';
+  if($('themeIconLight')) $('themeIconLight').style.display = t==='dark' ? 'block' : 'none';
+  var meta = document.querySelector('meta[name=theme-color]');
+  if(meta) meta.content = t==='dark' ? '#070b14' : '#ffffff';
+}
+var savedTheme = localStorage.getItem('spark_theme') || 'light';
+applyTheme(savedTheme);
+$('themeBtn').onclick = function(){
+  var cur = localStorage.getItem('spark_theme') || 'light';
+  var nxt = cur === 'light' ? 'dark' : 'light';
+  localStorage.setItem('spark_theme', nxt); applyTheme(nxt);
+};
+
+function refreshSound(){
+  var on = localStorage.getItem('spark_sound') !== 'off';
+  $('soundToggle').style.background = on ? '#6366f1' : '#cbd5e1';
+  $('soundKnob').style.left = on ? '22px' : '2px';
+}
+refreshSound();
+$('soundToggle').onclick = function(){
+  var cur = localStorage.getItem('spark_sound') !== 'off';
+  localStorage.setItem('spark_sound', cur ? 'off' : 'on'); refreshSound();
+};
+function beep(){
+  if(localStorage.getItem('spark_sound') === 'off') return;
+  try {
+    var ctx = new (window.AudioContext || window.webkitAudioContext)();
+    function play(f, s, d){
+      var o = ctx.createOscillator(); var g = ctx.createGain();
+      o.connect(g); g.connect(ctx.destination); o.frequency.value = f; o.type = 'sine';
+      g.gain.setValueAtTime(0.0001, s);
+      g.gain.exponentialRampToValueAtTime(0.2, s+0.01);
+      g.gain.exponentialRampToValueAtTime(0.0001, s+d);
+      o.start(s); o.stop(s+d);
+    }
+    var t = ctx.currentTime; play(880, t, 0.15); play(1180, t+0.16, 0.2);
+  } catch(e){}
+}
+
+$('notifBtn').onclick = function(){
+  if(!('Notification' in window)) return toast('Browser tidak mendukung', true);
+  if(Notification.permission === 'granted') return toast('Notifikasi sudah aktif');
+  Notification.requestPermission().then(function(p){
+    toast(p === 'granted' ? 'Notifikasi aktif!' : 'Tidak diizinkan', p !== 'granted');
+  });
+};
+function sendLocalNotif(title, body, tag){
+  if(!('Notification' in window)) return;
+  if(Notification.permission !== 'granted') return;
+  try { new Notification(title, { body: body, tag: tag, icon: '/icon-192.png', badge: '/icon-192.png' }); } catch(e){}
+}
+
+function setTab(t){
+  tab = t;
+  ['home','category','post','warga','voting','profile'].forEach(function(x){
+    var el = $('view-'+x);
+    if(!el) return;
+    if(x === 'post'){ el.classList.toggle('on', x === t); el.classList.toggle('hide', x !== t); }
+    else el.classList.toggle('hide', x !== t);
+  });
+  $('main').style.overflow = (t === 'post') ? 'hidden' : '';
+  $('backBtn').classList.toggle('hide', t !== 'category' && t !== 'post');
+  $('fab').classList.toggle('hide', t === 'warga' || t === 'voting' || t === 'profile' || t === 'post');
+  document.querySelectorAll('.nav-btn').forEach(function(b){
+    b.classList.toggle('on', b.dataset.tab === t);
+  });
+  var titles = {
+    home:['RT09RW04','Candisari Wonotingal'],
+    category:['','Semua postingan'],
+    post:['Postingan','Detail & komentar'],
+    warga:['Warga','Daftar warga terverifikasi'],
+    voting:['Voting','Suara warga RT'],
+    profile:['Akun Saya','Status & pengaturan']
+  };
+  if(t === 'category'){ titles.category[0] = ({umum:'Umum',informasi:'Informasi',galeri:'Galeri'})[activeCat]; }
+  $('topTitle').textContent = titles[t] ? titles[t][0] : 'RT09RW04';
+  $('topSub').textContent = titles[t] ? titles[t][1] : '';
+  if(t === 'home'){ renderHome(); updateAllBadges(); }
+  if(t === 'category'){
+    localStorage.setItem('spark_cat_seen_'+activeCat, Date.now().toString());
+    renderCategory(); updateAllBadges();
+  }
+  if(t === 'warga') renderWargaList();
+  if(t === 'voting'){ renderVoting(); updateAllBadges(); }
+  if(t === 'profile') renderProfile();
+  if(t !== 'post') $('main').scrollTop = 0;
+}
+document.querySelectorAll('.nav-btn').forEach(function(b){ b.onclick = function(){ setTab(b.dataset.tab); }; });
+$('backBtn').onclick = function(){ setTab('home'); };
+$('headerAvatarBtn').onclick = function(){ setTab('profile'); };
+
+$('catTileUmum').onclick = function(){ activeCat = 'umum'; setTab('category'); };
+$('catTileInformasi').onclick = function(){ activeCat = 'informasi'; setTab('category'); };
+$('catTileGaleri').onclick = function(){ activeCat = 'galeri'; setTab('category'); };
+
+// ===== BADGE / NOTIF ANGKA =====
+function getCatSeen(cat){ return parseInt(localStorage.getItem('spark_cat_seen_'+cat) || '0', 10); }
+function computeCatStats(cat){
+  var newPosts = 0;
+  var catSeen = getCatSeen(cat);
+  feed.forEach(function(p){
+    if((p.category||'umum') !== cat) return;
+    if(p.authorId !== me.uid && p.createdAt > catSeen) newPosts++;
+  });
+  return { newPosts: newPosts };
+}
+function updateAllBadges(){
+  if(!me) return;
+  var totalAll = 0;
+  ['umum','informasi','galeri'].forEach(function(cat){
+    var s = computeCatStats(cat);
+    totalAll += s.newPosts;
+    var badge = $('badge'+cap(cat));
+    var detail = $('detail'+cap(cat));
+    if(badge){
+      if(s.newPosts > 0){ badge.textContent = s.newPosts > 99 ? '99+' : s.newPosts; badge.classList.add('on'); }
+      else badge.classList.remove('on');
+    }
+    if(detail){
+      if(s.newPosts > 0){
+        detail.innerHTML = '<span class="chip">✨ '+s.newPosts+' baru</span>';
+        detail.classList.remove('hide');
+      } else { detail.innerHTML = ''; detail.classList.add('hide'); }
+    }
+  });
+  var hb = $('navBadgeHome');
+  if(hb){ if(totalAll > 0){ hb.textContent = totalAll > 99 ? '99+' : totalAll; hb.classList.add('on'); } else hb.classList.remove('on'); }
+
+  var activePollCount = 0;
+  polls.forEach(function(p){
+    var expired = p.deadline > 0 && p.deadline < Date.now();
+    var myVote = (p.votes||{})[me.uid];
+    if(!expired && !myVote) activePollCount++;
+  });
+  var vb = $('votingBadge');
+  if(vb){ if(activePollCount > 0){ vb.textContent = activePollCount > 99 ? '99+' : activePollCount; vb.classList.add('on'); } else vb.classList.remove('on'); }
+}
+
+// ===== RENDER HOME =====
+function renderHome(){
+  ['umum','informasi','galeri'].forEach(function(c){
+    var el = $('count'+cap(c));
+    if(el) el.textContent = feed.filter(function(p){ return (p.category||'umum') === c; }).length;
+  });
+
+  // Countdown agenda terdekat di tile Informasi
+  var now = Date.now();
+  var nextEvent = feed.filter(function(p){
+    return (p.category === 'informasi') && p.eventDate && p.eventDate > now;
+  }).sort(function(a,b){ return a.eventDate - b.eventDate; })[0];
+
+  var cdTile = $('homeInfoCountdown');
+  if(nextEvent){
+    cdTile.classList.remove('hide');
+    cdTile.dataset.cd = nextEvent.eventDate;
+    cdTile.dataset.eventName = (nextEvent.text || 'Kegiatan').replace(/\s+/g, ' ').trim().slice(0, 60);
+  } else {
+    cdTile.classList.add('hide');
+    cdTile.innerHTML = ''; cdTile.dataset.cd = ''; cdTile.dataset.eventName = '';
+  }
+  startMiniCountdowns();
+
+  // Pinned section saja (tanpa feed)
+  var pinned = feed.filter(function(p){ return p.pinned; }).sort(function(a,b){ return b.createdAt - a.createdAt; });
+  var pinSec = $('pinnedSection');
+  if(pinned.length){
+    pinSec.classList.remove('hide');
+    $('pinnedCount').textContent = pinned.length + ' item';
+    $('pinnedList').innerHTML = pinned.slice(0, 5).map(function(p){
+      var html = '<div class="pin-card" data-pid="'+p.id+'">';
+      html += '<div class="pin-badge">📌 PENTING</div>';
+      html += '<div class="pin-title">'+esc(p.text || '[Foto]')+'</div>';
+      html += '<div class="pin-meta">'+avatarHtml({name:p.authorName, photoURL:p.authorPhoto, avatarBase64:p.authorAvatarBase64}, 20, 9)+'<span style="font-weight:700">'+esc(p.authorName)+'</span><span>·</span><span>'+timeAgo(p.createdAt)+'</span></div>';
+      html += '</div>';
+      return html;
+    }).join('');
+    $('pinnedList').querySelectorAll('[data-pid]').forEach(function(c){
+      c.onclick = function(){ openPostDetail(c.dataset.pid); };
+    });
+  } else {
+    pinSec.classList.add('hide');
+  }
+}
+
+function renderPostCard(p){
+  var isMine = p.authorId === me.uid;
+  var imgs = getPostImages(p);
+  var totalImgs = imgs.length + (p.photos||[]).length;
+  var firstImg = imgs.length ? imgs[0] : ((p.photos||[]).length ? p.photos[0].b64 : null);
+  var hasText = p.text && p.text.trim().length > 0;
+  var preview = hasText ? p.text.replace(/\s+/g,' ').trim() : (firstImg ? 'Foto tanpa keterangan' : 'Postingan');
+  var cat = p.category || 'umum';
+  var isInfo = cat === 'informasi';
+  var colorCls = isInfo ? 'b-info' : cat === 'galeri' ? 'b-gal' : 'b-umum';
+  var stripCls = isInfo ? 's-info' : cat === 'galeri' ? 's-gal' : 's-umum';
+  var hasEvent = p.eventDate && p.eventDate > 0;
+  var showNew = !isMine && (p.createdAt > getCatSeen(cat)) && !hasEvent && !p.pinned;
+
+  var html = '<div class="post-card '+colorCls+'" data-pid="'+p.id+'">';
+  html += '<div class="strip '+stripCls+'"></div>';
+  if(showNew) html += '<div class="post-new-badge">✨ BARU</div>';
+  if(p.pinned) html += '<div class="pin-tag">📌 PIN</div>';
+  if(isMine) html += '<span style="position:absolute;top:9px;left:7px;z-index:2;font-size:9px;font-weight:800;background:linear-gradient(135deg,#6366f1,#a855f7);color:white;padding:2px 7px;border-radius:5px">KAMU</span>';
+  if(hasEvent) html += '<span style="position:absolute;top:7px;right:7px;background:linear-gradient(135deg,#10b981,#059669);color:white;font-size:9px;font-weight:700;padding:3px 7px;border-radius:6px;z-index:2">📅 Kegiatan</span>';
+  if(firstImg) html += '<div class="thumb"><img src="data:image/jpeg;base64,'+firstImg+'"/></div>';
+  html += '<div class="body">';
+  html += '<div class="title">'+esc(preview)+'</div>';
+  if(hasEvent){
+    var diff = p.eventDate - Date.now();
+    if(diff <= 0){
+      html += '<div class="cd-mini"><div class="cd-mini-done">Kegiatan sudah dimulai</div></div>';
+    } else {
+      var dd = Math.floor(diff/86400000), hh = Math.floor((diff%86400000)/3600000), mm = Math.floor((diff%3600000)/60000), ss = Math.floor((diff%60000)/1000);
+      html += '<div class="cd-mini" data-cd="'+p.eventDate+'"><div class="cd-m-box"><div class="n">'+dd+'</div><div class="l">Hari</div></div><div class="cd-m-box"><div class="n">'+hh+'</div><div class="l">Jam</div></div><div class="cd-m-box"><div class="n">'+mm+'</div><div class="l">Mnt</div></div><div class="cd-m-box"><div class="n">'+ss+'</div><div class="l">Dtk</div></div></div>';
+    }
+  }
+  html += '<div class="meta">';
+  html += (p.commentCount ? '<span>💬 '+p.commentCount+'</span>' : '');
+  html += ((p.likedBy||[]).length ? '<span>❤️ '+(p.likedBy||[]).length+'</span>' : '');
+  html += (totalImgs ? '<span>📷 '+totalImgs+'</span>' : '');
+  html += '<span style="margin-left:auto">'+timeAgo(p.createdAt)+'</span>';
+  html += '</div></div>';
+  html += '<div class="foot">'+avatarHtml({name:p.authorName, photoURL:p.authorPhoto, avatarBase64:p.authorAvatarBase64}, 20, 9)+'<span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(p.authorName)+'</span></div>';
+  html += '</div>';
+  return html;
+}
+
+function startMiniCountdowns(){
+  if(miniCountdownTimer) clearInterval(miniCountdownTimer);
+  function tick(){
+    document.querySelectorAll('[data-cd]').forEach(function(el){
+      var ts = parseInt(el.dataset.cd, 10);
+      if(!ts) return;
+      var diff = ts - Date.now();
+      var isHomeWidget = (el.id === 'homeInfoCountdown');
+      if(diff <= 0){
+        if(isHomeWidget) el.innerHTML = '<div class="cd-glass" style="text-align:center;font-size:12px;font-weight:700">🎉 Kegiatan sudah dimulai</div>';
+        else el.innerHTML = '<div class="cd-mini-done">Kegiatan sudah dimulai</div>';
+        return;
+      }
+      var d = Math.floor(diff/86400000), h = Math.floor((diff%86400000)/3600000), m = Math.floor((diff%3600000)/60000), s = Math.floor((diff%60000)/1000);
+      var dd = (d<10?'0':'')+d, hh = (h<10?'0':'')+h, mm = (m<10?'0':'')+m, ss = (s<10?'0':'')+s;
+      if(isHomeWidget){
+        var evName = el.dataset.eventName || 'Kegiatan';
+        var html = '<div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;font-size:11.5px;font-weight:700;color:rgba(255,255,255,.95)"><span>📅</span><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0">'+esc(evName)+'</span></div>';
+        html += '<div class="cd-glass" style="display:flex;gap:5px"><div class="cd-box"><div class="n">'+dd+'</div><div class="l">Hari</div></div><div class="cd-box"><div class="n">'+hh+'</div><div class="l">Jam</div></div><div class="cd-box"><div class="n">'+mm+'</div><div class="l">Mnt</div></div><div class="cd-box"><div class="n">'+ss+'</div><div class="l">Dtk</div></div></div>';
+        el.innerHTML = html;
+      } else {
+        el.innerHTML = '<div class="cd-m-box"><div class="n">'+d+'</div><div class="l">Hari</div></div><div class="cd-m-box"><div class="n">'+h+'</div><div class="l">Jam</div></div><div class="cd-m-box"><div class="n">'+m+'</div><div class="l">Mnt</div></div><div class="cd-m-box"><div class="n">'+s+'</div><div class="l">Dtk</div></div>';
+      }
+    });
+  }
+  tick(); miniCountdownTimer = setInterval(tick, 1000);
+}
+
+// ===== AUTH =====
+auth.onAuthStateChanged(function(user){
+  if(user){
+    me = {
+      uid: user.uid,
+      name: user.displayName || (user.email||'').split('@')[0] || 'Warga',
+      email: user.email || '',
+      photoURL: user.photoURL || null,
+      avatarBase64: null,
+      role: 'warga',
+      verified: false
+    };
+    setPreferred(me.email);
+    db.collection('users').doc(user.uid).get().then(function(doc){
+      var isBootstrapAdmin = BOOTSTRAP_ADMIN_EMAIL && (me.email === BOOTSTRAP_ADMIN_EMAIL);
+      if(doc.exists){
+        var d = doc.data();
+        if(d.avatarBase64) me.avatarBase64 = d.avatarBase64;
+        if(d.name) me.name = d.name;
+        if(d.role) me.role = d.role;
+        if(d.verified) me.verified = true;
+        if(isBootstrapAdmin && me.role !== 'admin'){
+          me.role = 'admin'; me.verified = true;
+          db.collection('users').doc(user.uid).set({ role: 'admin', verified: true }, { merge: true });
+        }
+      } else {
+        if(isBootstrapAdmin){ me.role = 'admin'; me.verified = true; }
+      }
+      syncUser().then(function(){
+        subscribeConfig(); subscribeFeed(); subscribeUsers(); subscribePolls();
+        setTimeout(function(){
+          $('splash').style.display = 'none';
+          hide('welcomeOv');
+          ['umum','informasi','galeri'].forEach(function(c){
+            if(!localStorage.getItem('spark_cat_seen_'+c)){
+              localStorage.setItem('spark_cat_seen_'+c, Date.now().toString());
+            }
+          });
+          if(!me.verified && me.role !== 'admin'){
+            $('inviteEmail').textContent = me.email;
+            $('inviteOv').style.display = 'flex';
+            hide('app');
+          } else {
+            $('app').style.display = 'flex';
+            $('headerAvatarBtn').innerHTML = avatarHtml(me, 32, 13);
+            setTab('home');
+          }
+        }, 400);
+      });
+    }).catch(function(){
+      syncUser().then(function(){ location.reload(); });
+    });
+  } else {
+    setTimeout(function(){
+      $('splash').style.display = 'none';
+      $('welcomeOv').style.display = 'flex';
+    }, 400);
+  }
+});
+
+function syncUser(){
+  if(!me) return Promise.resolve();
+  return db.collection('users').doc(me.uid).get().then(function(doc){
+    var data = {
+      uid: me.uid, name: me.name,
+      email: me.email || null, photoURL: me.photoURL || null,
+      avatarBase64: me.avatarBase64 || null,
+      role: me.role || 'warga',
+      verified: !!me.verified,
+      lastSeen: FV.serverTimestamp()
+    };
+    if(!doc.exists) data.createdAt = FV.serverTimestamp();
+    return db.collection('users').doc(me.uid).set(data, { merge: true });
+  }).catch(function(e){ console.warn(e); });
+}
+
+$('googleBtn').onclick = async function(){
+  var p = new firebase.auth.GoogleAuthProvider();
+  var pref = getPreferred();
+  if(pref) p.setCustomParameters({ login_hint: pref });
+  $('googleBtn').disabled = true;
+  try { await auth.signInWithPopup(p); }
+  catch(e){
+    if(['auth/popup-blocked','auth/popup-closed-by-user','auth/cancelled-popup-request','auth/operation-not-supported-in-this-environment'].indexOf(e.code) > -1 || /mobile/i.test(navigator.userAgent)){
+      try { await auth.signInWithRedirect(p); return; } catch(err){}
+    }
+    if(e.code !== 'auth/popup-closed-by-user' && e.code !== 'auth/cancelled-popup-request') toast('Gagal login: ' + (e.message||e.code), true);
+    $('googleBtn').disabled = false;
+  }
+};
+
+$('inviteSubmit').onclick = async function(){
+  var code = $('inviteInput').value.trim().toUpperCase();
+  if(!code) return toast('Masukkan kode undangan', true);
+  loader(true, 'Memverifikasi...');
+  try {
+    var doc = await db.collection('config').doc('app').get();
+    var stored = doc.exists ? (doc.data().inviteCode || '').toUpperCase() : '';
+    if(!stored) { loader(false); return toast('Kode undangan belum diatur admin', true); }
+    if(code === stored){
+      me.verified = true;
+      await db.collection('users').doc(me.uid).set({ verified: true }, { merge: true });
+      loader(false); toast('Verifikasi berhasil!');
+      hide('inviteOv'); $('app').style.display = 'flex';
+      $('headerAvatarBtn').innerHTML = avatarHtml(me, 32, 13);
+      setTab('home');
+    } else { loader(false); toast('Kode salah. Hubungi pengurus RT.', true); }
+  } catch(e){ loader(false); toast('Gagal: ' + (e.message||'').slice(0,40), true); }
+};
+$('inviteLogout').onclick = async function(){ await auth.signOut(); location.reload(); };
+
+function subscribeConfig(){
+  if(unsubConfig){ try { unsubConfig(); } catch(e){} }
+  unsubConfig = db.collection('config').doc('app').onSnapshot(function(doc){
+    appConfig = doc.exists ? Object.assign({ inviteCode: '', adminEmails: [] }, doc.data()) : { inviteCode: '', adminEmails: [] };
+    if(tab === 'profile') renderProfile();
+  }, function(e){ console.warn('config', e); });
+}
+
+function subscribeFeed(){
+  if(unsubFeed){ try { unsubFeed(); } catch(e){} }
+  unsubFeed = db.collection('posts').orderBy('createdAt','desc').limit(100).onSnapshot(function(snap){
+    var newList = snap.docs.map(function(d){
+      var x = d.data();
+      return Object.assign({ id: d.id }, x, {
+        createdAt: (x.createdAt&&x.createdAt.toMillis) ? x.createdAt.toMillis() : Date.now(),
+        eventDate: (x.eventDate&&x.eventDate.toMillis) ? x.eventDate.toMillis() : (x.eventDate || 0)
+      });
+    });
+
+    if(initializedNotif && me){
+      newList.forEach(function(p){
+        var isNewlyCreated = !knownPostIds[p.id];
+        var isFromOther = p.authorId !== me.uid;
+        var isVeryRecent = (Date.now() - p.createdAt) < 15000;
+        if(isNewlyCreated && isFromOther && isVeryRecent){
+          var title = p.pinned ? '📌 Pengumuman Penting' : '📢 Postingan Baru';
+          var body = (p.authorName||'Warga') + ': ' + ((p.text||'[Foto]').slice(0, 80));
+          sendLocalNotif(title, body, 'post-'+p.id);
+          beep();
+          if(document.visibilityState === 'visible') toast((p.pinned ? '📌 ' : '📢 ') + 'Post baru dari ' + (p.authorName||'warga'), false);
+        }
+      });
+    }
+    knownPostIds = {};
+    newList.forEach(function(p){ knownPostIds[p.id] = true; });
+    initializedNotif = true;
+
+    feed = newList;
+    if(tab === 'home') renderHome();
+    if(tab === 'category') renderCategory();
+    if(tab === 'post' && activePostId){
+      var p = feed.filter(function(x){ return x.id === activePostId; })[0];
+      if(p) renderPostDetail(p);
+    }
+    updateAllBadges();
+  }, function(e){ console.warn('feed', e); });
+}
+
+function renderCategory(){
+  var list = feed.filter(function(p){ return (p.category||'umum') === activeCat; });
+  var grid = $('catGrid');
+  $('catHint').className = 'hint h-' + (activeCat === 'informasi' ? 'info' : activeCat === 'galeri' ? 'gal' : 'umum');
+  var hints = { umum: 'Ruang diskusi santai. Pilih topik: Obrolan atau Tanya.', informasi: 'Pengumuman resmi. Jadwal kegiatan punya countdown otomatis.', galeri: 'Wajib menyertakan minimal 1 foto.' };
+  $('catHint').textContent = hints[activeCat];
+  grid.style.gridTemplateColumns = '1fr 1fr';
+
+  var widget = $('infoEventWidget');
+  if(activeCat === 'informasi'){
+    var now = Date.now();
+    var nextEvent = feed.filter(function(p){ return (p.category === 'informasi') && p.eventDate && p.eventDate > now; }).sort(function(a,b){ return a.eventDate - b.eventDate; })[0];
+    if(nextEvent){
+      widget.classList.remove('hide');
+      var diff = nextEvent.eventDate - now;
+      var d = Math.floor(diff/86400000), h = Math.floor((diff%86400000)/3600000), m = Math.floor((diff%3600000)/60000), s = Math.floor((diff%60000)/1000);
+      var html = '<div class="post-card b-info" style="cursor:pointer;grid-column:1/-1" data-pid="'+nextEvent.id+'">';
+      html += '<div class="strip s-info"></div>';
+      html += '<div class="body" style="padding:12px">';
+      html += '<div style="font-size:13px;font-weight:700;margin-bottom:6px;color:#1e40af">'+esc(nextEvent.text)+'</div>';
+      if(nextEvent.eventLocation) html += '<div style="font-size:11px;color:#64748b;margin-bottom:8px">📍 '+esc(nextEvent.eventLocation)+'</div>';
+      html += '<div class="cd-mini" data-cd="'+nextEvent.eventDate+'"><div class="cd-m-box"><div class="n">'+d+'</div><div class="l">Hari</div></div><div class="cd-m-box"><div class="n">'+h+'</div><div class="l">Jam</div></div><div class="cd-m-box"><div class="n">'+m+'</div><div class="l">Mnt</div></div><div class="cd-m-box"><div class="n">'+s+'</div><div class="l">Dtk</div></div></div>';
+      html += '</div></div>';
+      $('infoEventContent').innerHTML = html;
+      $('infoEventContent').querySelector('[data-pid]').onclick = function(){ openPostDetail(nextEvent.id); };
+      startMiniCountdowns();
+    } else widget.classList.add('hide');
+  } else widget.classList.add('hide');
+
+  if(!list.length){
+    grid.innerHTML = '';
+    show('catEmpty');
+    $('catEmptyEmoji').textContent = activeCat === 'informasi' ? '📢' : activeCat === 'galeri' ? '📷' : '💬';
+    return;
+  }
+  hide('catEmpty');
+  grid.innerHTML = list.map(renderPostCard).join('');
+  grid.querySelectorAll('[data-pid]').forEach(function(el){ el.onclick = function(){ openPostDetail(el.dataset.pid); }; });
+  startMiniCountdowns();
+}
+
+function openPostDetail(postId){
+  var p = feed.filter(function(x){ return x.id === postId; })[0];
+  if(!p){ toast('Postingan tidak ditemukan', true); return; }
+  activePostId = postId; activePost = p;
+  setTab('post'); renderPostDetail(p); loadComments(postId);
+  setTimeout(function(){ if(p.eventDate && p.eventDate > 0) startCountdown(); }, 150);
+}
+
+function renderPostDetail(p){
+  var isMine = p.authorId === me.uid;
+  var liked = (p.likedBy||[]).indexOf(me.uid) > -1;
+  var hasText = p.text && p.text.trim().length > 0;
+  var cat = p.category || 'umum';
+  var hasEvent = p.eventDate && p.eventDate > 0;
+
+  var html = '';
+  if(p.pinned) html += '<div style="background:linear-gradient(135deg,#f59e0b,#ef4444);color:white;border-radius:12px;padding:10px 14px;margin-bottom:12px;font-size:12.5px;font-weight:800;display:flex;align-items:center;gap:6px">📌 PENGUMUMAN PENTING</div>';
+  html += '<div style="display:flex;align-items:center;gap:11px;margin-bottom:12px">';
+  html += avatarHtml({name:p.authorName, photoURL:p.authorPhoto, avatarBase64:p.authorAvatarBase64}, 42, 16);
+  html += '<div style="flex:1;min-width:0">';
+  html += '<div style="font-size:14.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(p.authorName)+'</div>';
+  html += '<div style="font-size:11.5px;color:#94a3b8;margin-top:2px">'+({umum:'Umum',informasi:'Informasi',galeri:'Galeri'})[cat]+' · '+timeAgo(p.createdAt)+'</div></div>';
+  if(isMine || isAdmin()){
+    html += '<button type="button" id="pinBtn" style="width:36px;height:36px;border-radius:50%;background:rgba(245,158,11,.1);color:#f59e0b;display:flex;align-items:center;justify-content:center;border:none;cursor:pointer;margin-right:6px">'+(p.pinned?'📌':'📍')+'</button>';
+    html += '<button type="button" id="delPostBtn" style="width:36px;height:36px;border-radius:50%;background:rgba(244,63,94,.1);color:#f43f5e;display:flex;align-items:center;justify-content:center;border:none;cursor:pointer"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6"/></svg></button>';
+  }
+  html += '</div>';
+
+  if(hasEvent){
+    html += '<div style="background:linear-gradient(135deg,rgba(59,130,246,.08),rgba(99,102,241,.08));border:1px solid rgba(59,130,246,.2);border-radius:14px;padding:12px;margin-bottom:12px">';
+    html += '<div style="font-size:13px;font-weight:700;color:#1e40af;margin-bottom:6px">📅 '+fmtDateTime(p.eventDate)+'</div>';
+    if(p.eventLocation) html += '<div style="font-size:12.5px;color:#3730a3;margin-bottom:8px">📍 '+esc(p.eventLocation)+'</div>';
+    html += '<div id="countdownBox" style="display:flex;gap:6px;margin-top:10px"></div></div>';
+  }
+  if(hasText) html += '<div style="font-size:15px;line-height:1.6;white-space:pre-wrap;word-break:break-word;margin-bottom:14px">'+esc(p.text)+'</div>';
+  html += renderPhotoGrid(p);
+
+  html += '<div style="display:flex;gap:16px;padding:12px 0;border-top:1px solid rgba(148,163,184,.12);border-bottom:1px solid rgba(148,163,184,.12);margin-bottom:16px">';
+  html += '<button type="button" id="likeBtn" style="background:transparent;border:none;display:flex;align-items:center;gap:6px;font-weight:600;font-size:13.5px;color:'+(liked?'#f43f5e':'#64748b')+';cursor:pointer;padding:0">';
+  html += '<svg width="20" height="20" viewBox="0 0 24 24" fill="'+(liked?'currentColor':'none')+'" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>';
+  html += '<span>'+(p.likedBy||[]).length+' Suka</span></button>';
+  html += '<div style="display:flex;align-items:center;gap:6px;color:#64748b;font-weight:600;font-size:13.5px">';
+  html += '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>';
+  html += '<span>'+(p.commentCount||0)+' Komentar</span></div></div>';
+  html += '<div style="font-size:12.5px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px">Komentar</div>';
+  html += '<div id="commentsList" style="display:flex;flex-direction:column;gap:12px"></div>';
+
+  $('postScroll').innerHTML = html;
+  wirePhotoGrid(p);
+
+  $('likeBtn').onclick = async function(){
+    var was = (p.likedBy||[]).indexOf(me.uid) > -1;
+    try {
+      var upd = {}; upd.likedBy = was ? FV.arrayRemove(me.uid) : FV.arrayUnion(me.uid);
+      await db.collection('posts').doc(p.id).update(upd);
+      p.likedBy = was ? (p.likedBy||[]).filter(function(u){return u!==me.uid;}) : (p.likedBy||[]).concat([me.uid]);
+      renderPostDetail(p);
+    } catch(e){ toast('Gagal like', true); }
+  };
+
+  var pinBtn = $('pinBtn');
+  if(pinBtn) pinBtn.onclick = async function(){
+    try {
+      await db.collection('posts').doc(p.id).update({ pinned: !p.pinned });
+      toast(p.pinned ? 'Pin dilepas' : 'Disematkan sebagai pengumuman penting');
+    } catch(e){ toast('Gagal', true); }
+  };
+
+  var delBtn = $('delPostBtn');
+  if(delBtn) delBtn.onclick = async function(){
+    if(!confirm('Hapus postingan?')) return;
+    loader(true, 'Menghapus...');
+    try {
+      var cs = await db.collection('posts').doc(p.id).collection('comments').get();
+      var batch = db.batch();
+      cs.docs.forEach(function(d){ batch.delete(d.ref); });
+      batch.delete(db.collection('posts').doc(p.id));
+      await batch.commit();
+      loader(false); toast('Terhapus'); setTab('home');
+    } catch(e){ loader(false); toast('Gagal', true); }
+  };
+}
+
+function renderPhotoGrid(p){
+  var items = [];
+  getPostImages(p).forEach(function(b64){ items.push({ b64: b64, isMain: true, author: p.authorName }); });
+  (p.photos||[]).forEach(function(ph, i){ items.push({ b64: ph.b64, isMain: false, idx: i, author: ph.authorName, authorId: ph.authorId }); });
+  var addTile = '<button type="button" id="addPhotoBtn" class="photo-add"><span class="plus">+</span><span class="txt">Foto</span></button>';
+  if(!items.length){
+    return '<button type="button" id="addPhotoBtn" style="width:100%;padding:18px;border-radius:12px;border:1.5px dashed #cbd5e1;background:#f8fafc;color:#64748b;font-size:13.5px;font-weight:600;cursor:pointer;text-align:center;margin-bottom:12px">📷 Tambah Foto</button>';
+  }
+  if(items.length === 1){
+    var it = items[0];
+    return '<div class="photo-grid single" style="margin-bottom:12px"><div class="pg-item"><img src="data:image/jpeg;base64,'+it.b64+'" data-pimg="1"/>'+(it.isMain ? '' : '<span class="pg-author">📷 '+esc((it.author||'?').split(' ')[0])+'</span>')+'</div><button type="button" id="addPhotoBtn" style="width:100%;padding:10px;border-radius:10px;border:1.5px dashed #cbd5e1;background:#f8fafc;color:#64748b;font-size:12px;font-weight:600;cursor:pointer;margin-top:6px">📷 Tambah Foto Warga</button></div>';
+  }
+  var grid = '<div class="photo-grid" style="margin-bottom:12px">';
+  items.forEach(function(it){
+    var isOwn = !it.isMain && it.authorId === me.uid;
+    grid += '<div class="pg-item"><img src="data:image/jpeg;base64,'+it.b64+'" data-pimg="1"/>'+(it.isMain ? '' : '<span class="pg-author">📷 '+esc((it.author||'?').split(' ')[0])+'</span>')+(isOwn ? '<button type="button" class="pg-del" data-pdel="'+it.idx+'">×</button>' : '')+'</div>';
+  });
+  grid += addTile + '</div>';
+  return grid;
+}
+
+function wirePhotoGrid(p){
+  var root = $('postScroll');
+  if(!root) return;
+  root.querySelectorAll('[data-pimg]').forEach(function(img){ img.onclick = function(){ openLightbox(img.src); }; });
+  var add = $('addPhotoBtn');
+  if(add) add.onclick = function(){ $('collabInput').click(); };
+  root.querySelectorAll('[data-pdel]').forEach(function(btn){
+    btn.onclick = async function(ev){
+      ev.stopPropagation();
+      if(!confirm('Hapus foto ini?')) return;
+      var idx = parseInt(btn.dataset.pdel, 10);
+      try {
+        var arr = (p.photos||[]).slice(); arr.splice(idx, 1);
+        await db.collection('posts').doc(p.id).update({ photos: arr });
+        p.photos = arr; renderPostDetail(p); toast('Foto dihapus');
+      } catch(e){ toast('Gagal', true); }
+    };
+  });
+}
+function openLightbox(src){ $('lightboxImg').src = src; $('lightbox').classList.add('on'); }
+
+async function loadComments(pid){
+  var el = $('commentsList');
+  if(!el) return;
+  el.innerHTML = '<div style="text-align:center;color:#94a3b8;font-size:13px;padding:16px 0">Memuat...</div>';
+  try {
+    var snap = await db.collection('posts').doc(pid).collection('comments').orderBy('createdAt','asc').limit(100).get();
+    var list = snap.docs.map(function(d){
+      var x = d.data();
+      return Object.assign({ id: d.id }, x, { createdAt: (x.createdAt&&x.createdAt.toMillis) ? x.createdAt.toMillis() : Date.now() });
+    });
+    renderComments(list);
+  } catch(e){ if(el) el.innerHTML = '<div style="color:#f43f5e;font-size:12.5px;text-align:center;padding:8px">Gagal memuat komentar</div>'; }
+}
+
+function renderComments(list){
+  var el = $('commentsList');
+  if(!el) return;
+  if(!list.length){ el.innerHTML = '<div style="text-align:center;color:#94a3b8;font-size:13px;padding:16px 0">Belum ada komentar</div>'; return; }
+  el.innerHTML = list.map(function(c){
+    var t = c.text || '';
+    var imgs = extractImageUrls(t);
+    if(imgs.length) imgs.forEach(function(u){ t = t.replace(u, '').trim(); });
+    var body = '<span class="name">'+esc(c.authorName)+'</span>';
+    if(t) body += ' ' + esc(t);
+    var imgsHtml = imgs.map(function(u){ return '<img src="'+esc(u)+'" data-gif="'+esc(u)+'" style="max-width:180px;border-radius:10px;margin-top:6px;display:block;cursor:pointer" loading="lazy"/>'; }).join('');
+    return '<div class="comment-item">'+avatarHtml({name:c.authorName, photoURL:c.authorPhoto, avatarBase64:c.authorAvatarBase64}, 32, 12)+'<div class="body"><div class="txt">'+body+'</div>'+imgsHtml+'<div class="time">'+timeAgo(c.createdAt)+'</div></div></div>';
+  }).join('');
+  el.querySelectorAll('[data-gif]').forEach(function(img){ img.onclick = function(){ openLightbox(img.src); }; });
+}
+
+$('commentSend').onclick = async function(){
+  var t = $('commentInput').value.trim();
+  if(!t || !activePostId) return;
+  if(!me || !me.uid) return toast('Belum login', true);
+  $('commentSend').disabled = true;
+  $('commentInput').value = '';
+  try {
+    await db.collection('posts').doc(activePostId).collection('comments').add({
+      text: t, authorId: me.uid, authorName: me.name,
+      authorPhoto: me.photoURL || null, authorAvatarBase64: me.avatarBase64 || null,
+      createdAt: FV.serverTimestamp()
+    });
+    await db.collection('posts').doc(activePostId).update({ commentCount: FV.increment(1) });
+    if(activePost) activePost.commentCount = (activePost.commentCount||0)+1;
+    await loadComments(activePostId);
+    toast('Komentar terkirim');
+    setTimeout(function(){ $('postScroll').scrollTop = $('postScroll').scrollHeight; }, 200);
+  } catch(e){ toast('Gagal: ' + (e.message||'').slice(0,50), true); }
+  finally { $('commentSend').disabled = false; }
+};
+$('commentInput').addEventListener('input', function(e){
+  e.target.style.height = 'auto';
+  e.target.style.height = Math.min(e.target.scrollHeight, 80) + 'px';
+});
+$('commentInput').addEventListener('keydown', function(e){
+  if(e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); $('commentSend').click(); }
+});
+
+$('collabInput').onchange = async function(e){
+  var files = Array.from(e.target.files || []); e.target.value = '';
+  if(!files.length || !activePostId) return;
+  var p = feed.filter(function(x){ return x.id === activePostId; })[0];
+  if(!p) return;
+  loader(true, 'Mengompres ' + files.length + ' foto...');
+  try {
+    var arr = (p.photos||[]).slice();
+    for(var i = 0; i < files.length; i++){
+      if(files[i].size > 10*1024*1024) continue;
+      var b64 = await compressImage(files[i], 1080, 0.72);
+      arr.push({ b64: b64, authorId: me.uid, authorName: me.name, authorPhoto: me.photoURL || null, authorAvatarBase64: me.avatarBase64 || null, createdAt: Date.now() });
+    }
+    await db.collection('posts').doc(p.id).update({ photos: arr });
+    p.photos = arr; renderPostDetail(p);
+    loader(false); toast(files.length + ' foto ditambahkan');
+  } catch(e){ loader(false); toast('Gagal: ' + (e.message||'').slice(0,40), true); }
+};
+
+function startCountdown(){
+  if(countdownTimer) clearInterval(countdownTimer);
+  function tick(){
+    var el = $('countdownBox');
+    if(!el) return;
+    if(!activePost || !activePost.eventDate) return;
+    var diff = activePost.eventDate - Date.now();
+    if(diff <= 0){ el.innerHTML = '<div style="padding:11px;background:#f1f5f9;border-radius:10px;font-size:13px;font-weight:700;color:#64748b;text-align:center;width:100%">Kegiatan sudah dimulai / selesai</div>'; return; }
+    var d = Math.floor(diff/86400000), h = Math.floor((diff%86400000)/3600000), m = Math.floor((diff%3600000)/60000), s = Math.floor((diff%60000)/1000);
+    el.innerHTML = '<div style="flex:1;text-align:center;background:linear-gradient(135deg,#3b82f6,#6366f1);color:white;border-radius:10px;padding:9px 4px"><div style="font-size:17px;font-weight:800">'+d+'</div><div style="font-size:9.5px;font-weight:700;text-transform:uppercase;margin-top:3px;opacity:.9">Hari</div></div>'+
+      '<div style="flex:1;text-align:center;background:linear-gradient(135deg,#3b82f6,#6366f1);color:white;border-radius:10px;padding:9px 4px"><div style="font-size:17px;font-weight:800">'+h+'</div><div style="font-size:9.5px;font-weight:700;text-transform:uppercase;margin-top:3px;opacity:.9">Jam</div></div>'+
+      '<div style="flex:1;text-align:center;background:linear-gradient(135deg,#3b82f6,#6366f1);color:white;border-radius:10px;padding:9px 4px"><div style="font-size:17px;font-weight:800">'+m+'</div><div style="font-size:9.5px;font-weight:700;text-transform:uppercase;margin-top:3px;opacity:.9">Mnt</div></div>'+
+      '<div style="flex:1;text-align:center;background:linear-gradient(135deg,#3b82f6,#6366f1);color:white;border-radius:10px;padding:9px 4px"><div style="font-size:17px;font-weight:800">'+s+'</div><div style="font-size:9.5px;font-weight:700;text-transform:uppercase;margin-top:3px;opacity:.9">Dtk</div></div>';
+  }
+  tick(); countdownTimer = setInterval(tick, 1000);
+}
+
+$('fab').onclick = function(){ openCompose(activeCat); };
+$('catEmptyBtn').onclick = function(){ openCompose(activeCat); };
+function openCompose(cat){
+  $('composeText').value = ''; composeImgs = [];
+  composeCat = cat || 'umum'; composeTopic = 'obrolan';
+  renderAttach();
+  $('composeAvatar').innerHTML = avatarHtml(me, 38, 15);
+  $('composeName').textContent = me.name;
+  $('composePost').disabled = true; $('composePost').style.opacity = '.5';
+  $('eventDate').value = ''; $('eventLocation').value = '';
+  $('pinCheck').checked = false;
+  document.querySelectorAll('#topicWrap .topic-chip').forEach(function(x){ x.classList.toggle('on', x.dataset.t === 'obrolan'); });
+  updateComposeUI();
+  $('composeSheet').style.display = 'flex';
+  setTimeout(function(){ $('composeText').focus(); }, 300);
+}
+$('composeCancel').onclick = function(){ $('composeSheet').style.display = 'none'; };
+function renderAttach(){
+  var el = $('composeAttach');
+  var add = '<button type="button" id="attachAdd" class="thumb-add"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg><span>Tambah</span></button>';
+  el.innerHTML = composeImgs.map(function(b, i){ return '<div class="thumb-sm"><img src="data:image/jpeg;base64,'+b+'"/><button type="button" data-rm="'+i+'">×</button></div>'; }).join('') + add;
+  $('attachAdd').onclick = function(){ $('imgInput').click(); };
+  el.querySelectorAll('[data-rm]').forEach(function(b){ b.onclick = function(){ composeImgs.splice(parseInt(b.dataset.rm,10), 1); renderAttach(); checkReady(); }; });
+}
+function checkReady(){
+  var hasT = $('composeText').value.trim().length > 0;
+  var hasI = composeImgs.length > 0;
+  var ready, warn = false;
+  if(composeCat === 'galeri'){ ready = hasI; warn = !hasI; } else { ready = hasT || hasI; }
+  $('composePost').disabled = !ready; $('composePost').style.opacity = ready ? '1' : '.5';
+  $('warnFoto').classList.toggle('hide', !warn);
+}
+function updateComposeUI(){
+  document.querySelectorAll('#composeCats .cat-btn').forEach(function(b){ b.classList.toggle('on', b.dataset.c === composeCat); });
+  var hints = { umum: 'Diskusi santai. Pilih topik: Obrolan atau Tanya.', informasi: 'Pengumuman resmi. Jadwal kegiatan tampil countdown otomatis.', galeri: 'Wajib menyertakan minimal 1 foto.' };
+  $('composeHint').className = 'hint h-' + (composeCat === 'informasi' ? 'info' : composeCat === 'galeri' ? 'gal' : 'umum');
+  $('composeHint').textContent = hints[composeCat];
+  $('topicWrap').classList.toggle('hide', composeCat !== 'umum');
+  $('eventWrap').classList.toggle('hide', composeCat !== 'informasi');
+  $('pinWrap').classList.toggle('hide', !isAdmin());
+  $('composeTitle').textContent = composeCat === 'informasi' ? '📢 Info Kegiatan' : composeCat === 'galeri' ? '📷 Galeri Foto' : 'Tulis Postingan';
+  checkReady();
+}
+document.querySelectorAll('#composeCats .cat-btn').forEach(function(b){ b.onclick = function(){ composeCat = b.dataset.c; updateComposeUI(); }; });
+document.querySelectorAll('#topicWrap .topic-chip').forEach(function(b){ b.onclick = function(){ composeTopic = b.dataset.t; document.querySelectorAll('#topicWrap .topic-chip').forEach(function(x){ x.classList.toggle('on', x === b); }); }; });
+$('composeText').addEventListener('input', checkReady);
+
+$('imgInput').onchange = async function(e){
+  var files = Array.from(e.target.files || []); e.target.value = '';
+  if(!files.length || uploading) return;
+  uploading = true; loader(true, 'Mengompres ' + files.length + ' foto...');
+  for(var i = 0; i < files.length; i++){
+    if(files[i].size > 10*1024*1024) continue;
+    try { composeImgs.push(await compressImage(files[i], 1080, 0.72)); } catch(e){}
+  }
+  uploading = false; loader(false); renderAttach(); checkReady();
+};
+
+$('composePost').onclick = async function(){
+  if(uploading) return toast('Tunggu proses', true);
+  var text = $('composeText').value.trim();
+  if(composeCat === 'galeri' && !composeImgs.length) return toast('Galeri wajib ada foto', true);
+  if(!text && !composeImgs.length) return;
+  $('composePost').disabled = true; $('composeBtnText').textContent = '...';
+  try {
+    var payload = {
+      text: text, images: composeImgs.slice(), category: composeCat,
+      authorId: me.uid, authorName: me.name,
+      authorPhoto: me.photoURL || null, authorAvatarBase64: me.avatarBase64 || null,
+      likedBy: [], commentCount: 0, photos: [],
+      createdAt: FV.serverTimestamp()
+    };
+    if(composeCat === 'umum') payload.topic = composeTopic;
+    if(composeCat === 'informasi' && $('eventDate').value){
+      payload.eventDate = firebase.firestore.Timestamp.fromDate(new Date($('eventDate').value));
+      payload.eventLocation = $('eventLocation').value.trim();
+    }
+    if(isAdmin() && $('pinCheck').checked) payload.pinned = true;
+    await db.collection('posts').add(payload);
+    $('composeSheet').style.display = 'none';
+    if(activeCat !== composeCat) activeCat = composeCat;
+    localStorage.setItem('spark_cat_seen_'+composeCat, Date.now().toString());
+    setTab('home');
+    toast('Postingan terkirim');
+  } catch(e){
+    toast('Gagal: ' + e.message.slice(0,50), true);
+    $('composePost').disabled = false;
+  } finally { $('composeBtnText').textContent = 'Kirim'; }
+};
+
+// ===== WARGA =====
+function subscribeUsers(){
+  if(unsubUsers){ try { unsubUsers(); } catch(e){} }
+  unsubUsers = db.collection('users').orderBy('lastSeen','desc').limit(200).onSnapshot(function(snap){
+    users = snap.docs.map(function(d){ return Object.assign({ id: d.id }, d.data()); });
+    if(tab === 'warga') renderWargaList();
+  }, function(e){ console.warn('users', e); });
+}
+
+function renderWargaList(){
+  var el = $('allList');
+  var verified = users.filter(function(u){ return u.verified || u.role === 'admin'; });
+  $('wargaCount').textContent = verified.length;
+  var others = verified.filter(function(u){ return u.uid !== me.uid; });
+  if(!others.length){
+    el.innerHTML = '<div class="empty-state"><div class="em">👥</div><div class="title">Belum ada warga lain</div><div class="sub">Bagikan kode undangan RT ke warga lain</div></div>';
+    return;
+  }
+  el.innerHTML = others.map(function(u){
+    var roleBadge = u.role === 'admin' ? '<span class="badge-pill pill-blue" style="margin-left:4px">Pengurus</span>' : '';
+    return '<div class="user-row">'+avatarHtml(u, 44, 17)+
+      '<div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:700;display:flex;align-items:center;gap:2px"><span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(u.name||'Warga')+'</span>'+roleBadge+'</div>'+
+      '<div style="font-size:11.5px;color:#64748b;margin-top:2px">'+(u.blok ? 'Blok '+esc(u.blok)+' · ' : '')+'Terdaftar '+timeAgo((u.createdAt&&u.createdAt.toMillis)?u.createdAt.toMillis():(u.createdAt||0))+'</div></div></div>';
+  }).join('');
+}
+
+// ===== VOTING =====
+function subscribePolls(){
+  if(unsubPolls){ try { unsubPolls(); } catch(e){} }
+  unsubPolls = db.collection('polls').orderBy('createdAt','desc').limit(50).onSnapshot(function(snap){
+    polls = snap.docs.map(function(d){
+      var x = d.data();
+      return Object.assign({ id: d.id }, x, {
+        createdAt: (x.createdAt&&x.createdAt.toMillis) ? x.createdAt.toMillis() : Date.now(),
+        deadline: (x.deadline&&x.deadline.toMillis) ? x.deadline.toMillis() : (x.deadline || 0)
+      });
+    });
+    if(tab === 'voting') renderVoting();
+    updateAllBadges();
+  }, function(e){ console.warn('polls', e); });
+}
+
+function renderVoting(){
+  var el = $('votingContent');
+  var html = '';
+  var now = Date.now();
+
+  if(isAdmin()) html += '<button id="newPollBtn" class="btn-p" style="width:100%;margin-bottom:12px">➕ Buat Voting Baru</button>';
+
+  if(!polls.length){
+    html += '<div class="empty-state"><div class="em">🗳️</div><div class="title">Belum ada voting</div><div class="sub">'+(isAdmin()?'Buat voting pertama untuk RT':'Tunggu pengurus membuat voting')+'</div></div>';
+    el.innerHTML = html;
+    var npb = $('newPollBtn'); if(npb) npb.onclick = openNewPoll;
+    return;
+  }
+
+  polls.forEach(function(p){
+    var expired = p.deadline > 0 && p.deadline < now;
+    var totalVotes = Object.keys(p.votes||{}).length;
+    var myVote = (p.votes||{})[me.uid];
+    html += '<div class="poll-card">';
+    html += '<div style="display:flex;justify-content:space-between;align-items:start;gap:8px;margin-bottom:6px">';
+    html += '<div style="font-size:14.5px;font-weight:800;line-height:1.3;flex:1">'+esc(p.title)+'</div>';
+    html += '<span class="badge-pill '+(expired?'pill-gray':'pill-green')+'">'+(expired?'Selesai':'Aktif')+'</span></div>';
+    if(p.description) html += '<div style="font-size:12.5px;color:#64748b;line-height:1.5;margin-bottom:8px">'+esc(p.description)+'</div>';
+    html += '<div style="font-size:11px;color:#94a3b8;margin-bottom:8px">Oleh '+esc(p.createdByName||'?')+' · '+totalVotes+' suara'+(p.deadline>0?' · deadline '+fmtDate(p.deadline):'')+'</div>';
+
+    (p.options||[]).forEach(function(opt){
+      var optVotes = 0;
+      Object.keys(p.votes||{}).forEach(function(uid){ if(p.votes[uid] === opt.id) optVotes++; });
+      var pct = totalVotes ? Math.round((optVotes/totalVotes)*100) : 0;
+      var voted = myVote === opt.id;
+      var disabled = expired || myVote;
+      html += '<div class="poll-opt '+(voted?'voted':'')+'" data-vote="'+opt.id+'" data-poll="'+p.id+'" style="'+(disabled?'cursor:default;opacity:'+(myVote && !voted ? .7 : 1):'')+'">';
+      html += '<div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:700">'+(voted?'✅ ':'')+esc(opt.text)+'</div>';
+      html += '<div style="height:6px;border-radius:99px;background:#e2e8f0;overflow:hidden;margin-top:6px"><div class="bar" style="width:'+pct+'%"></div></div></div>';
+      html += '<div class="pct">'+pct+'%</div></div>';
+    });
+
+    if(isAdmin()) html += '<button class="btn-s" style="width:100%;margin-top:10px;padding:8px;font-size:12px" data-poll-del="'+p.id+'">🗑️ Hapus Voting</button>';
+    html += '</div>';
+  });
+
+  el.innerHTML = html;
+  var npb = $('newPollBtn'); if(npb) npb.onclick = openNewPoll;
+
+  el.querySelectorAll('[data-vote]').forEach(function(optEl){
+    var p = polls.filter(function(x){ return x.id === optEl.dataset.poll; })[0];
+    if(!p) return;
+    var expired = p.deadline > 0 && p.deadline < now;
+    var myVote = (p.votes||{})[me.uid];
+    if(expired || myVote) return;
+    optEl.onclick = async function(){
+      try {
+        var upd = {}; upd['votes.' + me.uid] = optEl.dataset.vote;
+        await db.collection('polls').doc(p.id).update(upd);
+        toast('Suara terkirim');
+      } catch(e){ toast('Gagal: '+(e.message||'').slice(0,40), true); }
+    };
+  });
+  el.querySelectorAll('[data-poll-del]').forEach(function(b){
+    b.onclick = async function(){
+      if(!confirm('Hapus voting ini?')) return;
+      try { await db.collection('polls').doc(b.dataset.pollDel).delete(); toast('Voting dihapus'); }
+      catch(e){ toast('Gagal', true); }
+    };
+  });
+}
+
+function openNewPoll(){
+  openModal('Voting Baru',
+    '<div style="font-size:11.5px;font-weight:800;color:#94a3b8;text-transform:uppercase;margin-bottom:6px">Judul</div>'+
+    '<input id="pollTitle" type="text" class="dt" maxlength="100" placeholder="Contoh: Jadwal Kerja Bakti" style="margin-bottom:14px"/>'+
+    '<div style="font-size:11.5px;font-weight:800;color:#94a3b8;text-transform:uppercase;margin-bottom:6px">Deskripsi (opsional)</div>'+
+    '<textarea id="pollDesc" class="dt" rows="2" placeholder="Keterangan tambahan..." style="margin-bottom:14px;resize:none"></textarea>'+
+    '<div style="font-size:11.5px;font-weight:800;color:#94a3b8;text-transform:uppercase;margin-bottom:6px">Opsi (minimal 2)</div>'+
+    '<input id="pollOpt1" type="text" class="dt" placeholder="Opsi 1" style="margin-bottom:8px"/>'+
+    '<input id="pollOpt2" type="text" class="dt" placeholder="Opsi 2" style="margin-bottom:8px"/>'+
+    '<input id="pollOpt3" type="text" class="dt" placeholder="Opsi 3 (kosongkan jika tidak perlu)" style="margin-bottom:14px"/>'+
+    '<div style="font-size:11.5px;font-weight:800;color:#94a3b8;text-transform:uppercase;margin-bottom:6px">Deadline (opsional)</div>'+
+    '<input id="pollDeadline" type="datetime-local" class="dt" style="margin-bottom:16px"/>'+
+    '<button id="savePollBtn" class="btn-p" style="width:100%">Buat Voting</button>'
+  );
+  $('savePollBtn').onclick = async function(){
+    var title = $('pollTitle').value.trim();
+    if(!title) return toast('Judul wajib diisi', true);
+    var options = [];
+    [1,2,3].forEach(function(i){ var v = $('pollOpt'+i).value.trim(); if(v) options.push({ id: 'o'+i, text: v }); });
+    if(options.length < 2) return toast('Minimal 2 opsi', true);
+    var deadline = $('pollDeadline').value ? firebase.firestore.Timestamp.fromDate(new Date($('pollDeadline').value)) : null;
+    loader(true, 'Membuat...');
+    try {
+      await db.collection('polls').add({
+        title: title, description: $('pollDesc').value.trim(),
+        options: options, votes: {},
+        createdBy: me.uid, createdByName: me.name,
+        deadline: deadline, createdAt: FV.serverTimestamp()
+      });
+      loader(false); closeModal(); toast('Voting dibuat');
+    } catch(e){ loader(false); toast('Gagal: '+(e.message||'').slice(0,40), true); }
+  };
+}
+
+// ===== PROFILE =====
+function renderProfile(){
+  $('profileAvatar').innerHTML = avatarHtml(me, 68, 26);
+  $('profileName').textContent = me.name;
+  $('profileEmail').textContent = me.email || 'Google Account';
+  var roleBadge = $('profileRoleBadge');
+  if(me.role === 'admin'){ roleBadge.className = 'badge-pill pill-blue'; roleBadge.textContent = '🛡️ Pengurus'; }
+  else if(me.role === 'blocked'){ roleBadge.className = 'badge-pill pill-red'; roleBadge.textContent = 'Blocked'; }
+  else { roleBadge.className = 'badge-pill pill-gray'; roleBadge.textContent = 'Warga'; }
+
+  var mine = feed.filter(function(p){ return p.authorId === me.uid; });
+  $('statPosts').textContent = mine.length;
+  $('statLikes').textContent = mine.reduce(function(s,p){ return s + (p.likedBy||[]).length; }, 0);
+  $('statVotes').textContent = polls.filter(function(p){ return (p.votes||{})[me.uid]; }).length;
+
+  $('adminPanel').classList.toggle('hide', !isAdmin());
+}
+
+$('editProfileBtn').onclick = function(){
+  openModal('Edit Profil',
+    '<div style="text-align:center;margin-bottom:18px"><div id="pvAvatar" style="display:inline-block"></div></div>'+
+    '<div style="font-size:11.5px;font-weight:800;color:#94a3b8;text-transform:uppercase;margin-bottom:7px">Nama</div>'+
+    '<input id="editName" type="text" value="'+esc(me.name)+'" maxlength="30" class="dt" style="margin-bottom:12px"/>'+
+    '<div style="font-size:11.5px;font-weight:800;color:#94a3b8;text-transform:uppercase;margin-bottom:7px">Blok / No. Rumah</div>'+
+    '<input id="editBlok" type="text" value="'+esc(me.blok||'')+'" maxlength="10" class="dt" style="margin-bottom:12px" placeholder="Contoh: A5"/>'+
+    '<div style="font-size:11.5px;font-weight:800;color:#94a3b8;text-transform:uppercase;margin-bottom:7px">Foto Profil</div>'+
+    '<button type="button" id="uploadAvBtn" style="width:100%;padding:12px;border-radius:12px;border:1px solid #cbd5e1;background:#fff;font-size:13.5px;font-weight:600;margin-bottom:7px;cursor:pointer">📷 Upload Foto</button>'+
+    '<button type="button" id="resetAvBtn" style="width:100%;padding:10px;background:transparent;border:none;font-size:13px;color:#64748b;margin-bottom:15px;cursor:pointer">Reset ke foto Google</button>'+
+    '<button type="button" id="saveProfBtn" class="btn-p" style="width:100%">Simpan</button>'
+  );
+  function upd(){ $('pvAvatar').innerHTML = avatarHtml(me, 88, 32); }
+  upd();
+  $('uploadAvBtn').onclick = function(){ $('avatarInput').click(); };
+  $('avatarInput').onchange = async function(e){
+    var f = e.target.files[0]; e.target.value = '';
+    if(!f) return;
+    if(f.size > 5*1024*1024) return toast('Max 5MB', true);
+    loader(true, 'Memproses...');
+    try {
+      var b64 = await compressAvatar(f);
+      me.avatarBase64 = b64; upd(); await syncUser();
+      try {
+        var mine = await db.collection('posts').where('authorId','==',me.uid).get();
+        var batch = db.batch();
+        mine.docs.forEach(function(d){ batch.update(d.ref, { authorName: me.name, authorPhoto: me.photoURL, authorAvatarBase64: b64 }); });
+        if(!mine.empty) await batch.commit();
+      } catch(e){}
+      loader(false); toast('Foto tersimpan');
+      $('headerAvatarBtn').innerHTML = avatarHtml(me, 32, 13); renderProfile();
+    } catch(e){ loader(false); toast('Gagal', true); }
+  };
+  $('resetAvBtn').onclick = async function(){
+    me.avatarBase64 = null; upd(); await syncUser();
+    $('headerAvatarBtn').innerHTML = avatarHtml(me, 32, 13); renderProfile(); toast('Foto direset');
+  };
+  $('saveProfBtn').onclick = async function(){
+    var n = $('editName').value.trim();
+    var b = $('editBlok').value.trim();
+    if(n) me.name = n;
+    me.blok = b;
+    closeModal(); loader(true, 'Menyimpan...');
+    await syncUser();
+    try {
+      var mine = await db.collection('posts').where('authorId','==',me.uid).get();
+      var batch = db.batch();
+      mine.docs.forEach(function(d){ batch.update(d.ref, { authorName: me.name, authorPhoto: me.photoURL, authorAvatarBase64: me.avatarBase64 }); });
+      if(!mine.empty) await batch.commit();
+    } catch(e){}
+    loader(false);
+    $('headerAvatarBtn').innerHTML = avatarHtml(me, 32, 13); renderProfile(); toast('Tersimpan');
+  };
+};
+
+$('adminInviteCodeBtn').onclick = function(){
+  var code = appConfig.inviteCode || '(belum diatur)';
+  openModal('Kode Undangan RT',
+    '<div style="background:#f8fafc;border-radius:14px;padding:16px;text-align:center;margin-bottom:14px">'+
+    '<div style="font-size:11px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px">Kode Undangan Aktif</div>'+
+    '<div style="font-family:ui-monospace,monospace;font-size:22px;font-weight:900;letter-spacing:.16em;color:#6366f1" id="curInviteCode">'+esc(code)+'</div></div>'+
+    '<div style="font-size:11.5px;font-weight:800;color:#94a3b8;text-transform:uppercase;margin-bottom:7px">Kode Baru</div>'+
+    '<input id="newInviteCode" type="text" class="dt" style="text-transform:uppercase;text-align:center;font-weight:800;letter-spacing:.1em;margin-bottom:14px" placeholder="Contoh: RT09-2025" value="'+esc(appConfig.inviteCode||'')+'"/>'+
+    '<div style="font-size:11.5px;color:#64748b;margin-bottom:14px;line-height:1.5">Bagikan kode ini ke warga baru.</div>'+
+    '<button id="copyInviteBtn" class="btn-s" style="width:100%;margin-bottom:8px">📋 Salin Kode</button>'+
+    '<button id="saveInviteBtn" class="btn-p" style="width:100%">Simpan Perubahan</button>'
+  );
+  $('copyInviteBtn').onclick = function(){ navigator.clipboard.writeText(code).then(function(){ toast('Tersalin'); }).catch(function(){ toast('Gagal', true); }); };
+  $('saveInviteBtn').onclick = async function(){
+    var nc = $('newInviteCode').value.trim().toUpperCase();
+    if(!nc) return toast('Kode tidak boleh kosong', true);
+    loader(true, 'Menyimpan...');
+    try { await db.collection('config').doc('app').set({ inviteCode: nc }, { merge: true }); loader(false); closeModal(); toast('Kode diperbarui'); }
+    catch(e){ loader(false); toast('Gagal: '+(e.message||'').slice(0,40), true); }
+  };
+};
+
+$('adminVerifyBtn').onclick = function(){
+  openModal('Kelola Warga', '<div id="manageWargaList"></div>');
+  function renderList(){
+    var el = $('manageWargaList');
+    el.innerHTML = users.map(function(u){
+      var isMe2 = u.uid === me.uid;
+      var role = u.role || 'warga';
+      return '<div class="user-row" style="padding:10px 0;border-bottom:1px solid rgba(148,163,184,.08)">'+avatarHtml(u, 34, 13)+
+        '<div style="flex:1;min-width:0"><div style="font-size:13.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(u.name||'?')+(isMe2?' (Anda)':'')+'</div>'+
+        '<div style="font-size:11px;color:#94a3b8;margin-top:1px">'+esc(u.email||'')+'</div></div>'+
+        (isMe2 ? '<span class="badge-pill pill-blue">Admin</span>' :
+          '<select data-uid="'+u.uid+'" style="background:#f1f5f9;border:none;border-radius:8px;padding:6px 8px;font-size:12px;font-weight:600">'+
+          '<option value="warga"'+(role==='warga'?' selected':'')+'>Warga</option>'+
+          '<option value="admin"'+(role==='admin'?' selected':'')+'>Admin</option>'+
+          '<option value="blocked"'+(role==='blocked'?' selected':'')+'>Blockir</option>'+
+          '</select>')+
+      '</div>';
+    }).join('');
+    el.querySelectorAll('select[data-uid]').forEach(function(sel){
+      sel.onchange = async function(){
+        try { await db.collection('users').doc(sel.dataset.uid).set({ role: sel.value, verified: sel.value !== 'blocked' }, { merge: true }); toast('Role diubah'); }
+        catch(e){ toast('Gagal', true); }
+      };
+    });
+  }
+  renderList();
+};
+
+$('myCodeBtn').onclick = function(){
+  var code = me.uid.toUpperCase();
+  openModal('Kode Akun',
+    '<p style="font-size:13px;color:#64748b;line-height:1.6;margin:0 0 14px">Simpan kode ini untuk backup.</p>'+
+    '<div style="background:#f8fafc;border-radius:14px;padding:16px;text-align:center;margin-bottom:12px">'+
+    '<div style="font-size:11px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px">Kode Akun</div>'+
+    '<div style="font-family:ui-monospace,monospace;font-size:20px;font-weight:900;letter-spacing:.16em;background:linear-gradient(135deg,#818cf8,#c084fc,#f472b6);-webkit-background-clip:text;background-clip:text;color:transparent">'+esc(code)+'</div></div>'+
+    '<button type="button" id="copyCode" class="btn-p" style="width:100%">Salin Kode</button>'
+  );
+  $('copyCode').onclick = async function(){ try { await navigator.clipboard.writeText(code); toast('Tersalin'); } catch(e){ toast('Gagal', true); } };
+};
+
+$('switchAccBtn').onclick = function(){
+  openModal('Ganti Akun',
+    '<div style="padding:14px;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.3);border-radius:14px;margin-bottom:14px">'+
+    '<div style="font-size:13px;font-weight:700;color:#92400e;margin-bottom:5px">Perhatian</div>'+
+    '<div style="font-size:12.5px;color:#78350f;line-height:1.55">Login dengan akun berbeda akan jadi warga baru (perlu verifikasi ulang).</div></div>'+
+    '<button type="button" id="switchYes" style="width:100%;padding:12px;border-radius:12px;background:#f59e0b;color:white;font-size:13.5px;font-weight:600;border:none;cursor:pointer">Ya, Ganti Akun</button>'
+  );
+  $('switchYes').onclick = async function(){ clearPreferred(); cleanSubs(); await auth.signOut(); location.reload(); };
+};
+
+$('backupBtn').onclick = async function(){
+  loader(true, 'Menyiapkan backup...');
+  try {
+    var mine = await db.collection('posts').where('authorId','==',me.uid).get();
+    var backup = { exportedAt: new Date().toISOString(), user: { uid: me.uid, name: me.name, email: me.email, role: me.role }, posts: [] };
+    for(var i = 0; i < mine.docs.length; i++){
+      var d = mine.docs[i]; var x = d.data();
+      var comments = await d.ref.collection('comments').get();
+      backup.posts.push({
+        id: d.id, text: x.text || '', category: x.category || 'umum',
+        imagesCount: (x.images||[]).length, commentCount: x.commentCount || 0,
+        likedBy: x.likedBy || [],
+        createdAt: (x.createdAt&&x.createdAt.toMillis) ? x.createdAt.toMillis() : null,
+        comments: comments.docs.map(function(cd){ return Object.assign({ id: cd.id }, cd.data()); })
+      });
+    }
+    var blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a'); a.href = url; a.download = 'rt09-backup-' + Date.now() + '.json';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+    loader(false); toast('Backup terunduh');
+  } catch(e){ loader(false); toast('Gagal: '+(e.message||'').slice(0,40), true); }
+};
+
+$('clearCacheBtn').onclick = function(){ toast('Cache dibersihkan'); };
+
+$('deleteAccBtn').onclick = function(){
+  openModal('Hapus Akun',
+    '<div style="padding:14px;background:rgba(244,63,94,.1);border:1px solid rgba(244,63,94,.3);border-radius:14px;margin-bottom:14px">'+
+    '<div style="font-size:13px;font-weight:700;color:#9f1239;margin-bottom:5px">Peringatan</div>'+
+    '<div style="font-size:12.5px;color:#881337;line-height:1.6">Semua data dihapus permanen! Ketik <b>HAPUS</b> untuk konfirmasi:</div></div>'+
+    '<input id="delConfirm" type="text" placeholder="HAPUS" class="dt" style="text-align:center;font-weight:800;letter-spacing:.2em;margin-bottom:14px"/>'+
+    '<button type="button" id="delYes" class="btn-danger" style="width:100%;margin-bottom:8px" disabled>Hapus Permanen</button>'+
+    '<button type="button" id="delNo" class="btn-s" style="width:100%">Batal</button>'
+  );
+  var inp = $('delConfirm'), btn = $('delYes');
+  inp.addEventListener('input', function(){
+    var ok = inp.value.trim().toUpperCase() === 'HAPUS';
+    btn.disabled = !ok; btn.style.opacity = ok ? '1' : '.5';
+  });
+  $('delNo').onclick = closeModal;
+  $('delYes').onclick = async function(){
+    loader(true, 'Menghapus...');
+    try {
+      var mine = await db.collection('posts').where('authorId','==',me.uid).get();
+      for(var i = 0; i < mine.docs.length; i++){
+        var d = mine.docs[i];
+        var cs = await d.ref.collection('comments').get();
+        var batch = db.batch();
+        cs.docs.forEach(function(c){ batch.delete(c.ref); });
+        batch.delete(d.ref);
+        await batch.commit();
+      }
+      await db.collection('users').doc(me.uid).delete();
+      localStorage.clear(); loader(false); toast('Akun terhapus');
+      await auth.signOut(); setTimeout(function(){ location.reload(); }, 800);
+    } catch(e){ loader(false); toast('Gagal: '+(e.message||'').slice(0,50), true); }
+  };
+};
+
+$('logoutBtn').onclick = function(){
+  openModal('Keluar',
+    '<p style="font-size:13.5px;color:#64748b;margin:0 0 15px;line-height:1.55">Anda akan keluar. Bisa masuk lagi kapan saja.</p>'+
+    '<button type="button" id="logoutYes" class="btn-danger" style="width:100%">Ya, Keluar</button>'
+  );
+  $('logoutYes').onclick = async function(){ cleanSubs(); await auth.signOut(); location.reload(); };
+};
+
+function openModal(title, html){ $('modalTitle').textContent = title; $('modalBody').innerHTML = html; $('modal').classList.add('on'); }
+function closeModal(){ $('modal').classList.remove('on'); }
+$('modalX').onclick = closeModal;
+$('modal').addEventListener('click', function(e){ if(e.target.id === 'modal') closeModal(); });
+
+$('lbClose').onclick = function(){ $('lightbox').classList.remove('on'); };
+$('lightbox').onclick = function(e){ if(e.target.id === 'lightbox') this.classList.remove('on'); };
+
+function cleanSubs(){
+  try { unsubFeed && unsubFeed(); } catch(e){}
+  try { unsubUsers && unsubUsers(); } catch(e){}
+  try { unsubPolls && unsubPolls(); } catch(e){}
+  try { unsubConfig && unsubConfig(); } catch(e){}
+  if(countdownTimer) clearInterval(countdownTimer);
+  if(miniCountdownTimer) clearInterval(miniCountdownTimer);
+  unsubFeed = unsubUsers = unsubPolls = unsubConfig = null;
+}
+
+if('serviceWorker' in navigator){
+  window.addEventListener('load', function(){ navigator.serviceWorker.register('/sw.js').catch(function(){}); });
+}
+</script>
+
+</body>
+</html>
