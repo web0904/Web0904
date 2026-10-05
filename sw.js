@@ -1,8 +1,10 @@
-const CACHE = 'rt09rw04-v5';
+const CACHE = 'rt09rw04-v6';
 const ASSETS = [
-  '/manifest.json',
-  '/icon-192.png',
-  '/icon-512.png',
+  './',
+  './index.html',
+  './manifest.json',
+  './icon-192.png',
+  './icon-512.png',
   'https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js',
   'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js',
   'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js'
@@ -30,8 +32,14 @@ self.addEventListener('activate', function(e) {
 self.addEventListener('fetch', function(e) {
   if (e.request.method !== 'GET') return;
   var url = new URL(e.request.url);
-  // HTML & JSON → selalu ambil dari network dulu (network-first)
-  if (url.origin === location.origin && (url.pathname === '/' || url.pathname.indexOf('.html') > -1 || url.pathname.indexOf('.json') > -1)) {
+  
+  // Skip request ke Firebase Auth (harus selalu ke network)
+  if (url.hostname.indexOf('identitytoolkit') > -1 || url.hostname.indexOf('securetoken') > -1) {
+    return;
+  }
+  
+  // HTML & JSON → network-first
+  if (url.origin === location.origin && (url.pathname.endsWith('/') || url.pathname.indexOf('.html') > -1 || url.pathname.indexOf('.json') > -1)) {
     e.respondWith(
       fetch(e.request).then(function(res) {
         var clone = res.clone();
@@ -43,6 +51,7 @@ self.addEventListener('fetch', function(e) {
     );
     return;
   }
+  
   // Asset statis → cache-first
   e.respondWith(
     caches.match(e.request).then(function(cached) {
