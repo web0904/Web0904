@@ -8,10 +8,10 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="RT09RW04">
 <title>RT09RW04 · Candisari Wonotingal</title>
-<link rel="manifest" href="./manifest.json">
-<link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
-<link rel="icon" type="image/png" sizes="512x512" href="./icon-512.png">
-<link rel="apple-touch-icon" href="./icon-192.png">
+<link rel="manifest" href="/Web09/manifest.json">
+<link rel="icon" type="image/png" sizes="192x192" href="/Web09/icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="/Web09/icon-512.png">
+<link rel="apple-touch-icon" href="/Web09/icon-192.png">
 <style>
 *{-webkit-tap-highlight-color:transparent;box-sizing:border-box}
 html,body{height:100%;overscroll-behavior:none}
@@ -764,7 +764,7 @@ $('notifBtn').onclick = function(){
 function sendLocalNotif(title, body, tag){
   if(!('Notification' in window)) return;
   if(Notification.permission !== 'granted') return;
-  try { new Notification(title, { body: body, tag: tag, icon: './icon-192.png', badge: './icon-192.png' }); } catch(e){}
+  try { new Notification(title, { body: body, tag: tag, icon: '/Web09/icon-192.png', badge: '/Web09/icon-192.png' }); } catch(e){}
 }
 
 function setTab(t){
@@ -1845,10 +1845,10 @@ function cleanSubs(){
   unsubFeed = unsubUsers = unsubPolls = unsubConfig = null;
 }
 
-// === SERVICE WORKER REGISTER (path relative untuk GitHub Pages) ===
+// === SERVICE WORKER REGISTER (perbaikan untuk GitHub Pages subpath) ===
 if('serviceWorker' in navigator){
   window.addEventListener('load', function(){
-    navigator.serviceWorker.register('./sw.js', { scope: './' }).then(function(reg){
+    navigator.serviceWorker.register('/Web09/sw.js', { scope: '/Web09/' }).then(function(reg){
       console.log('SW registered:', reg.scope);
     }).catch(function(err){
       console.warn('SW failed:', err);
