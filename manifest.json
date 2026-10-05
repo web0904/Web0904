@@ -2,39 +2,34 @@
   "name": "RT09RW04 · Candisari Wonotingal",
   "short_name": "RT09RW04",
   "description": "Aplikasi komunitas warga RT09 RW04 Candisari Wonotingal",
-  "id": "/Web09/",
-  "start_url": "/Web09/index.html",
-  "scope": "/Web09/",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
-  "display_override": ["standalone", "minimal-ui"],
   "orientation": "portrait",
   "background_color": "#f8fafc",
   "theme_color": "#6366f1",
   "lang": "id",
-  "dir": "ltr",
-  "categories": ["social", "community"],
-  "prefer_related_applications": false,
   "icons": [
     {
-      "src": "/Web09/icon-192.png",
+      "src": "./icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/Web09/icon-192.png",
+      "src": "./icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "maskable"
     },
     {
-      "src": "/Web09/icon-512.png",
+      "src": "./icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/Web09/icon-512.png",
+      "src": "./icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
