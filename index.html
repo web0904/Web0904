@@ -15,7 +15,7 @@
 <style>
 *{-webkit-tap-highlight-color:transparent;box-sizing:border-box}
 html,body{height:100%;overscroll-behavior:none}
-body{height:100dvh;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;position:fixed;width:100%;overflow:hidden;font-size:15px;line-height:1.5;margin:0;padding:0;background:#f8fafc;color:#0f172a}
+body{height:100dvh;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Inter',sans-serif;position:fixed;width:100%;overflow:hidden;font-size:15px;line-height:1.5;margin:0;padding:0;background:#f5f7fb;color:#0b1220;-webkit-font-smoothing:antialiased}
 input,textarea,select{font-size:16px!important}
 .safe-t{padding-top:env(safe-area-inset-top,0px)}
 .safe-b{padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -26,240 +26,269 @@ input,textarea,select{font-size:16px!important}
 @keyframes spin{to{transform:rotate(360deg)}}
 .spin{animation:spin .7s linear infinite}
 @keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
-.fade{animation:fade .4s ease both}
-@keyframes pop{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:scale(1)}}
-.pop{animation:pop .25s ease both}
-@keyframes badgePulse{0%{transform:scale(1)}50%{transform:scale(1.1)}100%{transform:scale(1)}}
-@keyframes floatIn{from{opacity:0;transform:translateY(30px) scale(.96)}to{opacity:1;transform:none}}
-@keyframes slowSpin{to{transform:rotate(360deg)}}
-.grad-anim{background:linear-gradient(90deg,#6366f1,#a855f7,#ec4899,#6366f1);background-size:200% 100%;animation:grad 2s linear infinite}
+.fade{animation:fade .4s cubic-bezier(.22,1,.36,1) both}
+@keyframes pop{0%{opacity:0;transform:scale(.85)}60%{transform:scale(1.05)}100%{opacity:1;transform:scale(1)}}
+.pop{animation:pop .3s cubic-bezier(.34,1.56,.64,1) both}
+@keyframes badgePulse{0%,100%{transform:scale(1)}50%{transform:scale(1.14)}}
+@keyframes floatIn{from{opacity:0;transform:translateY(30px) scale(.94)}to{opacity:1;transform:none}}
 @keyframes grad{to{background-position:200% 0}}
-.btn-p{background:linear-gradient(135deg,#6366f1,#a855f7,#ec4899);color:white;font-weight:700;border:none;cursor:pointer;border-radius:12px;padding:12px 16px;font-size:14px;transition:transform .15s, box-shadow .2s;box-shadow:0 4px 14px -6px rgba(99,102,241,.6)}
-.btn-p:active{transform:scale(.97)}
-.btn-p:disabled{opacity:.5;cursor:not-allowed}
-.btn-s{background:#f1f5f9;color:#0f172a;font-weight:600;border:none;cursor:pointer;border-radius:12px;padding:12px 16px;font-size:14px}
+@keyframes shine{0%{background-position:-200% center}100%{background-position:200% center}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes pulseRing{0%{box-shadow:0 0 0 0 rgba(99,102,241,.55)}70%{box-shadow:0 0 0 16px rgba(99,102,241,0)}100%{box-shadow:0 0 0 0 rgba(99,102,241,0)}}
+@keyframes ringRotate{to{transform:rotate(360deg)}}
+@keyframes meshMove{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(30px,-20px) scale(1.1)}66%{transform:translate(-20px,20px) scale(.95)}}
+@keyframes sheetUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+@keyframes toastIn{from{opacity:0;transform:translateY(30px) scale(.9)}to{opacity:1;transform:none}}
+.grad-anim{background:linear-gradient(90deg,#6366f1,#a855f7,#ec4899,#6366f1);background-size:200% 100%;animation:grad 2.4s linear infinite}
+.btn-p{background:linear-gradient(135deg,#6366f1 0%,#8b5cf6 50%,#ec4899 100%);color:white;font-weight:700;border:none;cursor:pointer;border-radius:14px;padding:13px 18px;font-size:14px;transition:transform .15s cubic-bezier(.34,1.56,.64,1),box-shadow .25s,filter .2s;box-shadow:0 6px 20px -8px rgba(99,102,241,.7),inset 0 1px 0 rgba(255,255,255,.2);letter-spacing:.01em;position:relative;overflow:hidden}
+.btn-p::after{content:'';position:absolute;inset:0;background:linear-gradient(120deg,transparent 30%,rgba(255,255,255,.28) 50%,transparent 70%);background-size:200% 100%;animation:shine 3s linear infinite;pointer-events:none}
+.btn-p:active{transform:scale(.97);filter:brightness(.96)}
+.btn-p:disabled{opacity:.5;cursor:not-allowed;box-shadow:none}
+.btn-p:disabled::after{display:none}
+.btn-s{background:#f1f5f9;color:#0f172a;font-weight:600;border:none;cursor:pointer;border-radius:14px;padding:13px 18px;font-size:14px;transition:transform .15s}
 .btn-s:active{transform:scale(.97)}
-.btn-danger{background:#f43f5e;color:white;font-weight:600;border:none;cursor:pointer;border-radius:12px;padding:12px 16px;font-size:14px}
-.card{background:#fff;border-radius:14px;border:1px solid rgba(148,163,184,.12);padding:16px}
+.btn-danger{background:linear-gradient(135deg,#f43f5e,#e11d48);color:white;font-weight:700;border:none;cursor:pointer;border-radius:14px;padding:13px 18px;font-size:14px;box-shadow:0 6px 20px -8px rgba(244,63,94,.6)}
+.card{background:#fff;border-radius:18px;border:1px solid rgba(148,163,184,.1);padding:16px;box-shadow:0 1px 3px rgba(15,23,42,.03),0 8px 24px -12px rgba(15,23,42,.08)}
 body.dark{background:#070b14;color:#e2e8f0}
-body.dark .card{background:#111a2e;border-color:rgba(255,255,255,.06)}
-.header{background:rgba(248,250,252,.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid rgba(148,163,184,.15);flex-shrink:0}
-body.dark .header{background:rgba(7,11,20,.85);border-color:rgba(255,255,255,.05)}
-.nav{background:rgba(255,255,255,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid rgba(148,163,184,.15);flex-shrink:0}
-body.dark .nav{background:rgba(7,11,20,.92);border-color:rgba(255,255,255,.05)}
-.nav-btn{display:flex;flex-direction:column;align-items:center;gap:3px;padding:7px 3px;background:transparent;border:none;cursor:pointer;position:relative}
-.nav-btn:active{transform:scale(.92)}
-.nav-btn svg{color:#94a3b8;transition:color .2s}
-.nav-btn span{color:#94a3b8;font-size:10px;font-weight:600;transition:color .2s}
-.nav-btn.on svg{color:#6366f1}
+body.dark .card{background:#101a2e;border-color:rgba(255,255,255,.06);box-shadow:0 8px 24px -12px rgba(0,0,0,.5)}
+.header{background:rgba(245,247,251,.78);backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);border-bottom:1px solid rgba(148,163,184,.12);flex-shrink:0;z-index:15;position:relative}
+body.dark .header{background:rgba(7,11,20,.78);border-color:rgba(255,255,255,.05)}
+.nav{background:rgba(255,255,255,.86);backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);border-top:1px solid rgba(148,163,184,.12);flex-shrink:0;position:relative}
+body.dark .nav{background:rgba(7,11,20,.86);border-color:rgba(255,255,255,.05)}
+.nav-btn{display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 3px;background:transparent;border:none;cursor:pointer;position:relative;transition:transform .2s}
+.nav-btn:active{transform:scale(.9)}
+.nav-btn svg{color:#94a3b8;transition:color .25s,transform .3s cubic-bezier(.34,1.56,.64,1)}
+.nav-btn span{color:#94a3b8;font-size:10px;font-weight:600;transition:color .25s}
+.nav-btn.on svg{color:#6366f1;transform:translateY(-1px) scale(1.08)}
 .nav-btn.on span{color:#6366f1;font-weight:800}
-.nav-badge{position:absolute;top:-2px;right:calc(50% - 24px);min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:linear-gradient(135deg,#f43f5e,#e11d48);color:white;font-size:9.5px;font-weight:800;display:none;align-items:center;justify-content:center;border:2px solid #fff;box-shadow:0 3px 10px -2px rgba(244,63,94,.7);letter-spacing:-.02em;z-index:10}
-.nav-badge.on{display:flex;animation:pop .3s ease both, badgePulse 2.2s ease-in-out infinite}
-.fab{position:fixed;bottom:calc(env(safe-area-inset-bottom,0px) + 76px);right:16px;width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#6366f1,#a855f7,#ec4899);color:white;border:none;cursor:pointer;box-shadow:0 8px 24px -4px rgba(99,102,241,.5);display:flex;align-items:center;justify-content:center;z-index:25;transition:transform .2s}
-.fab:active{transform:scale(.9)}
-.cat-tile{border-radius:16px;padding:15px 16px;cursor:pointer;color:white;display:flex;align-items:center;gap:14px;min-height:100px;box-shadow:0 4px 14px -6px rgba(0,0,0,.25);position:relative;transition:transform .15s}
+.nav-btn.on::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:22px;height:3px;border-radius:0 0 3px 3px;background:linear-gradient(90deg,#6366f1,#a855f7);box-shadow:0 2px 8px rgba(99,102,241,.6)}
+.nav-badge{position:absolute;top:-1px;right:calc(50% - 26px);min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:linear-gradient(135deg,#f43f5e,#e11d48);color:white;font-size:9.5px;font-weight:800;display:none;align-items:center;justify-content:center;border:2px solid #fff;box-shadow:0 3px 10px -2px rgba(244,63,94,.8);letter-spacing:-.02em;z-index:10}
+body.dark .nav-badge{border-color:#0f172a}
+.nav-badge.on{display:flex;animation:pop .3s cubic-bezier(.34,1.56,.64,1) both,badgePulse 2.2s ease-in-out infinite}
+.fab{position:fixed;bottom:calc(env(safe-area-inset-bottom,0px) + 78px);right:16px;width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#6366f1,#8b5cf6,#ec4899);color:white;border:none;cursor:pointer;box-shadow:0 10px 28px -6px rgba(99,102,241,.65),inset 0 1px 0 rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;z-index:25;transition:transform .2s cubic-bezier(.34,1.56,.64,1);animation:pulseRing 2.4s ease-out infinite}
+.fab:active{transform:scale(.88) rotate(90deg)}
+.cat-tile{border-radius:22px;padding:18px;cursor:pointer;color:white;display:flex;align-items:center;gap:14px;min-height:112px;box-shadow:0 10px 26px -10px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.2);position:relative;overflow:hidden;transition:transform .18s cubic-bezier(.34,1.56,.64,1),box-shadow .25s}
+.cat-tile::before{content:'';position:absolute;top:-50%;right:-30%;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.15),transparent 70%);pointer-events:none}
+.cat-tile::after{content:'';position:absolute;bottom:-40%;left:-20%;width:140px;height:140px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.1),transparent 70%);pointer-events:none}
 .cat-tile:active{transform:scale(.97)}
-.cat-tile .icon{width:48px;height:48px;border-radius:14px;background:rgba(255,255,255,.22);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
-.g-umum{background:linear-gradient(135deg,#64748b,#475569)}
-.g-info{background:linear-gradient(135deg,#3b82f6,#6366f1)}
-.g-gal{background:linear-gradient(135deg,#ec4899,#f43f5e)}
-.cat-badge{position:absolute;top:10px;right:10px;min-width:22px;height:22px;padding:0 7px;border-radius:11px;background:linear-gradient(135deg,#f43f5e,#e11d48);color:white;font-size:11px;font-weight:800;display:none;align-items:center;justify-content:center;border:2px solid rgba(255,255,255,.9);box-shadow:0 3px 10px -2px rgba(244,63,94,.7);z-index:5;letter-spacing:-.02em}
-.cat-badge.on{display:flex;animation:pop .3s ease both, badgePulse 2s ease-in-out infinite}
-.cat-detail{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}
-.cat-detail .chip{padding:3px 8px;border-radius:8px;background:rgba(255,255,255,.22);font-size:10px;font-weight:700;display:inline-flex;align-items:center;gap:3px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.2)}
+.cat-tile .icon{width:52px;height:52px;border-radius:16px;background:rgba(255,255,255,.22);display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.2);box-shadow:inset 0 1px 0 rgba(255,255,255,.3)}
+.g-umum{background:linear-gradient(135deg,#64748b 0%,#475569 55%,#334155 100%)}
+.g-info{background:linear-gradient(135deg,#3b82f6 0%,#6366f1 55%,#8b5cf6 100%)}
+.g-gal{background:linear-gradient(135deg,#ec4899 0%,#f43f5e 55%,#ef4444 100%)}
+.cat-badge{position:absolute;top:12px;right:12px;min-width:24px;height:24px;padding:0 7px;border-radius:12px;background:linear-gradient(135deg,#f43f5e,#e11d48);color:white;font-size:11px;font-weight:800;display:none;align-items:center;justify-content:center;border:2px solid rgba(255,255,255,.92);box-shadow:0 4px 12px -2px rgba(244,63,94,.7);z-index:5;letter-spacing:-.02em}
+.cat-badge.on{display:flex;animation:pop .3s cubic-bezier(.34,1.56,.64,1) both,badgePulse 2s ease-in-out infinite}
+.cat-detail{display:flex;gap:5px;flex-wrap:wrap;margin-top:10px}
+.cat-detail .chip{padding:4px 9px;border-radius:9px;background:rgba(255,255,255,.24);font-size:10px;font-weight:800;display:inline-flex;align-items:center;gap:3px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.25);letter-spacing:.02em}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.post-card{background:#fff;border-radius:14px;overflow:hidden;cursor:pointer;border:2px solid rgba(148,163,184,.2);display:flex;flex-direction:column;min-height:150px;transition:transform .15s, box-shadow .2s;position:relative;box-shadow:0 2px 8px -4px rgba(0,0,0,.08)}
-body.dark .post-card{background:#111a2e;border-color:rgba(255,255,255,.08)}
-.post-card:active{transform:scale(.97)}
-.post-card.b-umum{border-color:rgba(100,116,139,.5)}
-.post-card.b-info{border-color:rgba(59,130,246,.5)}
-.post-card.b-gal{border-color:rgba(236,72,153,.5)}
-.post-card .strip{height:4px}
+.post-card{background:#fff;border-radius:18px;overflow:hidden;cursor:pointer;border:1px solid rgba(148,163,184,.14);display:flex;flex-direction:column;min-height:170px;transition:transform .18s cubic-bezier(.34,1.56,.64,1),box-shadow .25s;position:relative;box-shadow:0 2px 8px -4px rgba(15,23,42,.08),0 12px 28px -18px rgba(15,23,42,.15)}
+body.dark .post-card{background:#101a2e;border-color:rgba(255,255,255,.06)}
+.post-card:active{transform:scale(.97);box-shadow:0 2px 8px -4px rgba(15,23,42,.12)}
+.post-card .strip{height:3px}
 .post-card .strip.s-umum{background:linear-gradient(90deg,#94a3b8,#64748b)}
-.post-card .strip.s-info{background:linear-gradient(90deg,#3b82f6,#6366f1)}
-.post-card .strip.s-gal{background:linear-gradient(90deg,#ec4899,#f43f5e)}
-.post-card .thumb{width:100%;height:64px;background:linear-gradient(135deg,#6366f1,#ec4899);overflow:hidden}
-.post-card .thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.post-card .strip.s-info{background:linear-gradient(90deg,#3b82f6,#6366f1,#a855f7)}
+.post-card .strip.s-gal{background:linear-gradient(90deg,#ec4899,#f43f5e,#ef4444)}
+.post-card .thumb{width:100%;height:76px;background:linear-gradient(135deg,#6366f1,#ec4899);overflow:hidden;position:relative}
+.post-card .thumb::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 60%,rgba(0,0,0,.15));pointer-events:none}
+.post-card .thumb img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s}
+.post-card:active .thumb img{transform:scale(1.05)}
 .cd-mini{display:flex;gap:4px;margin-top:8px}
-.cd-mini .cd-m-box{flex:1;text-align:center;padding:6px 3px;border-radius:7px;background:linear-gradient(135deg,#3b82f6,#6366f1);color:white;box-shadow:0 2px 6px -2px rgba(59,130,246,.4)}
-.cd-mini .cd-m-box .n{font-weight:800;font-size:15px;line-height:1;font-variant-numeric:tabular-nums}
-.cd-mini .cd-m-box .l{font-size:8.5px;opacity:.9;margin-top:3px;text-transform:uppercase;font-weight:700;letter-spacing:.04em}
-.cd-mini-done{text-align:center;padding:7px;border-radius:7px;background:#f1f5f9;font-size:11.5px;font-weight:700;color:#64748b;margin-top:8px;width:100%}
+.cd-mini .cd-m-box{flex:1;text-align:center;padding:6px 3px;border-radius:9px;background:linear-gradient(135deg,#3b82f6,#6366f1);color:white;box-shadow:0 3px 8px -2px rgba(59,130,246,.4),inset 0 1px 0 rgba(255,255,255,.25)}
+.cd-mini .cd-m-box .n{font-weight:800;font-size:15px;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-.03em}
+.cd-mini .cd-m-box .l{font-size:8.5px;opacity:.9;margin-top:3px;text-transform:uppercase;font-weight:800;letter-spacing:.05em}
+.cd-mini-done{text-align:center;padding:8px;border-radius:9px;background:#f1f5f9;font-size:11.5px;font-weight:700;color:#64748b;margin-top:8px;width:100%}
 body.dark .cd-mini-done{background:#1a2540;color:#94a3b8}
-.post-card .body{padding:11px;flex:1;display:flex;flex-direction:column;gap:8px}
-.post-card .title{font-size:13px;line-height:1.42;font-weight:500;color:#334155;flex:1;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word}
+.post-card .body{padding:12px;flex:1;display:flex;flex-direction:column;gap:8px}
+.post-card .title{font-size:13px;line-height:1.48;font-weight:500;color:#334155;flex:1;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word}
 body.dark .post-card .title{color:#cbd5e1}
-.post-card .meta{display:flex;gap:7px;font-size:11px;color:#94a3b8;font-weight:600}
-.post-card .foot{padding:8px 11px;border-top:1px solid rgba(148,163,184,.1);display:flex;gap:6px;align-items:center;font-size:11.5px;font-weight:600;color:#64748b}
-.post-new-badge{position:absolute;top:8px;right:8px;z-index:3;background:linear-gradient(135deg,#10b981,#059669);color:white;font-size:9.5px;font-weight:800;padding:3px 8px;border-radius:8px;box-shadow:0 3px 8px -2px rgba(16,185,129,.6);letter-spacing:.03em;animation:badgePulse 2s ease-in-out infinite}
-.pin-tag{position:absolute;top:8px;right:8px;z-index:3;background:linear-gradient(135deg,#f59e0b,#ef4444);color:white;font-size:9.5px;font-weight:800;padding:3px 8px;border-radius:8px;box-shadow:0 3px 8px -2px rgba(245,158,11,.6);letter-spacing:.03em;animation:badgePulse 2s ease-in-out infinite}
-.pin-card{background:linear-gradient(135deg,rgba(245,158,11,.08),rgba(239,68,68,.06));border:2px solid rgba(245,158,11,.3);border-radius:16px;padding:14px;margin-bottom:10px;cursor:pointer;position:relative;overflow:hidden}
+.post-card .meta{display:flex;gap:8px;font-size:11px;color:#94a3b8;font-weight:700;align-items:center}
+.post-card .foot{padding:9px 12px;border-top:1px solid rgba(148,163,184,.1);display:flex;gap:7px;align-items:center;font-size:11.5px;font-weight:700;color:#64748b}
+.post-new-badge{position:absolute;top:9px;right:9px;z-index:3;background:linear-gradient(135deg,#10b981,#059669);color:white;font-size:9.5px;font-weight:800;padding:4px 9px;border-radius:9px;box-shadow:0 4px 12px -2px rgba(16,185,129,.7),inset 0 1px 0 rgba(255,255,255,.3);letter-spacing:.04em;animation:badgePulse 2s ease-in-out infinite}
+.pin-tag{position:absolute;top:9px;right:9px;z-index:3;background:linear-gradient(135deg,#f59e0b,#ef4444);color:white;font-size:9.5px;font-weight:800;padding:4px 9px;border-radius:9px;box-shadow:0 4px 12px -2px rgba(245,158,11,.7),inset 0 1px 0 rgba(255,255,255,.3);letter-spacing:.04em;animation:badgePulse 2s ease-in-out infinite}
+.pin-card{background:linear-gradient(135deg,rgba(245,158,11,.09),rgba(239,68,68,.06));border:1.5px solid rgba(245,158,11,.32);border-radius:20px;padding:15px;margin-bottom:11px;cursor:pointer;position:relative;overflow:hidden;transition:transform .18s}
 body.dark .pin-card{background:linear-gradient(135deg,rgba(245,158,11,.1),rgba(239,68,68,.06))}
+.pin-card:active{transform:scale(.98)}
 .pin-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#f59e0b,#ef4444,#f59e0b);background-size:200% 100%;animation:grad 3s linear infinite}
-.pin-card .pin-badge{display:inline-flex;align-items:center;gap:4px;background:linear-gradient(135deg,#f59e0b,#ef4444);color:white;font-size:10px;font-weight:800;padding:3px 8px;border-radius:8px;letter-spacing:.04em;margin-bottom:8px}
-.pin-card .pin-title{font-size:14px;font-weight:800;line-height:1.35;margin-bottom:6px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.pin-card .pin-badge{display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,#f59e0b,#ef4444);color:white;font-size:10px;font-weight:800;padding:4px 9px;border-radius:9px;letter-spacing:.05em;margin-bottom:9px;box-shadow:0 3px 10px -3px rgba(245,158,11,.6)}
+.pin-card .pin-title{font-size:14px;font-weight:800;line-height:1.4;margin-bottom:8px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;color:#0b1220}
+body.dark .pin-card .pin-title{color:#e2e8f0}
 .pin-card .pin-meta{display:flex;align-items:center;gap:6px;font-size:11px;color:#64748b;margin-top:8px}
-.section{margin:18px 16px 0}
-.section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
-.section-title{font-size:15.5px;font-weight:800;letter-spacing:-.01em}
-.section-title .em{margin-right:5px}
-.section-sub{font-size:11.5px;color:#94a3b8;font-weight:600}
-.cd-glass{background:rgba(255,255,255,.16);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.25);border-radius:14px;padding:10px 12px;box-shadow:inset 0 1px 0 rgba(255,255,255,.2)}
-.cd-glass .cd-box{flex:1;background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.18);border-radius:9px;padding:6px 3px;text-align:center;backdrop-filter:blur(6px)}
-.cd-glass .cd-box .n{font-size:15px;font-weight:800;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
-.cd-glass .cd-box .l{font-size:8px;font-weight:700;opacity:.85;margin-top:3px;text-transform:uppercase;letter-spacing:.05em}
+.section{margin:22px 16px 0}
+.section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.section-title{font-size:16px;font-weight:900;letter-spacing:-.02em}
+.section-title .em{margin-right:6px}
+.section-sub{font-size:11.5px;color:#94a3b8;font-weight:700}
+.cd-glass{background:rgba(255,255,255,.16);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.28);border-radius:16px;padding:11px 12px;box-shadow:inset 0 1px 0 rgba(255,255,255,.25)}
+.cd-glass .cd-box{flex:1;background:rgba(255,255,255,.24);border:1px solid rgba(255,255,255,.2);border-radius:11px;padding:7px 3px;text-align:center;backdrop-filter:blur(8px)}
+.cd-glass .cd-box .n{font-size:16px;font-weight:800;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-.03em}
+.cd-glass .cd-box .l{font-size:8px;font-weight:800;opacity:.9;margin-top:4px;text-transform:uppercase;letter-spacing:.06em}
 #view-post{display:none;flex-direction:column;height:100%}
 #view-post.on{display:flex}
-.post-scroll{flex:1;overflow-y:auto;padding:14px 16px 24px}
-.post-input-bar{flex-shrink:0;background:#fff;border-top:1px solid rgba(148,163,184,.15);padding:10px 12px}
-body.dark .post-input-bar{background:#111a2e;border-color:rgba(255,255,255,.05)}
+.post-scroll{flex:1;overflow-y:auto;padding:16px 16px 24px}
+.post-input-bar{flex-shrink:0;background:#fff;border-top:1px solid rgba(148,163,184,.15);padding:11px 12px}
+body.dark .post-input-bar{background:#101a2e;border-color:rgba(255,255,255,.05)}
 .comment-input{display:flex;gap:8px;align-items:flex-end}
-.comment-input textarea{flex:1;background:#f1f5f9;border:1px solid transparent;border-radius:20px;padding:9px 15px;font-size:15px;resize:none;font-family:inherit;max-height:80px;min-height:38px;transition:border-color .2s}
-.comment-input textarea:focus{outline:none;border-color:#6366f1;background:#fff}
+.comment-input textarea{flex:1;background:#f1f5f9;border:1.5px solid transparent;border-radius:22px;padding:10px 16px;font-size:15px;resize:none;font-family:inherit;max-height:80px;min-height:40px;transition:border-color .2s,background .2s}
+.comment-input textarea:focus{outline:none;border-color:#6366f1;background:#fff;box-shadow:0 0 0 4px rgba(99,102,241,.1)}
 body.dark .comment-input textarea{background:#1a2540;color:#fff}
-.send-btn{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:white;display:flex;align-items:center;justify-content:center;flex-shrink:0;border:none;cursor:pointer;box-shadow:0 3px 10px -2px rgba(99,102,241,.5)}
-.send-btn:active{transform:scale(.9)}
-.photo-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px;border-radius:12px;overflow:hidden;margin-bottom:12px}
+.send-btn{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#6366f1,#8b5cf6,#ec4899);color:white;display:flex;align-items:center;justify-content:center;flex-shrink:0;border:none;cursor:pointer;box-shadow:0 5px 14px -4px rgba(99,102,241,.65),inset 0 1px 0 rgba(255,255,255,.25);transition:transform .15s}
+.send-btn:active{transform:scale(.88)}
+.photo-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px;border-radius:14px;overflow:hidden;margin-bottom:12px}
 .photo-grid.single{grid-template-columns:1fr}
 .pg-item{position:relative;aspect-ratio:1/1;overflow:hidden;background:#f1f5f9}
 .photo-grid.single .pg-item{aspect-ratio:auto;max-height:400px}
-.pg-item img{width:100%;height:100%;object-fit:cover;display:block;cursor:pointer}
+.pg-item img{width:100%;height:100%;object-fit:cover;display:block;cursor:pointer;transition:transform .3s}
+.pg-item img:active{transform:scale(1.02)}
 .photo-grid.single .pg-item img{object-fit:contain;max-height:400px;background:#000}
-.pg-author{position:absolute;bottom:4px;left:4px;background:rgba(0,0,0,.65);color:white;font-size:9.5px;font-weight:600;padding:2px 6px;border-radius:5px;max-width:calc(100% - 8px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.pg-del{position:absolute;top:4px;right:4px;width:24px;height:24px;border-radius:50%;background:rgba(0,0,0,.7);color:white;border:none;font-size:14px;cursor:pointer}
-.photo-add{aspect-ratio:1/1;border:1.5px dashed #cbd5e1;background:#f8fafc;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#64748b;font-weight:600;cursor:pointer}
-.photo-add .plus{font-size:22px;color:#94a3b8}
-.photo-add .txt{font-size:10px;margin-top:3px}
-.comment-item{display:flex;gap:10px;margin-bottom:12px}
+.photo-add{aspect-ratio:1/1;border:1.5px dashed #cbd5e1;background:#f8fafc;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#64748b;font-weight:700;cursor:pointer;transition:background .2s,border-color .2s}
+.photo-add:active{background:#eff2f7;border-color:#6366f1}
+.photo-add .plus{font-size:24px;color:#94a3b8}
+.photo-add .txt{font-size:10px;margin-top:4px}
+.comment-item{display:flex;gap:11px;margin-bottom:14px;padding:12px;background:#f8fafc;border-radius:14px}
+body.dark .comment-item{background:#0e1729}
 .comment-item .body{flex:1;min-width:0}
-.comment-item .txt{font-size:14px;line-height:1.45;word-break:break-word}
-.comment-item .name{font-weight:700}
-.comment-item .time{font-size:11px;color:#94a3b8;margin-top:3px}
-.poll-card{background:#fff;border-radius:16px;padding:16px;margin-bottom:12px;box-shadow:0 2px 10px -4px rgba(0,0,0,.1);border:1px solid rgba(148,163,184,.12)}
-body.dark .poll-card{background:#111a2e;border-color:rgba(255,255,255,.08)}
-.poll-opt{display:flex;align-items:center;gap:10px;padding:11px 13px;border-radius:11px;background:#f8fafc;margin-top:8px;cursor:pointer;transition:all .15s;border:1.5px solid transparent}
+.comment-item .txt{font-size:14px;line-height:1.5;word-break:break-word;color:#334155}
+body.dark .comment-item .txt{color:#cbd5e1}
+.comment-item .name{font-weight:800;color:#0b1220}
+body.dark .comment-item .name{color:#e2e8f0}
+.comment-item .time{font-size:11px;color:#94a3b8;margin-top:4px;font-weight:600}
+.poll-card{background:#fff;border-radius:20px;padding:18px;margin-bottom:14px;box-shadow:0 4px 16px -8px rgba(15,23,42,.1),0 1px 3px rgba(15,23,42,.03);border:1px solid rgba(148,163,184,.12)}
+body.dark .poll-card{background:#101a2e;border-color:rgba(255,255,255,.08)}
+.poll-opt{display:flex;align-items:center;gap:11px;padding:12px 14px;border-radius:13px;background:#f8fafc;margin-top:9px;cursor:pointer;transition:all .18s cubic-bezier(.34,1.56,.64,1);border:1.5px solid transparent}
 body.dark .poll-opt{background:#1a2540}
-.poll-opt.voted{border-color:#6366f1;background:rgba(99,102,241,.08)}
-.poll-opt .bar{height:6px;border-radius:99px;background:linear-gradient(90deg,#6366f1,#a855f7);transition:width .4s}
-.poll-opt .pct{font-size:11.5px;font-weight:700;color:#6366f1;min-width:38px;text-align:right}
-.avatar{width:36px;height:36px;border-radius:50%;flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center;font-weight:700;color:white;font-size:15px;background:linear-gradient(135deg,#6366f1,#a855f7,#ec4899)}
+.poll-opt:not([style*="cursor:default"]):active{transform:scale(.98)}
+.poll-opt.voted{border-color:#6366f1;background:linear-gradient(135deg,rgba(99,102,241,.09),rgba(168,85,247,.06))}
+.poll-opt .bar{height:7px;border-radius:99px;background:linear-gradient(90deg,#6366f1,#a855f7,#ec4899);transition:width .5s cubic-bezier(.22,1,.36,1);box-shadow:0 0 8px -2px rgba(99,102,241,.6)}
+.poll-opt .pct{font-size:12px;font-weight:800;color:#6366f1;min-width:42px;text-align:right;font-variant-numeric:tabular-nums}
+.avatar{border-radius:50%;flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center;font-weight:800;color:white;font-size:15px;background:linear-gradient(135deg,#6366f1,#a855f7,#ec4899);box-shadow:0 2px 8px -2px rgba(99,102,241,.4);letter-spacing:-.02em}
 .avatar img{width:100%;height:100%;object-fit:cover;display:block}
-.user-row{display:flex;align-items:center;gap:12px;padding:11px 14px;cursor:pointer;border-radius:13px}
-.user-row:active{background:rgba(148,163,184,.1)}
-.setting-row{display:flex;align-items:center;gap:12px;padding:13px 16px;width:100%;background:transparent;border:none;cursor:pointer;text-align:left;color:inherit;font-family:inherit}
-.setting-row:active{background:rgba(148,163,184,.08)}
-.setting-icon{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
-.hint{padding:10px 12px;border-radius:11px;font-size:12px;line-height:1.5;border:1px dashed}
-.h-umum{background:rgba(148,163,184,.08);border-color:rgba(148,163,184,.3);color:#475569}
-.h-info{background:rgba(59,130,246,.08);border-color:rgba(59,130,246,.3);color:#1e40af}
-.h-gal{background:rgba(236,72,153,.08);border-color:rgba(236,72,153,.3);color:#be185d}
-.dt{width:100%;background:#f1f5f9;border:1px solid transparent;border-radius:12px;padding:11px 13px;font-size:15px;font-family:inherit;transition:border-color .2s}
-.dt:focus{outline:none;border-color:#6366f1;background:#fff}
+.user-row{display:flex;align-items:center;gap:13px;padding:12px 15px;cursor:pointer;border-radius:15px;transition:background .2s}
+.user-row:active{background:rgba(148,163,184,.12)}
+.setting-row{display:flex;align-items:center;gap:13px;padding:14px 16px;width:100%;background:transparent;border:none;cursor:pointer;text-align:left;color:inherit;font-family:inherit;transition:background .2s}
+.setting-row:active{background:rgba(148,163,184,.1)}
+.setting-icon{width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;box-shadow:inset 0 1px 0 rgba(255,255,255,.15)}
+.hint{padding:12px 14px;border-radius:14px;font-size:12.5px;line-height:1.55;border:1.5px dashed;font-weight:600}
+.h-umum{background:linear-gradient(135deg,rgba(148,163,184,.09),rgba(148,163,184,.04));border-color:rgba(148,163,184,.32);color:#475569}
+.h-info{background:linear-gradient(135deg,rgba(59,130,246,.09),rgba(99,102,241,.04));border-color:rgba(59,130,246,.32);color:#1e40af}
+.h-gal{background:linear-gradient(135deg,rgba(236,72,153,.09),rgba(244,63,94,.04));border-color:rgba(236,72,153,.32);color:#be185d}
+.dt{width:100%;background:#f1f5f9;border:1.5px solid transparent;border-radius:13px;padding:12px 14px;font-size:15px;font-family:inherit;transition:border-color .2s,background .2s,box-shadow .2s}
+.dt:focus{outline:none;border-color:#6366f1;background:#fff;box-shadow:0 0 0 4px rgba(99,102,241,.1)}
 body.dark .dt{background:#1a2540;color:#fff}
-.cat-btn{padding:12px 6px;border-radius:13px;background:rgba(148,163,184,.08);color:#64748b;border:1.5px solid transparent;cursor:pointer;text-align:center;font-weight:600;font-family:inherit}
-.cat-btn.on{color:white}
+.cat-btn{padding:14px 6px;border-radius:15px;background:rgba(148,163,184,.08);color:#64748b;border:1.5px solid transparent;cursor:pointer;text-align:center;font-weight:700;font-family:inherit;transition:all .2s cubic-bezier(.34,1.56,.64,1)}
+.cat-btn:active{transform:scale(.95)}
+.cat-btn.on{color:white;box-shadow:0 6px 18px -6px rgba(99,102,241,.5)}
 .cat-btn[data-c=umum].on{background:linear-gradient(135deg,#64748b,#475569)}
 .cat-btn[data-c=informasi].on{background:linear-gradient(135deg,#3b82f6,#6366f1)}
 .cat-btn[data-c=galeri].on{background:linear-gradient(135deg,#ec4899,#f43f5e)}
-.topic-chip{padding:6px 12px;border-radius:12px;background:rgba(148,163,184,.08);border:1.5px solid transparent;font-size:12px;font-weight:600;cursor:pointer;color:#64748b;font-family:inherit}
-.topic-chip.on{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:white}
-.mask{position:fixed;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(4px);display:none;align-items:flex-end;justify-content:center;z-index:120}
+.topic-chip{padding:8px 14px;border-radius:13px;background:rgba(148,163,184,.08);border:1.5px solid transparent;font-size:12.5px;font-weight:700;cursor:pointer;color:#64748b;font-family:inherit;transition:all .2s cubic-bezier(.34,1.56,.64,1)}
+.topic-chip:active{transform:scale(.95)}
+.topic-chip.on{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:white;box-shadow:0 6px 16px -6px rgba(99,102,241,.6)}
+.mask{position:fixed;inset:0;background:rgba(15,23,42,.5);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:none;align-items:flex-end;justify-content:center;z-index:120;animation:fade .25s}
 .mask.on{display:flex}
-.modal{background:#fff;border-radius:22px 22px 0 0;max-width:480px;width:100%;max-height:90dvh;display:flex;flex-direction:column;animation:fade .3s}
-body.dark .modal{background:#111a2e}
+.modal{background:#fff;border-radius:26px 26px 0 0;max-width:520px;width:100%;max-height:90dvh;display:flex;flex-direction:column;animation:sheetUp .35s cubic-bezier(.22,1,.36,1)}
+body.dark .modal{background:#101a2e}
 .attach-row{display:flex;gap:8px;overflow-x:auto;padding:4px 0;margin-top:8px}
 .attach-row::-webkit-scrollbar{display:none}
-.thumb-sm{position:relative;width:80px;height:80px;border-radius:10px;overflow:hidden;flex-shrink:0;background:#f1f5f9}
+.thumb-sm{position:relative;width:82px;height:82px;border-radius:13px;overflow:hidden;flex-shrink:0;background:#f1f5f9;box-shadow:0 4px 12px -4px rgba(15,23,42,.15)}
 .thumb-sm img{width:100%;height:100%;object-fit:cover}
-.thumb-sm button{position:absolute;top:3px;right:3px;width:22px;height:22px;border-radius:50%;background:rgba(0,0,0,.7);color:white;border:none;font-size:14px;cursor:pointer}
-.thumb-add{width:80px;height:80px;border-radius:10px;border:1.5px dashed #cbd5e1;background:#f8fafc;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:11px;color:#64748b;font-weight:600;cursor:pointer}
-#composeSheet{position:fixed;inset:0;z-index:110;background:#fff;display:none;flex-direction:column}
+.thumb-sm button{position:absolute;top:4px;right:4px;width:22px;height:22px;border-radius:50%;background:rgba(0,0,0,.72);color:white;border:none;font-size:14px;cursor:pointer;backdrop-filter:blur(6px)}
+.thumb-add{width:82px;height:82px;border-radius:13px;border:1.5px dashed #cbd5e1;background:#f8fafc;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:11px;color:#64748b;font-weight:700;cursor:pointer;transition:all .2s}
+.thumb-add:active{background:#eff2f7;border-color:#6366f1;transform:scale(.95)}
+#composeSheet{position:fixed;inset:0;z-index:110;background:#fff;display:none;flex-direction:column;animation:sheetUp .3s cubic-bezier(.22,1,.36,1)}
 body.dark #composeSheet{background:#070b14}
-.lightbox{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.95);display:none;align-items:center;justify-content:center;padding:20px}
+.lightbox{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.96);display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(10px);animation:fade .25s}
 .lightbox.on{display:flex}
-.lightbox img{max-width:100%;max-height:90vh;object-fit:contain;border-radius:8px}
-.toast{position:fixed;bottom:100px;left:16px;right:16px;z-index:140;padding:14px 16px;border-radius:14px;font-size:13.5px;font-weight:600;text-align:center;max-width:420px;margin:0 auto;display:none;box-shadow:0 10px 30px -4px rgba(0,0,0,.35);border-left:4px solid rgba(255,255,255,.3)}
-.toast.on{display:block;animation:fade .3s ease both}
-.loader{position:fixed;inset:0;z-index:130;background:rgba(0,0,0,.5);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;padding:20px}
+.lightbox img{max-width:100%;max-height:90vh;object-fit:contain;border-radius:10px;box-shadow:0 30px 80px -20px rgba(0,0,0,.8);animation:pop .3s cubic-bezier(.34,1.56,.64,1)}
+.toast{position:fixed;bottom:100px;left:16px;right:16px;z-index:140;padding:15px 18px;border-radius:16px;font-size:13.5px;font-weight:700;text-align:center;max-width:440px;margin:0 auto;display:none;box-shadow:0 20px 50px -10px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.12);backdrop-filter:blur(20px);letter-spacing:.01em}
+.toast.on{display:block;animation:toastIn .4s cubic-bezier(.34,1.56,.64,1) both}
+.loader{position:fixed;inset:0;z-index:130;background:rgba(15,23,42,.45);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:20px}
 .loader.on{display:flex}
-.loader .box{background:#fff;border-radius:16px;padding:18px 22px;display:flex;align-items:center;gap:12px}
-body.dark .loader .box{background:#111a2e}
-.spinner{width:18px;height:18px;border:2px solid #e2e8f0;border-top-color:#6366f1;border-radius:50%}
-.badge-pill{display:inline-block;padding:2px 8px;border-radius:99px;font-size:10.5px;font-weight:800;letter-spacing:.03em}
+.loader .box{background:#fff;border-radius:18px;padding:20px 24px;display:flex;align-items:center;gap:13px;box-shadow:0 20px 50px -10px rgba(0,0,0,.4)}
+body.dark .loader .box{background:#101a2e}
+.spinner{width:20px;height:20px;border:2.5px solid #e2e8f0;border-top-color:#6366f1;border-radius:50%}
+.badge-pill{display:inline-block;padding:3px 10px;border-radius:99px;font-size:10.5px;font-weight:800;letter-spacing:.04em}
 .pill-green{background:rgba(16,185,129,.15);color:#059669}
 .pill-red{background:rgba(244,63,94,.15);color:#e11d48}
 .pill-blue{background:rgba(59,130,246,.15);color:#2563eb}
-.pill-gray{background:rgba(148,163,184,.15);color:#64748b}
-.empty-state{text-align:center;padding:50px 24px}
-.empty-state .em{font-size:32px;margin-bottom:12px}
-.empty-state .title{font-size:15px;font-weight:700;margin-bottom:5px}
-.empty-state .sub{font-size:13px;color:#64748b;margin-bottom:17px}
+.pill-gray{background:rgba(148,163,184,.18);color:#64748b}
+.empty-state{text-align:center;padding:56px 24px}
+.empty-state .em{font-size:38px;margin-bottom:14px;display:inline-block;animation:float 3s ease-in-out infinite}
+.empty-state .title{font-size:16px;font-weight:800;margin-bottom:6px;letter-spacing:-.01em}
+.empty-state .sub{font-size:13px;color:#64748b;margin-bottom:20px;line-height:1.5}
+#splash{position:fixed;inset:0;z-index:200;background:linear-gradient(165deg,#f5f7fb 0%,#eef2ff 50%,#fce7f3 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;overflow:hidden}
+#splash::before{content:'';position:absolute;top:-20%;left:-20%;width:60vw;height:60vw;border-radius:50%;background:radial-gradient(circle,rgba(99,102,241,.18),transparent 65%);animation:meshMove 12s ease-in-out infinite}
+#splash::after{content:'';position:absolute;bottom:-20%;right:-20%;width:60vw;height:60vw;border-radius:50%;background:radial-gradient(circle,rgba(236,72,153,.15),transparent 65%);animation:meshMove 10s ease-in-out infinite reverse}
+#welcomeOv{position:fixed;inset:0;z-index:150;background:#f5f7fb;display:none;flex-direction:column;overflow-y:auto}
+body.dark #welcomeOv{background:#070b14}
+#inviteOv{position:fixed;inset:0;z-index:160;background:#f5f7fb;display:none;flex-direction:column;overflow-y:auto}
+body.dark #inviteOv{background:#070b14}
+.pb-nav{padding-bottom:110px}
 </style>
 </head>
 <body>
 
 <div id="lightbox" class="lightbox">
-  <button id="lbClose" style="position:absolute;top:16px;right:16px;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.15);color:white;border:none;font-size:20px;cursor:pointer">✕</button>
+  <button id="lbClose" style="position:absolute;top:calc(env(safe-area-inset-top,0px) + 16px);right:16px;width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,.18);color:white;border:none;font-size:20px;cursor:pointer;backdrop-filter:blur(10px)">✕</button>
   <img id="lightboxImg" src="" alt="">
 </div>
 
 <div id="toast" class="toast"></div>
 
 <div id="loader" class="loader">
-  <div class="box"><div class="spinner spin"></div><span id="loaderMsg" style="font-size:14px;font-weight:600">Memproses...</span></div>
+  <div class="box"><div class="spinner spin"></div><span id="loaderMsg" style="font-size:14px;font-weight:700">Memproses...</span></div>
 </div>
 
-<div id="splash" style="position:fixed;inset:0;z-index:200;background:linear-gradient(180deg,#f8fafc 0%,#eef2ff 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px">
-  <div style="position:relative;margin-bottom:28px">
-    <div style="position:absolute;inset:-20px;border-radius:50%;background:radial-gradient(circle,rgba(99,102,241,.28) 0%,transparent 70%);animation:slowSpin 8s linear infinite"></div>
-    <img src="./icon-192.png" alt="RT09RW04" style="width:110px;height:110px;border-radius:26px;box-shadow:0 20px 50px -12px rgba(99,102,241,.55),0 0 0 6px rgba(255,255,255,.95),0 0 0 8px rgba(99,102,241,.15);position:relative;z-index:1;object-fit:cover;animation:floatIn .7s ease both"/>
+<div id="splash">
+  <div style="position:relative;margin-bottom:30px;z-index:1">
+    <div style="position:absolute;inset:-24px;border-radius:50%;background:conic-gradient(from 0deg,transparent,rgba(99,102,241,.35),transparent 30%,rgba(236,72,153,.35),transparent 60%,rgba(168,85,247,.35),transparent);animation:ringRotate 4s linear infinite;filter:blur(4px)"></div>
+    <img src="./icon-192.png" alt="RT09RW04" style="width:112px;height:112px;border-radius:28px;box-shadow:0 24px 60px -14px rgba(99,102,241,.6),0 0 0 6px rgba(255,255,255,.96),0 0 0 8px rgba(99,102,241,.2);position:relative;z-index:1;object-fit:cover;animation:floatIn .7s cubic-bezier(.22,1,.36,1) both"/>
   </div>
-  <div style="font-size:22px;font-weight:900;letter-spacing:-.03em;color:#1e293b;animation:fade .8s .1s ease both;opacity:0">RT09 RW04</div>
-  <div style="font-size:12.5px;color:#6366f1;margin-top:6px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;animation:fade .8s .2s ease both;opacity:0">Candisari Wonotingal</div>
-  <div style="font-size:12px;color:#94a3b8;margin-top:22px;animation:fade .8s .3s ease both;opacity:0">Komunitas warga digital</div>
-  <div style="width:140px;height:4px;border-radius:99px;background:#e2e8f0;overflow:hidden;margin-top:26px;animation:fade .8s .4s ease both;opacity:0">
+  <div style="font-size:24px;font-weight:900;letter-spacing:-.03em;background:linear-gradient(135deg,#1e293b,#475569);-webkit-background-clip:text;background-clip:text;color:transparent;position:relative;z-index:1;animation:fade .8s .1s ease both;opacity:0">RT09 RW04</div>
+  <div style="font-size:11.5px;color:#6366f1;margin-top:8px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;position:relative;z-index:1;animation:fade .8s .2s ease both;opacity:0">Candisari Wonotingal</div>
+  <div style="font-size:12px;color:#94a3b8;margin-top:24px;font-weight:600;position:relative;z-index:1;animation:fade .8s .3s ease both;opacity:0">Komunitas warga digital</div>
+  <div style="width:150px;height:4px;border-radius:99px;background:#e2e8f0;overflow:hidden;margin-top:28px;position:relative;z-index:1;animation:fade .8s .4s ease both;opacity:0">
     <div class="grad-anim" style="height:100%;width:100%;border-radius:99px"></div>
   </div>
-  <div id="splashMsg" style="font-size:11.5px;color:#94a3b8;margin-top:14px;animation:fade .8s .5s ease both;opacity:0">Memuat aplikasi...</div>
+  <div id="splashMsg" style="font-size:11.5px;color:#94a3b8;margin-top:14px;font-weight:600;position:relative;z-index:1;animation:fade .8s .5s ease both;opacity:0">Memuat aplikasi...</div>
 </div>
 
-<div id="welcomeOv" style="position:fixed;inset:0;z-index:150;background:#f8fafc;display:none;flex-direction:column;overflow-y:auto">
-  <div style="background:linear-gradient(160deg,#6366f1 0%,#8b5cf6 50%,#ec4899 100%);padding:calc(env(safe-area-inset-top,0px) + 60px) 24px 90px;position:relative;overflow:hidden">
-    <div style="position:absolute;top:-30%;right:-20%;width:280px;height:280px;border-radius:50%;background:rgba(255,255,255,.1)"></div>
-    <div style="position:absolute;bottom:-40%;left:-10%;width:220px;height:220px;border-radius:50%;background:rgba(255,255,255,.08)"></div>
-    <div style="position:relative;z-index:1;max-width:400px;margin:0 auto;text-align:center">
-      <div style="width:88px;height:88px;border-radius:24px;background:#fff;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;box-shadow:0 20px 40px -12px rgba(0,0,0,.3);padding:6px">
-        <img src="./icon-192.png" alt="RT09RW04" style="width:100%;height:100%;border-radius:18px;object-fit:cover"/>
+<div id="welcomeOv">
+  <div style="background:linear-gradient(150deg,#6366f1 0%,#8b5cf6 35%,#ec4899 75%,#f43f5e 100%);padding:calc(env(safe-area-inset-top,0px) + 70px) 24px 100px;position:relative;overflow:hidden">
+    <div style="position:absolute;top:-30%;right:-20%;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.18),transparent 70%)"></div>
+    <div style="position:absolute;bottom:-40%;left:-15%;width:240px;height:240px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.14),transparent 70%)"></div>
+    <div style="position:absolute;top:20%;left:10%;width:80px;height:80px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.1),transparent 70%)"></div>
+    <div style="position:relative;z-index:1;max-width:420px;margin:0 auto;text-align:center">
+      <div style="width:92px;height:92px;border-radius:26px;background:#fff;display:flex;align-items:center;justify-content:center;margin:0 auto 22px;box-shadow:0 24px 50px -14px rgba(0,0,0,.35),0 0 0 6px rgba(255,255,255,.15);padding:7px">
+        <img src="./icon-192.png" alt="RT09RW04" style="width:100%;height:100%;border-radius:20px;object-fit:cover"/>
       </div>
-      <div style="font-size:24px;font-weight:900;color:#fff;letter-spacing:-.02em;line-height:1.2">RT09 RW04<br>Candisari Wonotingal</div>
-      <div style="font-size:13px;color:rgba(255,255,255,.88);margin-top:12px;line-height:1.55">Satu platform digital untuk warga.<br>Informasi, pengumuman, dan suara komunitas.</div>
+      <div style="font-size:26px;font-weight:900;color:#fff;letter-spacing:-.03em;line-height:1.18;text-shadow:0 2px 20px rgba(0,0,0,.15)">RT09 RW04<br>Candisari Wonotingal</div>
+      <div style="font-size:13.5px;color:rgba(255,255,255,.92);margin-top:14px;line-height:1.6;font-weight:500">Satu platform digital untuk warga.<br>Informasi, pengumuman, dan suara komunitas.</div>
     </div>
   </div>
-  <div style="flex:1;padding:0 24px;margin-top:-45px;max-width:440px;width:100%;margin-left:auto;margin-right:auto;padding-bottom:40px">
-    <div style="background:#fff;border-radius:24px;padding:24px 22px;box-shadow:0 20px 50px -20px rgba(0,0,0,.25);border:1px solid rgba(148,163,184,.1)">
-      <div style="font-size:16px;font-weight:800;margin-bottom:4px;color:#0f172a">Selamat datang 👋</div>
-      <div style="font-size:12.5px;color:#64748b;line-height:1.55;margin-bottom:20px">Masuk dengan akun Google Anda untuk bergabung dengan warga RT09/RW04. Cukup satu kali login.</div>
-      <button id="googleBtn" type="button" style="width:100%;padding:14px 16px;border-radius:14px;border:1.5px solid #e2e8f0;background:#fff;color:#0f172a;font-weight:700;font-size:14.5px;display:flex;align-items:center;justify-content:center;gap:10px;cursor:pointer;transition:transform .15s">
+  <div style="flex:1;padding:0 20px;margin-top:-50px;max-width:460px;width:100%;margin-left:auto;margin-right:auto;padding-bottom:40px">
+    <div style="background:#fff;border-radius:28px;padding:28px 24px;box-shadow:0 30px 60px -20px rgba(15,23,42,.25);border:1px solid rgba(148,163,184,.1)">
+      <div style="font-size:17px;font-weight:900;margin-bottom:6px;color:#0b1220;letter-spacing:-.01em">Selamat datang 👋</div>
+      <div style="font-size:13px;color:#64748b;line-height:1.6;margin-bottom:22px">Masuk dengan akun Google Anda. Berikutnya otomatis — tanpa pilih akun lagi.</div>
+      <button id="googleBtn" type="button" style="width:100%;padding:15px 16px;border-radius:16px;border:1.5px solid #e2e8f0;background:#fff;color:#0b1220;font-weight:800;font-size:14.5px;display:flex;align-items:center;justify-content:center;gap:11px;cursor:pointer;transition:transform .15s cubic-bezier(.34,1.56,.64,1),box-shadow .2s, border-color .2s;box-shadow:0 2px 8px -4px rgba(15,23,42,.08)">
         <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.9 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.1 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.3-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 18.9 12 24 12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.1 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.3 26.7 36 24 36c-5.2 0-9.6-3.1-11.3-7.6l-6.5 5C9.6 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.1-4.1 5.5l6.2 5.2C40.9 35.5 44 30.2 44 24c0-1.3-.1-2.3-.4-3.5z"/></svg>
         Lanjutkan dengan Google
       </button>
-      <div style="display:flex;align-items:center;gap:10px;margin:20px 0 16px"><div style="flex:1;height:1px;background:rgba(148,163,184,.2)"></div><span style="font-size:10.5px;color:#94a3b8;font-weight:800;letter-spacing:.1em">ETIKA KOMUNITAS</span><div style="flex:1;height:1px;background:rgba(148,163,184,.2)"></div></div>
-      <div style="font-size:12px;color:#64748b;line-height:1.7">
-        <div style="display:flex;gap:8px;margin-bottom:7px"><span>💬</span><span>Semua percakapan bersifat terbuka &amp; sopan.</span></div>
-        <div style="display:flex;gap:8px;margin-bottom:7px"><span>📢</span><span>Gunakan bahasa yang baik, hindari SARA &amp; spam.</span></div>
-        <div style="display:flex;gap:8px"><span>🤝</span><span>Saling menghormati antar tetangga.</span></div>
+      <div style="display:flex;align-items:center;gap:10px;margin:22px 0 16px"><div style="flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(148,163,184,.28),transparent)"></div><span style="font-size:10.5px;color:#94a3b8;font-weight:800;letter-spacing:.14em">ETIKA KOMUNITAS</span><div style="flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(148,163,184,.28),transparent)"></div></div>
+      <div style="font-size:12.5px;color:#64748b;line-height:1.75">
+        <div style="display:flex;gap:10px;margin-bottom:9px"><span style="font-size:15px">💬</span><span>Semua percakapan bersifat terbuka &amp; sopan.</span></div>
+        <div style="display:flex;gap:10px;margin-bottom:9px"><span style="font-size:15px">📢</span><span>Gunakan bahasa yang baik, hindari SARA &amp; spam.</span></div>
+        <div style="display:flex;gap:10px"><span style="font-size:15px">🤝</span><span>Saling menghormati antar tetangga.</span></div>
       </div>
     </div>
-    <div style="text-align:center;font-size:11px;color:#94a3b8;margin-top:20px;line-height:1.6">Dengan melanjutkan, Anda menyetujui<br>tata tertib komunitas RT09/RW04.</div>
+    <div style="text-align:center;font-size:11px;color:#94a3b8;margin-top:22px;line-height:1.7;font-weight:600">Dengan melanjutkan, Anda menyetujui<br>tata tertib komunitas RT09/RW04.</div>
   </div>
 </div>
 
-<div id="inviteOv" style="position:fixed;inset:0;z-index:160;background:#f8fafc;display:none;flex-direction:column;overflow-y:auto">
-  <div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding:40px 24px;max-width:400px;margin:0 auto;width:100%">
-    <div style="width:56px;height:56px;border-radius:18px;background:linear-gradient(135deg,#10b981,#059669);display:flex;align-items:center;justify-content:center;margin-bottom:18px;font-size:28px">🔐</div>
-    <h2 style="font-size:20px;font-weight:800;line-height:1.25;margin:0 0 8px">Verifikasi Warga</h2>
-    <p style="font-size:13.5px;color:#64748b;line-height:1.5;margin:0 0 20px">Masukkan kode undangan dari Pengurus RT untuk bergabung.</p>
-    <input id="inviteInput" type="text" placeholder="Contoh: RT09-2025" class="dt" style="text-align:center;font-weight:800;letter-spacing:.15em;text-transform:uppercase;margin-bottom:14px;padding:14px">
+<div id="inviteOv">
+  <div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding:40px 24px;max-width:420px;margin:0 auto;width:100%">
+    <div style="width:64px;height:64px;border-radius:20px;background:linear-gradient(135deg,#10b981,#059669);display:flex;align-items:center;justify-content:center;margin-bottom:22px;font-size:30px;box-shadow:0 16px 40px -10px rgba(16,185,129,.5)">🔐</div>
+    <h2 style="font-size:22px;font-weight:900;line-height:1.25;margin:0 0 10px;letter-spacing:-.02em">Verifikasi Warga</h2>
+    <p style="font-size:13.5px;color:#64748b;line-height:1.6;margin:0 0 24px">Masukkan kode undangan dari Pengurus RT untuk bergabung.</p>
+    <input id="inviteInput" type="text" placeholder="Contoh: RT09-2025" class="dt" style="text-align:center;font-weight:900;letter-spacing:.18em;text-transform:uppercase;margin-bottom:14px;padding:16px">
     <button id="inviteSubmit" class="btn-p" style="width:100%;margin-bottom:10px">Verifikasi</button>
     <button id="inviteLogout" class="btn-s" style="width:100%;margin-top:14px;background:transparent;font-size:12.5px;color:#94a3b8">Ganti akun Google</button>
   </div>
@@ -268,16 +297,16 @@ body.dark .loader .box{background:#111a2e}
 <div id="app" style="display:none;flex-direction:column;height:100dvh;max-width:560px;margin:0 auto">
 
   <header class="header safe-t">
-    <div style="display:flex;align-items:center;gap:10px;padding:11px 14px 9px">
-      <button id="backBtn" type="button" class="hide" style="width:38px;height:38px;border-radius:50%;background:#fff;border:1px solid rgba(148,163,184,.2);display:flex;align-items:center;justify-content:center;cursor:pointer">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>
+    <div style="display:flex;align-items:center;gap:10px;padding:12px 14px 10px">
+      <button id="backBtn" type="button" class="hide" style="width:40px;height:40px;border-radius:50%;background:#fff;border:1px solid rgba(148,163,184,.18);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 8px -4px rgba(15,23,42,.1);transition:transform .15s">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>
       </button>
       <div style="flex:1;min-width:0">
-        <div id="topTitle" style="font-size:17px;font-weight:800;line-height:1.15">RT09RW04</div>
-        <div id="topSub" style="font-size:12px;color:#64748b;margin-top:1px">Candisari Wonotingal</div>
+        <div id="topTitle" style="font-size:17px;font-weight:900;line-height:1.15;letter-spacing:-.02em">RT09RW04</div>
+        <div id="topSub" style="font-size:12px;color:#64748b;margin-top:2px;font-weight:600">Candisari Wonotingal</div>
       </div>
-      <button id="headerAvatarBtn" type="button" class="avatar" style="border:2px solid rgba(148,163,184,.2);cursor:pointer"></button>
-      <button id="themeBtn" type="button" style="width:38px;height:38px;border-radius:50%;background:#fff;border:1px solid rgba(148,163,184,.2);display:flex;align-items:center;justify-content:center;cursor:pointer">
+      <button id="headerAvatarBtn" type="button" class="avatar" style="border:2px solid rgba(255,255,255,.9);cursor:pointer;box-shadow:0 4px 12px -4px rgba(15,23,42,.25)"></button>
+      <button id="themeBtn" type="button" style="width:40px;height:40px;border-radius:50%;background:#fff;border:1px solid rgba(148,163,184,.18);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 8px -4px rgba(15,23,42,.1);transition:transform .15s">
         <svg id="themeIconDark" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/></svg>
         <svg id="themeIconLight" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="display:none"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.9 4.9l1.4 1.4m11.4 11.4l1.4 1.4M2 12h2m16 0h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
       </button>
@@ -286,21 +315,21 @@ body.dark .loader .box{background:#111a2e}
 
   <main id="main" class="scroll-y grow">
 
-    <section id="view-home" style="padding-bottom:100px">
-      <div style="padding:16px 16px 10px">
-        <h2 style="font-size:17px;font-weight:800;margin:0">Pilih Kategori</h2>
-        <p style="font-size:12.5px;color:#64748b;margin:4px 0 0">Tap kotak sesuai jenis postingan</p>
+    <section id="view-home" class="pb-nav">
+      <div style="padding:20px 18px 12px">
+        <h2 style="font-size:19px;font-weight:900;margin:0;letter-spacing:-.02em">Halo, selamat datang 👋</h2>
+        <p style="font-size:13px;color:#64748b;margin:5px 0 0;font-weight:500">Pilih kategori untuk mulai berinteraksi</p>
       </div>
-      <div style="padding:0 16px;display:flex;flex-direction:column;gap:12px">
-        <div id="catTileUmum" class="cat-tile g-umum fade" style="flex-direction:column;align-items:stretch;gap:10px;">
-          <div style="display:flex;align-items:center;gap:14px;">
+      <div style="padding:0 16px;display:flex;flex-direction:column;gap:13px">
+        <div id="catTileUmum" class="cat-tile g-umum fade" style="flex-direction:column;align-items:stretch;gap:12px;">
+          <div style="display:flex;align-items:center;gap:15px;">
             <div class="icon">💬</div>
             <div style="flex:1;min-width:0">
-              <div style="font-size:17px;font-weight:800">Umum</div>
-              <div style="font-size:12.5px;opacity:.85;margin-top:3px">Obrolan santai · Tanya</div>
-              <div style="display:flex;align-items:baseline;gap:5px;margin-top:7px">
-                <span style="font-size:17px;font-weight:800" id="countUmum">0</span>
-                <span style="font-size:10.5px;opacity:.75;font-weight:700;text-transform:uppercase">Postingan</span>
+              <div style="font-size:18px;font-weight:900;letter-spacing:-.02em">Umum</div>
+              <div style="font-size:12.5px;opacity:.9;margin-top:4px;font-weight:500">Obrolan santai · Tanya warga</div>
+              <div style="display:flex;align-items:baseline;gap:6px;margin-top:8px">
+                <span style="font-size:19px;font-weight:900" id="countUmum">0</span>
+                <span style="font-size:10.5px;opacity:.85;font-weight:800;text-transform:uppercase;letter-spacing:.06em">Postingan</span>
               </div>
             </div>
           </div>
@@ -308,15 +337,15 @@ body.dark .loader .box{background:#111a2e}
           <span id="badgeUmum" class="cat-badge">0</span>
         </div>
 
-        <div id="catTileInformasi" class="cat-tile g-info fade" style="flex-direction:column;align-items:stretch;gap:10px;">
-          <div style="display:flex;align-items:center;gap:14px;">
+        <div id="catTileInformasi" class="cat-tile g-info fade" style="flex-direction:column;align-items:stretch;gap:12px;">
+          <div style="display:flex;align-items:center;gap:15px;">
             <div class="icon">📢</div>
             <div style="flex:1;min-width:0">
-              <div style="font-size:17px;font-weight:800">Informasi</div>
-              <div style="font-size:12.5px;opacity:.85;margin-top:3px">Pengumuman + jadwal</div>
-              <div style="display:flex;align-items:baseline;gap:5px;margin-top:7px">
-                <span style="font-size:17px;font-weight:800" id="countInformasi">0</span>
-                <span style="font-size:10.5px;opacity:.75;font-weight:700;text-transform:uppercase">Postingan</span>
+              <div style="font-size:18px;font-weight:900;letter-spacing:-.02em">Informasi</div>
+              <div style="font-size:12.5px;opacity:.9;margin-top:4px;font-weight:500">Pengumuman + jadwal kegiatan</div>
+              <div style="display:flex;align-items:baseline;gap:6px;margin-top:8px">
+                <span style="font-size:19px;font-weight:900" id="countInformasi">0</span>
+                <span style="font-size:10.5px;opacity:.85;font-weight:800;text-transform:uppercase;letter-spacing:.06em">Postingan</span>
               </div>
             </div>
           </div>
@@ -325,15 +354,15 @@ body.dark .loader .box{background:#111a2e}
           <span id="badgeInformasi" class="cat-badge">0</span>
         </div>
 
-        <div id="catTileGaleri" class="cat-tile g-gal fade" style="flex-direction:column;align-items:stretch;gap:10px;">
-          <div style="display:flex;align-items:center;gap:14px;">
+        <div id="catTileGaleri" class="cat-tile g-gal fade" style="flex-direction:column;align-items:stretch;gap:12px;">
+          <div style="display:flex;align-items:center;gap:15px;">
             <div class="icon">📷</div>
             <div style="flex:1;min-width:0">
-              <div style="font-size:17px;font-weight:800">Galeri</div>
-              <div style="font-size:12.5px;opacity:.85;margin-top:3px">Foto &amp; dokumentasi</div>
-              <div style="display:flex;align-items:baseline;gap:5px;margin-top:7px">
-                <span style="font-size:17px;font-weight:800" id="countGaleri">0</span>
-                <span style="font-size:10.5px;opacity:.75;font-weight:700;text-transform:uppercase">Foto</span>
+              <div style="font-size:18px;font-weight:900;letter-spacing:-.02em">Galeri</div>
+              <div style="font-size:12.5px;opacity:.9;margin-top:4px;font-weight:500">Foto &amp; dokumentasi warga</div>
+              <div style="display:flex;align-items:baseline;gap:6px;margin-top:8px">
+                <span style="font-size:19px;font-weight:900" id="countGaleri">0</span>
+                <span style="font-size:10.5px;opacity:.85;font-weight:800;text-transform:uppercase;letter-spacing:.06em">Foto</span>
               </div>
             </div>
           </div>
@@ -351,17 +380,17 @@ body.dark .loader .box{background:#111a2e}
       </div>
     </section>
 
-    <section id="view-category" class="hide" style="padding-bottom:100px">
+    <section id="view-category" class="hide pb-nav">
       <div id="catHint" class="hint h-umum" style="margin:14px 16px 0"></div>
       <div id="infoEventWidget" class="hide" style="padding:14px 16px 0;">
-        <div style="font-size: 15px; font-weight: 800; margin-bottom: 8px; color: #1e40af;">📅 Agenda Terdekat</div>
+        <div style="font-size: 15px; font-weight: 900; margin-bottom: 10px; color: #1e40af; letter-spacing:-.01em;">📅 Agenda Terdekat</div>
         <div id="infoEventContent"></div>
       </div>
       <div id="catGrid" class="grid2" style="padding:14px 16px 0"></div>
-      <div id="catEmpty" class="hide" style="text-align:center;padding:60px 24px">
-        <div style="font-size:28px;margin-bottom:12px" id="catEmptyEmoji">💬</div>
-        <div style="font-size:16px;font-weight:700;margin-bottom:5px">Belum ada postingan</div>
-        <div style="font-size:13px;color:#64748b;margin-bottom:18px">Jadilah yang pertama</div>
+      <div id="catEmpty" class="hide empty-state">
+        <div class="em" id="catEmptyEmoji">💬</div>
+        <div class="title">Belum ada postingan</div>
+        <div class="sub">Jadilah yang pertama memulai percakapan</div>
         <button id="catEmptyBtn" type="button" class="btn-p">Buat Postingan</button>
       </div>
     </section>
@@ -372,21 +401,21 @@ body.dark .loader .box{background:#111a2e}
         <div class="comment-input">
           <textarea id="commentInput" rows="1" placeholder="Tulis komentar..."></textarea>
           <button type="button" id="commentSend" class="send-btn">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
           </button>
         </div>
       </div>
     </section>
 
-    <section id="view-warga" class="hide" style="padding-bottom:100px">
-      <div style="padding:14px 16px 10px">
-        <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:linear-gradient(135deg,rgba(99,102,241,.08),rgba(168,85,247,.08));border:1px solid rgba(99,102,241,.2);border-radius:14px">
-          <div style="width:36px;height:36px;border-radius:11px;background:linear-gradient(135deg,#6366f1,#8b5cf6);display:flex;align-items:center;justify-content:center;flex-shrink:0">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+    <section id="view-warga" class="hide pb-nav">
+      <div style="padding:16px 16px 12px">
+        <div style="display:flex;align-items:center;gap:12px;padding:14px 16px;background:linear-gradient(135deg,rgba(99,102,241,.1),rgba(168,85,247,.08));border:1px solid rgba(99,102,241,.2);border-radius:18px;box-shadow:inset 0 1px 0 rgba(255,255,255,.5)">
+          <div style="width:42px;height:42px;border-radius:13px;background:linear-gradient(135deg,#6366f1,#8b5cf6);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 6px 16px -6px rgba(99,102,241,.6)">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
           </div>
           <div style="flex:1">
-            <div style="font-size:17px;font-weight:800;color:#4f46e5;line-height:1" id="wargaCount">0</div>
-            <div style="font-size:11px;color:#6366f1;font-weight:600;margin-top:2px">Warga Terdaftar</div>
+            <div style="font-size:19px;font-weight:900;color:#4f46e5;line-height:1;letter-spacing:-.02em" id="wargaCount">0</div>
+            <div style="font-size:11.5px;color:#6366f1;font-weight:700;margin-top:3px;letter-spacing:.02em">Warga Terdaftar</div>
           </div>
         </div>
       </div>
@@ -398,134 +427,134 @@ body.dark .loader .box{background:#111a2e}
     </section>
 
     <section id="view-profile" class="hide" style="padding:16px 16px 100px">
-      <div style="border-radius:20px;padding:2px;background:linear-gradient(135deg,#6366f1,#a855f7,#ec4899);margin-bottom:16px">
-        <div style="border-radius:18px;background:#fff;padding:19px">
-          <div style="display:flex;align-items:center;gap:14px">
+      <div style="border-radius:22px;padding:2px;background:linear-gradient(135deg,#6366f1,#a855f7,#ec4899);margin-bottom:18px;box-shadow:0 12px 32px -12px rgba(99,102,241,.5)">
+        <div style="border-radius:20px;background:#fff;padding:20px">
+          <div style="display:flex;align-items:center;gap:15px">
             <div id="profileAvatar"></div>
             <div style="flex:1;min-width:0">
-              <div id="profileName" style="font-size:16px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Anonim</div>
-              <div id="profileEmail" style="font-size:12px;color:#94a3b8;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">—</div>
+              <div id="profileName" style="font-size:16px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:-.01em">Anonim</div>
+              <div id="profileEmail" style="font-size:12px;color:#94a3b8;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:500">—</div>
             </div>
             <span id="profileRoleBadge" class="badge-pill pill-gray">Warga</span>
           </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:16px">
-            <div style="border-radius:12px;background:#f8fafc;padding:11px 4px;text-align:center">
-              <div id="statPosts" style="font-size:17px;font-weight:800">0</div>
-              <div style="font-size:11px;color:#94a3b8;margin-top:3px;font-weight:600">Post</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-top:18px">
+            <div style="border-radius:14px;background:linear-gradient(135deg,#f8fafc,#f1f5f9);padding:13px 4px;text-align:center">
+              <div id="statPosts" style="font-size:18px;font-weight:900;letter-spacing:-.02em">0</div>
+              <div style="font-size:11px;color:#94a3b8;margin-top:3px;font-weight:700">Post</div>
             </div>
-            <div style="border-radius:12px;background:#f8fafc;padding:11px 4px;text-align:center">
-              <div id="statLikes" style="font-size:17px;font-weight:800">0</div>
-              <div style="font-size:11px;color:#94a3b8;margin-top:3px;font-weight:600">Suka</div>
+            <div style="border-radius:14px;background:linear-gradient(135deg,#f8fafc,#f1f5f9);padding:13px 4px;text-align:center">
+              <div id="statLikes" style="font-size:18px;font-weight:900;letter-spacing:-.02em">0</div>
+              <div style="font-size:11px;color:#94a3b8;margin-top:3px;font-weight:700">Suka</div>
             </div>
-            <div style="border-radius:12px;background:#f8fafc;padding:11px 4px;text-align:center">
-              <div id="statVotes" style="font-size:17px;font-weight:800">0</div>
-              <div style="font-size:11px;color:#94a3b8;margin-top:3px;font-weight:600">Vote</div>
+            <div style="border-radius:14px;background:linear-gradient(135deg,#f8fafc,#f1f5f9);padding:13px 4px;text-align:center">
+              <div id="statVotes" style="font-size:18px;font-weight:900;letter-spacing:-.02em">0</div>
+              <div style="font-size:11px;color:#94a3b8;margin-top:3px;font-weight:700">Vote</div>
             </div>
           </div>
-          <button id="editProfileBtn" type="button" class="btn-p" style="width:100%;margin-top:14px;background:#f1f5f9;color:#0f172a">✏️ Edit Nama &amp; Foto</button>
+          <button id="editProfileBtn" type="button" class="btn-p" style="width:100%;margin-top:16px;background:linear-gradient(135deg,#f1f5f9,#e2e8f0);color:#0b1220;box-shadow:0 2px 8px -4px rgba(15,23,42,.1)">✏️ Edit Nama &amp; Foto</button>
         </div>
       </div>
 
-      <div style="font-size:11.5px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin:0 4px 8px">Akun</div>
-      <div class="card" style="padding:0;overflow:hidden;margin-bottom:16px">
+      <div style="font-size:11.5px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.12em;margin:0 4px 9px">Akun</div>
+      <div class="card" style="padding:0;overflow:hidden;margin-bottom:18px;border-radius:18px">
         <button id="myCodeBtn" type="button" class="setting-row">
           <div class="setting-icon" style="background:rgba(99,102,241,.15);color:#6366f1">🆔</div>
           <div style="flex:1;text-align:left">
-            <div style="font-size:14px;font-weight:600">Kode Akun Saya</div>
-            <div style="font-size:12px;color:#94a3b8;margin-top:2px">Simpan untuk backup</div>
+            <div style="font-size:14px;font-weight:700">Kode Akun Saya</div>
+            <div style="font-size:12px;color:#94a3b8;margin-top:2px;font-weight:500">Simpan untuk backup</div>
           </div>
         </button>
         <button id="rulesBtn" type="button" class="setting-row">
           <div class="setting-icon" style="background:rgba(245,158,11,.15);color:#f59e0b">📖</div>
           <div style="flex:1;text-align:left">
-            <div style="font-size:14px;font-weight:600">Tata Tertib Warga</div>
-            <div style="font-size:12px;color:#94a3b8;margin-top:2px">Etika &amp; panduan berkomunikasi</div>
+            <div style="font-size:14px;font-weight:700">Tata Tertib Warga</div>
+            <div style="font-size:12px;color:#94a3b8;margin-top:2px;font-weight:500">Etika &amp; panduan berkomunikasi</div>
           </div>
         </button>
         <button id="switchAccBtn" type="button" class="setting-row">
           <div class="setting-icon" style="background:rgba(245,158,11,.15);color:#f59e0b">🔄</div>
           <div style="flex:1;text-align:left">
-            <div style="font-size:14px;font-weight:600">Ganti Akun Google</div>
-            <div style="font-size:12px;color:#94a3b8;margin-top:2px">Login dengan akun lain</div>
+            <div style="font-size:14px;font-weight:700">Ganti Akun Google</div>
+            <div style="font-size:12px;color:#94a3b8;margin-top:2px;font-weight:500">Login dengan akun lain</div>
           </div>
         </button>
       </div>
 
       <div id="adminPanel" class="hide">
-        <div style="font-size:11.5px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin:0 4px 8px">🛡️ Panel Admin RT</div>
-        <div class="card" style="padding:0;overflow:hidden;margin-bottom:16px">
+        <div style="font-size:11.5px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.12em;margin:0 4px 9px">🛡️ Panel Admin RT</div>
+        <div class="card" style="padding:0;overflow:hidden;margin-bottom:18px;border-radius:18px">
           <button id="adminInviteCodeBtn" type="button" class="setting-row">
             <div class="setting-icon" style="background:rgba(16,185,129,.15);color:#059669">🔐</div>
             <div style="flex:1;text-align:left">
-              <div style="font-size:14px;font-weight:600">Kode Undangan RT</div>
-              <div style="font-size:12px;color:#94a3b8;margin-top:2px">Lihat &amp; ubah kode undangan warga</div>
+              <div style="font-size:14px;font-weight:700">Kode Undangan RT</div>
+              <div style="font-size:12px;color:#94a3b8;margin-top:2px;font-weight:500">Lihat &amp; ubah kode undangan</div>
             </div>
           </button>
           <button id="adminVerifyBtn" type="button" class="setting-row">
             <div class="setting-icon" style="background:rgba(59,130,246,.15);color:#2563eb">👥</div>
             <div style="flex:1;text-align:left">
-              <div style="font-size:14px;font-weight:600">Kelola Warga</div>
-              <div style="font-size:12px;color:#94a3b8;margin-top:2px">Atur role, blokir warga</div>
+              <div style="font-size:14px;font-weight:700">Kelola Warga</div>
+              <div style="font-size:12px;color:#94a3b8;margin-top:2px;font-weight:500">Atur role, blokir warga</div>
             </div>
           </button>
         </div>
       </div>
 
-      <div style="font-size:11.5px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin:0 4px 8px">Notifikasi</div>
-      <div class="card" style="padding:0;overflow:hidden;margin-bottom:16px">
+      <div style="font-size:11.5px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.12em;margin:0 4px 9px">Notifikasi</div>
+      <div class="card" style="padding:0;overflow:hidden;margin-bottom:18px;border-radius:18px">
         <div class="setting-row" style="cursor:default">
           <div class="setting-icon" style="background:linear-gradient(135deg,#fbbf24,#f59e0b);color:white">🔔</div>
           <div style="flex:1">
-            <div style="font-size:14px;font-weight:600">Bunyi Notifikasi</div>
-            <div style="font-size:12px;color:#94a3b8;margin-top:2px">Suara saat ada post baru</div>
+            <div style="font-size:14px;font-weight:700">Bunyi Notifikasi</div>
+            <div style="font-size:12px;color:#94a3b8;margin-top:2px;font-weight:500">Chime saat ada post baru</div>
           </div>
-          <button id="soundToggle" type="button" style="width:46px;height:26px;border-radius:13px;border:none;position:relative;background:#cbd5e1;flex-shrink:0;cursor:pointer">
-            <span id="soundKnob" style="position:absolute;top:2px;left:2px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:left .2s"></span>
+          <button id="soundToggle" type="button" style="width:48px;height:28px;border-radius:14px;border:none;position:relative;background:#cbd5e1;flex-shrink:0;cursor:pointer;transition:background .25s">
+            <span id="soundKnob" style="position:absolute;top:2px;left:2px;width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.2);transition:left .25s cubic-bezier(.34,1.56,.64,1)"></span>
           </button>
         </div>
         <div class="setting-row" style="cursor:default">
           <div class="setting-icon" style="background:linear-gradient(135deg,#6366f1,#8b5cf6);color:white">📱</div>
           <div style="flex:1">
-            <div style="font-size:14px;font-weight:600">Notifikasi Push (FCM)</div>
-            <div style="font-size:12px;color:#94a3b8;margin-top:2px">Notif muncul meski app tertutup</div>
+            <div style="font-size:14px;font-weight:700">Notifikasi Push (FCM)</div>
+            <div style="font-size:12px;color:#94a3b8;margin-top:2px;font-weight:500">Notif muncul meski app tertutup</div>
           </div>
-          <button id="notifBtn" type="button" style="padding:7px 12px;border-radius:9px;background:#f1f5f9;font-size:12px;font-weight:600;border:none;cursor:pointer">Aktifkan</button>
+          <button id="notifBtn" type="button" style="padding:8px 14px;border-radius:10px;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:white;font-size:12px;font-weight:800;border:none;cursor:pointer;box-shadow:0 4px 12px -4px rgba(99,102,241,.6)">Aktifkan</button>
         </div>
       </div>
 
-      <div style="font-size:11.5px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin:0 4px 8px">Data &amp; Backup</div>
-      <div class="card" style="padding:0;overflow:hidden;margin-bottom:12px">
+      <div style="font-size:11.5px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.12em;margin:0 4px 9px">Data &amp; Backup</div>
+      <div class="card" style="padding:0;overflow:hidden;margin-bottom:14px;border-radius:18px">
         <button id="backupBtn" type="button" class="setting-row">
           <div class="setting-icon" style="background:rgba(99,102,241,.15);color:#6366f1">💾</div>
           <div style="flex:1;text-align:left">
-            <div style="font-size:14px;font-weight:600">Backup Data Saya</div>
-            <div style="font-size:12px;color:#94a3b8;margin-top:2px">Unduh file JSON</div>
+            <div style="font-size:14px;font-weight:700">Backup Data Saya</div>
+            <div style="font-size:12px;color:#94a3b8;margin-top:2px;font-weight:500">Unduh file JSON</div>
           </div>
         </button>
         <button id="clearCacheBtn" type="button" class="setting-row">
           <div class="setting-icon" style="background:rgba(148,163,184,.15)">🧹</div>
-          <div style="flex:1;text-align:left;font-size:14px;font-weight:500">Bersihkan cache</div>
+          <div style="flex:1;text-align:left;font-size:14px;font-weight:600">Bersihkan cache</div>
         </button>
         <button id="deleteAccBtn" type="button" class="setting-row">
           <div class="setting-icon" style="background:rgba(244,63,94,.15);color:#f43f5e">🗑️</div>
-          <div style="flex:1;text-align:left;font-size:14px;font-weight:500;color:#f43f5e">Hapus Akun</div>
+          <div style="flex:1;text-align:left;font-size:14px;font-weight:600;color:#f43f5e">Hapus Akun</div>
         </button>
       </div>
-      <div class="card" style="padding:0;overflow:hidden">
+      <div class="card" style="padding:0;overflow:hidden;border-radius:18px">
         <button id="logoutBtn" type="button" class="setting-row">
           <div class="setting-icon" style="background:rgba(148,163,184,.15)">🚪</div>
-          <div style="flex:1;text-align:left;font-size:14px;font-weight:500">Keluar</div>
+          <div style="flex:1;text-align:left;font-size:14px;font-weight:600">Keluar</div>
         </button>
       </div>
     </section>
   </main>
 
   <button id="fab" type="button" class="fab">
-    <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
   </button>
 
   <nav class="nav safe-b">
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;padding:7px 6px">
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;padding:8px 6px">
       <button data-tab="home" type="button" class="nav-btn on">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 22V12h6v10"/></svg>
         <span>Beranda</span>
@@ -549,51 +578,51 @@ body.dark .loader .box{background:#111a2e}
 </div>
 
 <div id="composeSheet">
-  <header class="header safe-t" style="display:flex;align-items:center;gap:10px;padding:11px 13px">
-    <button id="composeCancel" type="button" style="width:38px;height:38px;border-radius:50%;background:#f1f5f9;display:flex;align-items:center;justify-content:center;border:none;cursor:pointer">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+  <header class="header safe-t" style="display:flex;align-items:center;gap:10px;padding:12px 14px">
+    <button id="composeCancel" type="button" style="width:40px;height:40px;border-radius:50%;background:#f1f5f9;display:flex;align-items:center;justify-content:center;border:none;cursor:pointer;transition:transform .15s">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
     </button>
-    <div style="flex:1;text-align:center;font-size:14.5px;font-weight:700" id="composeTitle">Tulis Postingan</div>
-    <button id="composePost" type="button" class="btn-p" style="padding:8px 16px;border-radius:99px;opacity:.5" disabled>
+    <div style="flex:1;text-align:center;font-size:15px;font-weight:800;letter-spacing:-.01em" id="composeTitle">Tulis Postingan</div>
+    <button id="composePost" type="button" class="btn-p" style="padding:9px 18px;border-radius:99px;opacity:.5" disabled>
       <span id="composeBtnText">Kirim</span>
     </button>
   </header>
-  <div class="scroll-y grow" style="padding:15px">
-    <div style="font-size:11.5px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin-bottom:9px">Kategori</div>
-    <div id="composeCats" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-bottom:14px">
-      <button type="button" data-c="umum" class="cat-btn"><div style="font-size:24px">💬</div><div style="font-size:12.5px;font-weight:700">Umum</div></button>
-      <button type="button" data-c="informasi" class="cat-btn"><div style="font-size:24px">📢</div><div style="font-size:12.5px;font-weight:700">Informasi</div></button>
-      <button type="button" data-c="galeri" class="cat-btn"><div style="font-size:24px">📷</div><div style="font-size:12.5px;font-weight:700">Galeri</div></button>
+  <div class="scroll-y grow" style="padding:16px">
+    <div style="font-size:11.5px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.12em;margin-bottom:10px">Kategori</div>
+    <div id="composeCats" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:16px">
+      <button type="button" data-c="umum" class="cat-btn"><div style="font-size:26px">💬</div><div style="font-size:12.5px;font-weight:800;margin-top:2px">Umum</div></button>
+      <button type="button" data-c="informasi" class="cat-btn"><div style="font-size:26px">📢</div><div style="font-size:12.5px;font-weight:800;margin-top:2px">Informasi</div></button>
+      <button type="button" data-c="galeri" class="cat-btn"><div style="font-size:26px">📷</div><div style="font-size:12.5px;font-weight:800;margin-top:2px">Galeri</div></button>
     </div>
     <div id="composeHint" class="hint h-umum"></div>
-    <div id="topicWrap" class="hide" style="margin-bottom:14px">
-      <div style="font-size:11.5px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px">Topik (opsional)</div>
-      <div style="display:flex;gap:6px">
+    <div id="topicWrap" class="hide" style="margin-top:14px">
+      <div style="font-size:11.5px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.12em;margin-bottom:9px">Topik (opsional)</div>
+      <div style="display:flex;gap:7px">
         <button type="button" data-t="obrolan" class="topic-chip on">💬 Obrolan</button>
         <button type="button" data-t="tanya" class="topic-chip">❓ Tanya</button>
       </div>
     </div>
-    <div id="eventWrap" class="hide" style="margin-bottom:14px">
-      <div style="font-size:11.5px;font-weight:800;color:#1e40af;text-transform:uppercase;letter-spacing:.1em;margin-bottom:7px">📅 Jadwal Kegiatan</div>
-      <input id="eventDate" type="datetime-local" class="dt" style="margin-bottom:8px">
+    <div id="eventWrap" class="hide" style="margin-top:14px">
+      <div style="font-size:11.5px;font-weight:800;color:#1e40af;text-transform:uppercase;letter-spacing:.12em;margin-bottom:8px">📅 Jadwal Kegiatan</div>
+      <input id="eventDate" type="datetime-local" class="dt" style="margin-bottom:9px">
       <input id="eventLocation" type="text" placeholder="📍 Lokasi (opsional)" class="dt">
     </div>
-    <div id="pinWrap" class="hide" style="margin-bottom:14px">
-      <label style="display:flex;align-items:center;gap:10px;padding:12px 14px;background:linear-gradient(135deg,rgba(245,158,11,.08),rgba(239,68,68,.06));border:1.5px solid rgba(245,158,11,.3);border-radius:12px;cursor:pointer">
+    <div id="pinWrap" class="hide" style="margin-top:14px">
+      <label style="display:flex;align-items:center;gap:11px;padding:13px 15px;background:linear-gradient(135deg,rgba(245,158,11,.09),rgba(239,68,68,.06));border:1.5px solid rgba(245,158,11,.32);border-radius:14px;cursor:pointer">
         <input id="pinCheck" type="checkbox" style="width:20px;height:20px;accent-color:#f59e0b">
         <div>
           <div style="font-size:13.5px;font-weight:800;color:#92400e">📌 Sematkan sebagai Pengumuman Penting</div>
-          <div style="font-size:11px;color:#78350f;margin-top:2px">Muncul paling atas di Beranda semua warga</div>
+          <div style="font-size:11px;color:#78350f;margin-top:2px;font-weight:500">Muncul paling atas di Beranda semua warga</div>
         </div>
       </label>
     </div>
-    <div style="display:flex;gap:11px">
+    <div style="display:flex;gap:12px;margin-top:16px">
       <div id="composeAvatar"></div>
       <div style="flex:1;min-width:0">
-        <div id="composeName" style="font-size:14px;font-weight:700;margin-bottom:7px"></div>
-        <textarea id="composeText" rows="5" placeholder="Tulis sesuatu..." style="width:100%;background:transparent;border:none;font-size:15.5px;line-height:1.55;resize:none;min-height:100px;font-family:inherit"></textarea>
+        <div id="composeName" style="font-size:14px;font-weight:800;margin-bottom:8px"></div>
+        <textarea id="composeText" rows="5" placeholder="Tulis sesuatu..." style="width:100%;background:transparent;border:none;font-size:15.5px;line-height:1.6;resize:none;min-height:100px;font-family:inherit;color:inherit"></textarea>
         <div id="composeAttach" class="attach-row"></div>
-        <div id="warnFoto" class="hide" style="margin-top:6px;font-size:12px;color:#f43f5e;font-weight:600">📷 Galeri wajib minimal 1 foto</div>
+        <div id="warnFoto" class="hide" style="margin-top:7px;font-size:12px;color:#f43f5e;font-weight:700">📷 Galeri wajib minimal 1 foto</div>
       </div>
     </div>
   </div>
@@ -601,60 +630,60 @@ body.dark .loader .box{background:#111a2e}
 
 <div id="modal" class="mask">
   <div class="modal">
-    <div style="display:flex;justify-content:center;padding:9px 0 2px"><div style="width:38px;height:4px;border-radius:99px;background:#cbd5e1"></div></div>
-    <div style="display:flex;align-items:center;justify-content:space-between;padding:9px 16px 11px">
-      <div id="modalTitle" style="font-size:15.5px;font-weight:800"></div>
-      <button id="modalX" type="button" style="width:34px;height:34px;border-radius:50%;background:#f1f5f9;display:flex;align-items:center;justify-content:center;border:none;cursor:pointer">
+    <div style="display:flex;justify-content:center;padding:10px 0 2px"><div style="width:40px;height:4px;border-radius:99px;background:#cbd5e1"></div></div>
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 18px 12px">
+      <div id="modalTitle" style="font-size:16px;font-weight:900;letter-spacing:-.01em"></div>
+      <button id="modalX" type="button" style="width:36px;height:36px;border-radius:50%;background:#f1f5f9;display:flex;align-items:center;justify-content:center;border:none;cursor:pointer;transition:transform .15s">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
       </button>
     </div>
-    <div class="scroll-y safe-b" style="flex:1;padding:0 16px 20px"><div id="modalBody"></div></div>
+    <div class="scroll-y safe-b" style="flex:1;padding:0 18px 22px"><div id="modalBody"></div></div>
   </div>
 </div>
 
 <div id="rulesModal" class="mask">
   <div class="modal">
-    <div style="display:flex;justify-content:center;padding:9px 0 2px"><div style="width:38px;height:4px;border-radius:99px;background:#cbd5e1"></div></div>
-    <div style="display:flex;align-items:center;justify-content:space-between;padding:9px 16px 11px">
-      <div style="font-size:15.5px;font-weight:800">📖 Tata Tertib Warga</div>
-      <button id="rulesClose" type="button" style="width:34px;height:34px;border-radius:50%;background:#f1f5f9;display:flex;align-items:center;justify-content:center;border:none;cursor:pointer">
+    <div style="display:flex;justify-content:center;padding:10px 0 2px"><div style="width:40px;height:4px;border-radius:99px;background:#cbd5e1"></div></div>
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 18px 12px">
+      <div style="font-size:16px;font-weight:900">📖 Tata Tertib Warga</div>
+      <button id="rulesClose" type="button" style="width:36px;height:36px;border-radius:50%;background:#f1f5f9;display:flex;align-items:center;justify-content:center;border:none;cursor:pointer">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
       </button>
     </div>
-    <div class="scroll-y safe-b" style="flex:1;padding:0 16px 24px">
-      <div style="background:linear-gradient(135deg,rgba(99,102,241,.08),rgba(168,85,247,.06));border:1px solid rgba(99,102,241,.2);border-radius:14px;padding:14px;margin-bottom:16px">
-        <div style="font-size:12.5px;color:#4f46e5;line-height:1.6;font-weight:600">Tujuan: menjaga komunikasi warga RT09/RW04 tetap sopan, terbuka, dan bermanfaat untuk semua.</div>
+    <div class="scroll-y safe-b" style="flex:1;padding:0 18px 26px">
+      <div style="background:linear-gradient(135deg,rgba(99,102,241,.1),rgba(168,85,247,.06));border:1px solid rgba(99,102,241,.2);border-radius:16px;padding:15px;margin-bottom:18px">
+        <div style="font-size:12.5px;color:#4f46e5;line-height:1.65;font-weight:700">Tujuan: menjaga komunikasi warga RT09/RW04 tetap sopan, terbuka, dan bermanfaat untuk semua.</div>
       </div>
-      <div style="font-size:11.5px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px">💬 Etika Berkomunikasi</div>
-      <div class="card" style="padding:14px;margin-bottom:16px">
+      <div style="font-size:11.5px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.12em;margin-bottom:11px">💬 Etika Berkomunikasi</div>
+      <div class="card" style="padding:15px;margin-bottom:18px">
         <div style="font-size:13.5px;line-height:1.75;color:#334155">
-          <div style="display:flex;gap:10px;margin-bottom:10px"><span style="font-weight:900;color:#6366f1">1.</span><span>Semua postingan &amp; komentar <b>bersifat terbuka</b> dan dapat dilihat seluruh warga.</span></div>
-          <div style="display:flex;gap:10px;margin-bottom:10px"><span style="font-weight:900;color:#6366f1">2.</span><span>Gunakan bahasa yang <b>sopan, jelas, dan tidak menyinggung</b>.</span></div>
-          <div style="display:flex;gap:10px;margin-bottom:10px"><span style="font-weight:900;color:#6366f1">3.</span><span>Hindari topik <b>SARA</b>, politik praktis, atau isu sensitif.</span></div>
-          <div style="display:flex;gap:10px"><span style="font-weight:900;color:#6366f1">4.</span><span>Tidak menyebar hoaks, spam, atau iklan pribadi tanpa izin pengurus.</span></div>
+          <div style="display:flex;gap:11px;margin-bottom:11px"><span style="font-weight:900;color:#6366f1">1.</span><span>Semua postingan &amp; komentar <b>bersifat terbuka</b> dan dapat dilihat seluruh warga.</span></div>
+          <div style="display:flex;gap:11px;margin-bottom:11px"><span style="font-weight:900;color:#6366f1">2.</span><span>Gunakan bahasa yang <b>sopan, jelas, dan tidak menyinggung</b>.</span></div>
+          <div style="display:flex;gap:11px;margin-bottom:11px"><span style="font-weight:900;color:#6366f1">3.</span><span>Hindari topik <b>SARA</b>, politik praktis, atau isu sensitif.</span></div>
+          <div style="display:flex;gap:11px"><span style="font-weight:900;color:#6366f1">4.</span><span>Tidak menyebar hoaks, spam, atau iklan pribadi tanpa izin pengurus.</span></div>
         </div>
       </div>
-      <div style="font-size:11.5px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px">📌 Jenis Postingan</div>
-      <div class="card" style="padding:14px;margin-bottom:16px">
+      <div style="font-size:11.5px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.12em;margin-bottom:11px">📌 Jenis Postingan</div>
+      <div class="card" style="padding:15px;margin-bottom:18px">
         <div style="font-size:13.5px;line-height:1.75;color:#334155">
-          <div style="display:flex;gap:10px;margin-bottom:10px"><span style="font-size:16px">💬</span><div><b>Umum</b> — obrolan santai, tanya-jawab antar warga.</div></div>
-          <div style="display:flex;gap:10px;margin-bottom:10px"><span style="font-size:16px">📢</span><div><b>Informasi</b> — pengumuman resmi, jadwal kegiatan RT.</div></div>
-          <div style="display:flex;gap:10px"><span style="font-size:16px">📷</span><div><b>Galeri</b> — foto &amp; dokumentasi kegiatan warga.</div></div>
+          <div style="display:flex;gap:11px;margin-bottom:11px"><span style="font-size:16px">💬</span><div><b>Umum</b> — obrolan santai, tanya-jawab antar warga.</div></div>
+          <div style="display:flex;gap:11px;margin-bottom:11px"><span style="font-size:16px">📢</span><div><b>Informasi</b> — pengumuman resmi, jadwal kegiatan RT.</div></div>
+          <div style="display:flex;gap:11px"><span style="font-size:16px">📷</span><div><b>Galeri</b> — foto &amp; dokumentasi kegiatan warga.</div></div>
         </div>
       </div>
-      <div style="font-size:11.5px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px">⚠️ Larangan</div>
-      <div class="card" style="padding:14px;margin-bottom:16px;background:linear-gradient(135deg,rgba(244,63,94,.04),rgba(239,68,68,.03));border-color:rgba(244,63,94,.2)">
+      <div style="font-size:11.5px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.12em;margin-bottom:11px">⚠️ Larangan</div>
+      <div class="card" style="padding:15px;margin-bottom:18px;background:linear-gradient(135deg,rgba(244,63,94,.05),rgba(239,68,68,.03));border-color:rgba(244,63,94,.2)">
         <div style="font-size:13.5px;line-height:1.75;color:#7f1d1d">
-          <div style="display:flex;gap:10px;margin-bottom:8px"><span>❌</span><span>Menghina, merendahkan, atau mengancam warga lain.</span></div>
-          <div style="display:flex;gap:10px;margin-bottom:8px"><span>❌</span><span>Mengirim gambar atau video tidak pantas.</span></div>
-          <div style="display:flex;gap:10px"><span>❌</span><span>Membahas masalah pribadi/keluarga di ruang publik.</span></div>
+          <div style="display:flex;gap:11px;margin-bottom:9px"><span>❌</span><span>Menghina, merendahkan, atau mengancam warga lain.</span></div>
+          <div style="display:flex;gap:11px;margin-bottom:9px"><span>❌</span><span>Mengirim gambar atau video tidak pantas.</span></div>
+          <div style="display:flex;gap:11px"><span>❌</span><span>Membahas masalah pribadi/keluarga di ruang publik.</span></div>
         </div>
       </div>
-      <div style="font-size:11.5px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px">🛡️ Konsekuensi</div>
-      <div class="card" style="padding:14px;margin-bottom:20px">
+      <div style="font-size:11.5px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.12em;margin-bottom:11px">🛡️ Konsekuensi</div>
+      <div class="card" style="padding:15px;margin-bottom:22px">
         <div style="font-size:13px;line-height:1.7;color:#334155">Pelanggaran akan ditindak oleh Pengurus RT berupa <b>teguran</b>, <b>pemblokiran akun</b>, hingga <b>pemanggilan secara kekeluargaan</b>. Mari jaga ketertiban bersama.</div>
       </div>
-      <div style="text-align:center;font-size:11.5px;color:#94a3b8;line-height:1.6;padding:0 8px">Dengan menggunakan aplikasi ini, Anda menyetujui seluruh tata tertib di atas.<br>Terima kasih telah menjaga kerukunan warga RT09/RW04. 🤝</div>
+      <div style="text-align:center;font-size:11.5px;color:#94a3b8;line-height:1.7;padding:0 8px;font-weight:500">Dengan menggunakan aplikasi ini, Anda menyetujui seluruh tata tertib di atas.<br>Terima kasih telah menjaga kerukunan warga RT09/RW04. 🤝</div>
     </div>
   </div>
 </div>
@@ -688,7 +717,7 @@ function esc(t){ return String(t==null?'':t).replace(/[&<>"']/g, function(c){ re
 function cap(s){ return s.charAt(0).toUpperCase()+s.slice(1); }
 function toast(msg, err){
   var t = $('toast'); t.textContent = msg;
-  t.style.background = err ? 'linear-gradient(135deg,#f43f5e,#e11d48)' : 'linear-gradient(135deg,#0f172a,#1e293b)';
+  t.style.background = err ? 'linear-gradient(135deg,#f43f5e,#e11d48)' : 'linear-gradient(135deg,#0b1220,#1e293b)';
   t.style.color = '#fff'; t.classList.add('on');
   clearTimeout(t._t); t._t = setTimeout(function(){ t.classList.remove('on'); }, 2600);
 }
@@ -808,7 +837,7 @@ function applyTheme(t){
   if($('themeIconDark')) $('themeIconDark').style.display = t==='dark' ? 'none' : 'block';
   if($('themeIconLight')) $('themeIconLight').style.display = t==='dark' ? 'block' : 'none';
   var meta = document.querySelector('meta[name=theme-color]');
-  if(meta) meta.content = t==='dark' ? '#070b14' : '#ffffff';
+  if(meta) meta.content = t==='dark' ? '#070b14' : '#f5f7fb';
 }
 var savedTheme = localStorage.getItem('spark_theme') || 'light';
 applyTheme(savedTheme);
@@ -820,27 +849,31 @@ $('themeBtn').onclick = function(){
 
 function refreshSound(){
   var on = localStorage.getItem('spark_sound') !== 'off';
-  $('soundToggle').style.background = on ? '#6366f1' : '#cbd5e1';
-  $('soundKnob').style.left = on ? '22px' : '2px';
+  $('soundToggle').style.background = on ? 'linear-gradient(135deg,#6366f1,#8b5cf6)' : '#cbd5e1';
+  $('soundKnob').style.left = on ? '23px' : '2px';
 }
 refreshSound();
 $('soundToggle').onclick = function(){
   var cur = localStorage.getItem('spark_sound') !== 'off';
   localStorage.setItem('spark_sound', cur ? 'off' : 'on'); refreshSound();
 };
-function beep(){
+function playChime(){
   if(localStorage.getItem('spark_sound') === 'off') return;
   try {
     var ctx = new (window.AudioContext || window.webkitAudioContext)();
-    function play(f, s, d){
+    function tone(freq, start, dur, vol){
       var o = ctx.createOscillator(); var g = ctx.createGain();
-      o.connect(g); g.connect(ctx.destination); o.frequency.value = f; o.type = 'sine';
-      g.gain.setValueAtTime(0.0001, s);
-      g.gain.exponentialRampToValueAtTime(0.2, s+0.01);
-      g.gain.exponentialRampToValueAtTime(0.0001, s+d);
-      o.start(s); o.stop(s+d);
+      o.connect(g); g.connect(ctx.destination); o.type = 'sine';
+      o.frequency.value = freq; vol = vol || 0.15;
+      g.gain.setValueAtTime(0.0001, start);
+      g.gain.exponentialRampToValueAtTime(vol, start + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, start + dur);
+      o.start(start); o.stop(start + dur + 0.02);
     }
-    var t = ctx.currentTime; play(880, t, 0.15); play(1180, t+0.16, 0.2);
+    var t = ctx.currentTime;
+    tone(1046.5, t,       0.18, 0.14);
+    tone(880,    t + 0.10, 0.20, 0.13);
+    tone(659.25, t + 0.22, 0.35, 0.12);
   } catch(e){}
 }
 
@@ -868,12 +901,11 @@ $('notifBtn').onclick = function(){
 };
 if(messaging){
   messaging.onMessage(function(payload){
-    console.log('[FCM] Foreground:', payload);
     var title = (payload.notification && payload.notification.title) || 'RT09 RW04';
     var body = (payload.notification && payload.notification.body) || 'Ada aktivitas baru';
     toast(title + ' — ' + body, false);
-    beep();
-    if(navigator.vibrate) try { navigator.vibrate([200, 100, 200]); } catch(e){}
+    playChime();
+    if(navigator.vibrate) try { navigator.vibrate([400, 200, 400, 200, 400]); } catch(e){}
   });
 }
 
@@ -920,7 +952,6 @@ $('catTileUmum').onclick = function(){ activeCat = 'umum'; setTab('category'); }
 $('catTileInformasi').onclick = function(){ activeCat = 'informasi'; setTab('category'); };
 $('catTileGaleri').onclick = function(){ activeCat = 'galeri'; setTab('category'); };
 
-// === TATA TERTIB ===
 function openRules(){ $('rulesModal').classList.add('on'); }
 function closeRules(){ $('rulesModal').classList.remove('on'); }
 $('rulesClose').onclick = closeRules;
@@ -1007,7 +1038,7 @@ function renderHome(){
       var html = '<div class="pin-card" data-pid="'+p.id+'">';
       html += '<div class="pin-badge">📌 PENTING</div>';
       html += '<div class="pin-title">'+esc(p.text || '[Foto]')+'</div>';
-      html += '<div class="pin-meta">'+avatarHtml({name:p.authorName, photoURL:p.authorPhoto, avatarBase64:p.authorAvatarBase64}, 20, 9)+'<span style="font-weight:700">'+esc(p.authorName)+'</span><span>·</span><span>'+timeAgo(p.createdAt)+'</span></div>';
+      html += '<div class="pin-meta">'+avatarHtml({name:p.authorName, photoURL:p.authorPhoto, avatarBase64:p.authorAvatarBase64}, 20, 9)+'<span style="font-weight:800">'+esc(p.authorName)+'</span><span>·</span><span>'+timeAgo(p.createdAt)+'</span></div>';
       html += '</div>';
       return html;
     }).join('');
@@ -1038,8 +1069,8 @@ function renderPostCard(p){
   html += '<div class="strip '+stripCls+'"></div>';
   if(showNew) html += '<div class="post-new-badge">✨ BARU</div>';
   if(p.pinned) html += '<div class="pin-tag">📌 PIN</div>';
-  if(isMine) html += '<span style="position:absolute;top:9px;left:7px;z-index:2;font-size:9px;font-weight:800;background:linear-gradient(135deg,#6366f1,#a855f7);color:white;padding:2px 7px;border-radius:5px">KAMU</span>';
-  if(hasEvent) html += '<span style="position:absolute;top:7px;right:7px;background:linear-gradient(135deg,#10b981,#059669);color:white;font-size:9px;font-weight:700;padding:3px 7px;border-radius:6px;z-index:2">📅 Kegiatan</span>';
+  if(isMine) html += '<span style="position:absolute;top:10px;left:8px;z-index:2;font-size:9px;font-weight:800;background:linear-gradient(135deg,#6366f1,#a855f7);color:white;padding:3px 8px;border-radius:6px;letter-spacing:.03em;box-shadow:0 3px 8px -2px rgba(99,102,241,.6)">KAMU</span>';
+  if(hasEvent) html += '<span style="position:absolute;top:8px;right:8px;background:linear-gradient(135deg,#10b981,#059669);color:white;font-size:9.5px;font-weight:800;padding:4px 9px;border-radius:7px;z-index:2;box-shadow:0 3px 8px -2px rgba(16,185,129,.5)">📅 Kegiatan</span>';
   if(firstImg) html += '<div class="thumb"><img src="data:image/jpeg;base64,'+firstImg+'"/></div>';
   html += '<div class="body">';
   html += '<div class="title">'+esc(preview)+'</div>';
@@ -1080,7 +1111,7 @@ function startMiniCountdowns(){
       var dd = (d<10?'0':'')+d, hh = (h<10?'0':'')+h, mm = (m<10?'0':'')+m, ss = (s<10?'0':'')+s;
       if(isHomeWidget){
         var evName = el.dataset.eventName || 'Kegiatan';
-        var html = '<div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;font-size:11.5px;font-weight:700;color:rgba(255,255,255,.95)"><span>📅</span><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0">'+esc(evName)+'</span></div>';
+        var html = '<div style="display:flex;align-items:center;gap:6px;margin-bottom:9px;font-size:11.5px;font-weight:800;color:rgba(255,255,255,.96)"><span>📅</span><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0">'+esc(evName)+'</span></div>';
         html += '<div class="cd-glass" style="display:flex;gap:5px"><div class="cd-box"><div class="n">'+dd+'</div><div class="l">Hari</div></div><div class="cd-box"><div class="n">'+hh+'</div><div class="l">Jam</div></div><div class="cd-box"><div class="n">'+mm+'</div><div class="l">Mnt</div></div><div class="cd-box"><div class="n">'+ss+'</div><div class="l">Dtk</div></div></div>';
         el.innerHTML = html;
       } else {
@@ -1153,6 +1184,19 @@ auth.onAuthStateChanged(function(user){
     setTimeout(function(){
       $('splash').style.display = 'none';
       $('welcomeOv').style.display = 'flex';
+
+      // 🪄 AUTO SILENT LOGIN (tanpa picker)
+      var pref = getPreferred();
+      var wantSwitch = sessionStorage.getItem('spark_switch_acc') === '1';
+      if(pref && !wantSwitch){
+        setTimeout(function(){
+          var p = new firebase.auth.GoogleAuthProvider();
+          p.setCustomParameters({ login_hint: pref, prompt: 'none' });
+          auth.signInWithPopup(p).catch(function(err){
+            console.log('Auto silent-login skip:', err.code);
+          });
+        }, 600);
+      }
     }, 400);
   }
 });
@@ -1171,17 +1215,52 @@ function syncUser(){
   return rtdb.ref('users/' + me.uid).update(data).catch(function(e){ console.warn(e); });
 }
 
-// === LOGIN GOOGLE dengan pilihan akun ===
+// === LOGIN GOOGLE — SILENT AUTO PAKAI AKUN TERAKHIR ===
 $('googleBtn').onclick = async function(){
-  var p = new firebase.auth.GoogleAuthProvider();
-  p.setCustomParameters({ prompt: 'select_account' });
+  var pref = getPreferred();
+  var wantSwitch = sessionStorage.getItem('spark_switch_acc') === '1';
   $('googleBtn').disabled = true;
-  try { await auth.signInWithPopup(p); }
-  catch(e){
-    if(['auth/popup-blocked','auth/popup-closed-by-user','auth/cancelled-popup-request','auth/operation-not-supported-in-this-environment'].indexOf(e.code) > -1 || /mobile/i.test(navigator.userAgent)){
-      try { await auth.signInWithRedirect(p); return; } catch(err){}
+
+  function buildProvider(mode){
+    var p = new firebase.auth.GoogleAuthProvider();
+    if(mode === 'silent' && pref){
+      p.setCustomParameters({ login_hint: pref, prompt: 'none' });
+    } else if(mode === 'hint' && pref){
+      p.setCustomParameters({ login_hint: pref, prompt: 'select_account' });
+    } else {
+      p.setCustomParameters({ prompt: 'select_account' });
     }
-    if(e.code !== 'auth/popup-closed-by-user' && e.code !== 'auth/cancelled-popup-request') toast('Gagal login: ' + (e.message||e.code), true);
+    return p;
+  }
+
+  try {
+    if(wantSwitch){
+      sessionStorage.removeItem('spark_switch_acc');
+      await auth.signInWithPopup(buildProvider('picker'));
+    } else if(pref){
+      try {
+        await auth.signInWithPopup(buildProvider('silent'));
+      } catch(errSilent){
+        if(errSilent.code === 'auth/popup-closed-by-user' ||
+           errSilent.code === 'auth/cancelled-popup-request'){
+          throw errSilent;
+        }
+        await auth.signInWithPopup(buildProvider('hint'));
+      }
+    } else {
+      await auth.signInWithPopup(buildProvider('picker'));
+    }
+  } catch(e){
+    if(['auth/popup-blocked','auth/popup-closed-by-user','auth/cancelled-popup-request','auth/operation-not-supported-in-this-environment','auth/web-storage-unsupported'].indexOf(e.code) > -1 || /mobile/i.test(navigator.userAgent)){
+      try {
+        await auth.signInWithRedirect(buildProvider(pref ? 'hint' : 'picker'));
+        return;
+      } catch(err){}
+    }
+    if(e.code !== 'auth/popup-closed-by-user' && e.code !== 'auth/cancelled-popup-request'){
+      toast('Gagal login: ' + (e.message||e.code), true);
+    }
+  } finally {
     $('googleBtn').disabled = false;
   }
 };
@@ -1205,7 +1284,11 @@ $('inviteSubmit').onclick = async function(){
     } else { loader(false); toast('Kode salah. Hubungi pengurus RT.', true); }
   } catch(e){ loader(false); toast('Gagal: ' + (e.message||'').slice(0,40), true); }
 };
-$('inviteLogout').onclick = async function(){ await auth.signOut(); location.reload(); };
+$('inviteLogout').onclick = async function(){
+  sessionStorage.setItem('spark_switch_acc', '1');
+  clearPreferred();
+  await auth.signOut(); location.reload();
+};
 
 function subscribeConfig(){
   if(unsubConfig){ try { unsubConfig(); } catch(e){} }
@@ -1240,7 +1323,7 @@ function subscribeFeed(){
         var isVeryRecent = (Date.now() - p.createdAt) < 15000;
         if(isNewlyCreated && isFromOther && isVeryRecent){
           if(document.visibilityState === 'visible'){
-            beep();
+            playChime();
             toast((p.pinned ? '📌 ' : '📢 ') + 'Post baru dari ' + (p.authorName||'warga'), false);
           }
         }
@@ -1266,7 +1349,7 @@ function renderCategory(){
   var list = feed.filter(function(p){ return (p.category||'umum') === activeCat; });
   var grid = $('catGrid');
   $('catHint').className = 'hint h-' + (activeCat === 'informasi' ? 'info' : activeCat === 'galeri' ? 'gal' : 'umum');
-  var hints = { umum: 'Ruang diskusi santai. Pilih topik: Obrolan atau Tanya.', informasi: 'Pengumuman resmi. Jadwal kegiatan punya countdown otomatis.', galeri: 'Wajib menyertakan minimal 1 foto.' };
+  var hints = { umum: '💬 Ruang diskusi santai. Pilih topik: Obrolan atau Tanya.', informasi: '📢 Pengumuman resmi. Jadwal kegiatan punya countdown otomatis.', galeri: '📷 Dokumentasi warga. Wajib menyertakan minimal 1 foto.' };
   $('catHint').textContent = hints[activeCat];
   grid.style.gridTemplateColumns = '1fr 1fr';
 
@@ -1280,9 +1363,9 @@ function renderCategory(){
       var d = Math.floor(diff/86400000), h = Math.floor((diff%86400000)/3600000), m = Math.floor((diff%3600000)/60000), s = Math.floor((diff%60000)/1000);
       var html = '<div class="post-card b-info" style="cursor:pointer;grid-column:1/-1" data-pid="'+nextEvent.id+'">';
       html += '<div class="strip s-info"></div>';
-      html += '<div class="body" style="padding:12px">';
-      html += '<div style="font-size:13px;font-weight:700;margin-bottom:6px;color:#1e40af">'+esc(nextEvent.text)+'</div>';
-      if(nextEvent.eventLocation) html += '<div style="font-size:11px;color:#64748b;margin-bottom:8px">📍 '+esc(nextEvent.eventLocation)+'</div>';
+      html += '<div class="body" style="padding:13px">';
+      html += '<div style="font-size:13.5px;font-weight:800;margin-bottom:7px;color:#1e40af">'+esc(nextEvent.text)+'</div>';
+      if(nextEvent.eventLocation) html += '<div style="font-size:11.5px;color:#64748b;margin-bottom:9px;font-weight:600">📍 '+esc(nextEvent.eventLocation)+'</div>';
       html += '<div class="cd-mini" data-cd="'+nextEvent.eventDate+'"><div class="cd-m-box"><div class="n">'+d+'</div><div class="l">Hari</div></div><div class="cd-m-box"><div class="n">'+h+'</div><div class="l">Jam</div></div><div class="cd-m-box"><div class="n">'+m+'</div><div class="l">Mnt</div></div><div class="cd-m-box"><div class="n">'+s+'</div><div class="l">Dtk</div></div></div>';
       html += '</div></div>';
       $('infoEventContent').innerHTML = html;
@@ -1320,35 +1403,35 @@ function renderPostDetail(p){
   var likeCount = toCount(p.likedBy);
 
   var html = '';
-  if(p.pinned) html += '<div style="background:linear-gradient(135deg,#f59e0b,#ef4444);color:white;border-radius:12px;padding:10px 14px;margin-bottom:12px;font-size:12.5px;font-weight:800;display:flex;align-items:center;gap:6px">📌 PENGUMUMAN PENTING</div>';
-  html += '<div style="display:flex;align-items:center;gap:11px;margin-bottom:12px">';
-  html += avatarHtml({name:p.authorName, photoURL:p.authorPhoto, avatarBase64:p.authorAvatarBase64}, 42, 16);
+  if(p.pinned) html += '<div style="background:linear-gradient(135deg,#f59e0b,#ef4444);color:white;border-radius:14px;padding:12px 16px;margin-bottom:14px;font-size:12.5px;font-weight:800;display:flex;align-items:center;gap:7px;box-shadow:0 8px 20px -8px rgba(245,158,11,.6)">📌 PENGUMUMAN PENTING</div>';
+  html += '<div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">';
+  html += avatarHtml({name:p.authorName, photoURL:p.authorPhoto, avatarBase64:p.authorAvatarBase64}, 44, 17);
   html += '<div style="flex:1;min-width:0">';
-  html += '<div style="font-size:14.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(p.authorName)+'</div>';
-  html += '<div style="font-size:11.5px;color:#94a3b8;margin-top:2px">'+({umum:'Umum',informasi:'Informasi',galeri:'Galeri'})[cat]+' · '+timeAgo(p.createdAt)+'</div></div>';
+  html += '<div style="font-size:14.5px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(p.authorName)+'</div>';
+  html += '<div style="font-size:11.5px;color:#94a3b8;margin-top:2px;font-weight:600">'+({umum:'Umum',informasi:'Informasi',galeri:'Galeri'})[cat]+' · '+timeAgo(p.createdAt)+'</div></div>';
   if(isMine || isAdmin()){
-    html += '<button type="button" id="pinBtn" style="width:36px;height:36px;border-radius:50%;background:rgba(245,158,11,.1);color:#f59e0b;display:flex;align-items:center;justify-content:center;border:none;cursor:pointer;margin-right:6px">'+(p.pinned?'📌':'📍')+'</button>';
-    html += '<button type="button" id="delPostBtn" style="width:36px;height:36px;border-radius:50%;background:rgba(244,63,94,.1);color:#f43f5e;display:flex;align-items:center;justify-content:center;border:none;cursor:pointer"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6"/></svg></button>';
+    html += '<button type="button" id="pinBtn" style="width:38px;height:38px;border-radius:50%;background:rgba(245,158,11,.12);color:#f59e0b;display:flex;align-items:center;justify-content:center;border:none;cursor:pointer;margin-right:6px;font-size:16px">'+(p.pinned?'📌':'📍')+'</button>';
+    html += '<button type="button" id="delPostBtn" style="width:38px;height:38px;border-radius:50%;background:rgba(244,63,94,.12);color:#f43f5e;display:flex;align-items:center;justify-content:center;border:none;cursor:pointer"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6"/></svg></button>';
   }
   html += '</div>';
 
   if(hasEvent){
-    html += '<div style="background:linear-gradient(135deg,rgba(59,130,246,.08),rgba(99,102,241,.08));border:1px solid rgba(59,130,246,.2);border-radius:14px;padding:12px;margin-bottom:12px">';
-    html += '<div style="font-size:13px;font-weight:700;color:#1e40af;margin-bottom:6px">📅 '+fmtDateTime(p.eventDate)+'</div>';
-    if(p.eventLocation) html += '<div style="font-size:12.5px;color:#3730a3;margin-bottom:8px">📍 '+esc(p.eventLocation)+'</div>';
-    html += '<div id="countdownBox" style="display:flex;gap:6px;margin-top:10px"></div></div>';
+    html += '<div style="background:linear-gradient(135deg,rgba(59,130,246,.09),rgba(99,102,241,.07));border:1px solid rgba(59,130,246,.22);border-radius:16px;padding:14px;margin-bottom:14px">';
+    html += '<div style="font-size:13px;font-weight:800;color:#1e40af;margin-bottom:7px">📅 '+fmtDateTime(p.eventDate)+'</div>';
+    if(p.eventLocation) html += '<div style="font-size:12.5px;color:#3730a3;margin-bottom:10px;font-weight:600">📍 '+esc(p.eventLocation)+'</div>';
+    html += '<div id="countdownBox" style="display:flex;gap:6px;margin-top:11px"></div></div>';
   }
-  if(hasText) html += '<div style="font-size:15px;line-height:1.6;white-space:pre-wrap;word-break:break-word;margin-bottom:14px">'+esc(p.text)+'</div>';
+  if(hasText) html += '<div style="font-size:15px;line-height:1.65;white-space:pre-wrap;word-break:break-word;margin-bottom:16px">'+esc(p.text)+'</div>';
   html += renderPhotoGrid(p);
 
-  html += '<div style="display:flex;gap:16px;padding:12px 0;border-top:1px solid rgba(148,163,184,.12);border-bottom:1px solid rgba(148,163,184,.12);margin-bottom:16px">';
-  html += '<button type="button" id="likeBtn" style="background:transparent;border:none;display:flex;align-items:center;gap:6px;font-weight:600;font-size:13.5px;color:'+(liked?'#f43f5e':'#64748b')+';cursor:pointer;padding:0">';
+  html += '<div style="display:flex;gap:18px;padding:14px 0;border-top:1px solid rgba(148,163,184,.12);border-bottom:1px solid rgba(148,163,184,.12);margin-bottom:18px">';
+  html += '<button type="button" id="likeBtn" style="background:transparent;border:none;display:flex;align-items:center;gap:7px;font-weight:800;font-size:13.5px;color:'+(liked?'#f43f5e':'#64748b')+';cursor:pointer;padding:0;transition:transform .15s">';
   html += '<svg width="20" height="20" viewBox="0 0 24 24" fill="'+(liked?'currentColor':'none')+'" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>';
   html += '<span>'+likeCount+' Suka</span></button>';
-  html += '<div style="display:flex;align-items:center;gap:6px;color:#64748b;font-weight:600;font-size:13.5px">';
+  html += '<div style="display:flex;align-items:center;gap:7px;color:#64748b;font-weight:800;font-size:13.5px">';
   html += '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>';
   html += '<span>'+(p.commentCount||0)+' Komentar</span></div></div>';
-  html += '<div style="font-size:12.5px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px">Komentar</div>';
+  html += '<div style="font-size:12.5px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.12em;margin-bottom:14px">💬 Komentar</div>';
   html += '<div id="commentsList" style="display:flex;flex-direction:column;gap:12px"></div>';
 
   $('postScroll').innerHTML = html;
@@ -1393,13 +1476,13 @@ function renderPhotoGrid(p){
   (p.images || []).forEach(function(b64){ items.push({ b64: b64, isMain: true, author: p.authorName }); });
   var addTile = '<button type="button" id="addPhotoBtn" class="photo-add"><span class="plus">+</span><span class="txt">Foto</span></button>';
   if(!items.length){
-    return '<button type="button" id="addPhotoBtn" style="width:100%;padding:18px;border-radius:12px;border:1.5px dashed #cbd5e1;background:#f8fafc;color:#64748b;font-size:13.5px;font-weight:600;cursor:pointer;text-align:center;margin-bottom:12px">📷 Tambah Foto</button>';
+    return '<button type="button" id="addPhotoBtn" style="width:100%;padding:20px;border-radius:14px;border:1.5px dashed #cbd5e1;background:#f8fafc;color:#64748b;font-size:13.5px;font-weight:700;cursor:pointer;text-align:center;margin-bottom:14px">📷 Tambah Foto</button>';
   }
   if(items.length === 1){
     var it = items[0];
-    return '<div class="photo-grid single" style="margin-bottom:12px"><div class="pg-item"><img src="data:image/jpeg;base64,'+it.b64+'" data-pimg="1"/></div><button type="button" id="addPhotoBtn" style="width:100%;padding:10px;border-radius:10px;border:1.5px dashed #cbd5e1;background:#f8fafc;color:#64748b;font-size:12px;font-weight:600;cursor:pointer;margin-top:6px">📷 Tambah Foto Warga</button></div>';
+    return '<div class="photo-grid single" style="margin-bottom:14px"><div class="pg-item"><img src="data:image/jpeg;base64,'+it.b64+'" data-pimg="1"/></div><button type="button" id="addPhotoBtn" style="width:100%;padding:11px;border-radius:11px;border:1.5px dashed #cbd5e1;background:#f8fafc;color:#64748b;font-size:12px;font-weight:700;cursor:pointer;margin-top:7px">📷 Tambah Foto Warga</button></div>';
   }
-  var grid = '<div class="photo-grid" style="margin-bottom:12px">';
+  var grid = '<div class="photo-grid" style="margin-bottom:14px">';
   items.forEach(function(it){ grid += '<div class="pg-item"><img src="data:image/jpeg;base64,'+it.b64+'" data-pimg="1"/></div>'; });
   grid += addTile + '</div>';
   return grid;
@@ -1417,7 +1500,7 @@ function openLightbox(src){ $('lightboxImg').src = src; $('lightbox').classList.
 async function loadComments(pid){
   var el = $('commentsList');
   if(!el) return;
-  el.innerHTML = '<div style="text-align:center;color:#94a3b8;font-size:13px;padding:16px 0">Memuat...</div>';
+  el.innerHTML = '<div style="text-align:center;color:#94a3b8;font-size:13px;padding:18px 0;font-weight:600">Memuat komentar...</div>';
   try {
     var snap = await rtdb.ref('comments/' + pid).orderByChild('createdAt').limitToLast(100).once('value');
     var list = [];
@@ -1426,21 +1509,21 @@ async function loadComments(pid){
       list.push(Object.assign({ id: child.key }, x, { createdAt: x.createdAt || Date.now() }));
     });
     renderComments(list);
-  } catch(e){ if(el) el.innerHTML = '<div style="color:#f43f5e;font-size:12.5px;text-align:center;padding:8px">Gagal memuat komentar</div>'; }
+  } catch(e){ if(el) el.innerHTML = '<div style="color:#f43f5e;font-size:12.5px;text-align:center;padding:10px;font-weight:600">Gagal memuat komentar</div>'; }
 }
 
 function renderComments(list){
   var el = $('commentsList');
   if(!el) return;
-  if(!list.length){ el.innerHTML = '<div style="text-align:center;color:#94a3b8;font-size:13px;padding:16px 0">Belum ada komentar</div>'; return; }
+  if(!list.length){ el.innerHTML = '<div style="text-align:center;color:#94a3b8;font-size:13px;padding:20px 0;font-weight:600">Belum ada komentar. Jadilah yang pertama!</div>'; return; }
   el.innerHTML = list.map(function(c){
     var t = c.text || '';
     var imgs = extractImageUrls(t);
     if(imgs.length) imgs.forEach(function(u){ t = t.replace(u, '').trim(); });
     var body = '<span class="name">'+esc(c.authorName)+'</span>';
     if(t) body += ' ' + esc(t);
-    var imgsHtml = imgs.map(function(u){ return '<img src="'+esc(u)+'" data-gif="'+esc(u)+'" style="max-width:180px;border-radius:10px;margin-top:6px;display:block;cursor:pointer" loading="lazy"/>'; }).join('');
-    return '<div class="comment-item">'+avatarHtml({name:c.authorName, photoURL:c.authorPhoto, avatarBase64:c.authorAvatarBase64}, 32, 12)+'<div class="body"><div class="txt">'+body+'</div>'+imgsHtml+'<div class="time">'+timeAgo(c.createdAt)+'</div></div></div>';
+    var imgsHtml = imgs.map(function(u){ return '<img src="'+esc(u)+'" data-gif="'+esc(u)+'" style="max-width:180px;border-radius:12px;margin-top:8px;display:block;cursor:pointer;box-shadow:0 4px 12px -4px rgba(0,0,0,.15)" loading="lazy"/>'; }).join('');
+    return '<div class="comment-item">'+avatarHtml({name:c.authorName, photoURL:c.authorPhoto, avatarBase64:c.authorAvatarBase64}, 34, 13)+'<div class="body"><div class="txt">'+body+'</div>'+imgsHtml+'<div class="time">'+timeAgo(c.createdAt)+'</div></div></div>';
   }).join('');
   el.querySelectorAll('[data-gif]').forEach(function(img){ img.onclick = function(){ openLightbox(img.src); }; });
 }
@@ -1497,12 +1580,12 @@ function startCountdown(){
     if(!el) return;
     if(!activePost || !activePost.eventDate) return;
     var diff = activePost.eventDate - Date.now();
-    if(diff <= 0){ el.innerHTML = '<div style="padding:11px;background:#f1f5f9;border-radius:10px;font-size:13px;font-weight:700;color:#64748b;text-align:center;width:100%">Kegiatan sudah dimulai / selesai</div>'; return; }
+    if(diff <= 0){ el.innerHTML = '<div style="padding:12px;background:#f1f5f9;border-radius:11px;font-size:13px;font-weight:700;color:#64748b;text-align:center;width:100%">Kegiatan sudah dimulai / selesai</div>'; return; }
     var d = Math.floor(diff/86400000), h = Math.floor((diff%86400000)/3600000), m = Math.floor((diff%3600000)/60000), s = Math.floor((diff%60000)/1000);
-    el.innerHTML = '<div style="flex:1;text-align:center;background:linear-gradient(135deg,#3b82f6,#6366f1);color:white;border-radius:10px;padding:9px 4px"><div style="font-size:17px;font-weight:800">'+d+'</div><div style="font-size:9.5px;font-weight:700;text-transform:uppercase;margin-top:3px;opacity:.9">Hari</div></div>'+
-      '<div style="flex:1;text-align:center;background:linear-gradient(135deg,#3b82f6,#6366f1);color:white;border-radius:10px;padding:9px 4px"><div style="font-size:17px;font-weight:800">'+h+'</div><div style="font-size:9.5px;font-weight:700;text-transform:uppercase;margin-top:3px;opacity:.9">Jam</div></div>'+
-      '<div style="flex:1;text-align:center;background:linear-gradient(135deg,#3b82f6,#6366f1);color:white;border-radius:10px;padding:9px 4px"><div style="font-size:17px;font-weight:800">'+m+'</div><div style="font-size:9.5px;font-weight:700;text-transform:uppercase;margin-top:3px;opacity:.9">Mnt</div></div>'+
-      '<div style="flex:1;text-align:center;background:linear-gradient(135deg,#3b82f6,#6366f1);color:white;border-radius:10px;padding:9px 4px"><div style="font-size:17px;font-weight:800">'+s+'</div><div style="font-size:9.5px;font-weight:700;text-transform:uppercase;margin-top:3px;opacity:.9">Dtk</div></div>';
+    el.innerHTML = '<div style="flex:1;text-align:center;background:linear-gradient(135deg,#3b82f6,#6366f1);color:white;border-radius:11px;padding:10px 4px;box-shadow:0 4px 12px -4px rgba(59,130,246,.4)"><div style="font-size:17px;font-weight:800">'+d+'</div><div style="font-size:9.5px;font-weight:800;text-transform:uppercase;margin-top:3px;opacity:.9;letter-spacing:.05em">Hari</div></div>'+
+      '<div style="flex:1;text-align:center;background:linear-gradient(135deg,#3b82f6,#6366f1);color:white;border-radius:11px;padding:10px 4px;box-shadow:0 4px 12px -4px rgba(59,130,246,.4)"><div style="font-size:17px;font-weight:800">'+h+'</div><div style="font-size:9.5px;font-weight:800;text-transform:uppercase;margin-top:3px;opacity:.9;letter-spacing:.05em">Jam</div></div>'+
+      '<div style="flex:1;text-align:center;background:linear-gradient(135deg,#3b82f6,#6366f1);color:white;border-radius:11px;padding:10px 4px;box-shadow:0 4px 12px -4px rgba(59,130,246,.4)"><div style="font-size:17px;font-weight:800">'+m+'</div><div style="font-size:9.5px;font-weight:800;text-transform:uppercase;margin-top:3px;opacity:.9;letter-spacing:.05em">Mnt</div></div>'+
+      '<div style="flex:1;text-align:center;background:linear-gradient(135deg,#3b82f6,#6366f1);color:white;border-radius:11px;padding:10px 4px;box-shadow:0 4px 12px -4px rgba(59,130,246,.4)"><div style="font-size:17px;font-weight:800">'+s+'</div><div style="font-size:9.5px;font-weight:800;text-transform:uppercase;margin-top:3px;opacity:.9;letter-spacing:.05em">Dtk</div></div>';
   }
   tick(); countdownTimer = setInterval(tick, 1000);
 }
@@ -1513,7 +1596,7 @@ function openCompose(cat){
   $('composeText').value = ''; composeImgs = [];
   composeCat = cat || 'umum'; composeTopic = 'obrolan';
   renderAttach();
-  $('composeAvatar').innerHTML = avatarHtml(me, 38, 15);
+  $('composeAvatar').innerHTML = avatarHtml(me, 40, 15);
   $('composeName').textContent = me.name;
   $('composePost').disabled = true; $('composePost').style.opacity = '.5';
   $('eventDate').value = ''; $('eventLocation').value = '';
@@ -1541,7 +1624,7 @@ function checkReady(){
 }
 function updateComposeUI(){
   document.querySelectorAll('#composeCats .cat-btn').forEach(function(b){ b.classList.toggle('on', b.dataset.c === composeCat); });
-  var hints = { umum: 'Diskusi santai. Pilih topik: Obrolan atau Tanya.', informasi: 'Pengumuman resmi. Jadwal kegiatan tampil countdown otomatis.', galeri: 'Wajib menyertakan minimal 1 foto.' };
+  var hints = { umum: '💬 Diskusi santai. Pilih topik: Obrolan atau Tanya.', informasi: '📢 Pengumuman resmi. Jadwal kegiatan tampil countdown otomatis.', galeri: '📷 Wajib menyertakan minimal 1 foto.' };
   $('composeHint').className = 'hint h-' + (composeCat === 'informasi' ? 'info' : composeCat === 'galeri' ? 'gal' : 'umum');
   $('composeHint').textContent = hints[composeCat];
   $('topicWrap').classList.toggle('hide', composeCat !== 'umum');
@@ -1623,10 +1706,10 @@ function renderWargaList(){
     return;
   }
   el.innerHTML = others.map(function(u){
-    var roleBadge = u.role === 'admin' ? '<span class="badge-pill pill-blue" style="margin-left:4px">Pengurus</span>' : '';
-    return '<div class="user-row">'+avatarHtml(u, 44, 17)+
-      '<div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:700;display:flex;align-items:center;gap:2px"><span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(u.name||'Warga')+'</span>'+roleBadge+'</div>'+
-      '<div style="font-size:11.5px;color:#64748b;margin-top:2px">'+(u.blok ? 'Blok '+esc(u.blok)+' · ' : '')+'Terdaftar '+timeAgo(u.createdAt || 0)+'</div></div></div>';
+    var roleBadge = u.role === 'admin' ? '<span class="badge-pill pill-blue" style="margin-left:5px">Pengurus</span>' : '';
+    return '<div class="user-row">'+avatarHtml(u, 46, 17)+
+      '<div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:800;display:flex;align-items:center;gap:3px"><span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(u.name||'Warga')+'</span>'+roleBadge+'</div>'+
+      '<div style="font-size:11.5px;color:#64748b;margin-top:3px;font-weight:500">'+(u.blok ? 'Blok '+esc(u.blok)+' · ' : '')+'Terdaftar '+timeAgo(u.createdAt || 0)+'</div></div></div>';
   }).join('');
 }
 
@@ -1656,7 +1739,7 @@ function renderVoting(){
   var html = '';
   var now = Date.now();
 
-  if(isAdmin()) html += '<button id="newPollBtn" class="btn-p" style="width:100%;margin-bottom:12px">➕ Buat Voting Baru</button>';
+  if(isAdmin()) html += '<button id="newPollBtn" class="btn-p" style="width:100%;margin-bottom:14px">➕ Buat Voting Baru</button>';
 
   if(!polls.length){
     html += '<div class="empty-state"><div class="em">🗳️</div><div class="title">Belum ada voting</div><div class="sub">'+(isAdmin()?'Buat voting pertama untuk RT':'Tunggu pengurus membuat voting')+'</div></div>';
@@ -1670,11 +1753,11 @@ function renderVoting(){
     var totalVotes = toCount(p.votes);
     var myVote = (p.votes||{})[me.uid];
     html += '<div class="poll-card">';
-    html += '<div style="display:flex;justify-content:space-between;align-items:start;gap:8px;margin-bottom:6px">';
-    html += '<div style="font-size:14.5px;font-weight:800;line-height:1.3;flex:1">'+esc(p.title)+'</div>';
+    html += '<div style="display:flex;justify-content:space-between;align-items:start;gap:9px;margin-bottom:7px">';
+    html += '<div style="font-size:15px;font-weight:900;line-height:1.35;flex:1;letter-spacing:-.01em">'+esc(p.title)+'</div>';
     html += '<span class="badge-pill '+(expired?'pill-gray':'pill-green')+'">'+(expired?'Selesai':'Aktif')+'</span></div>';
-    if(p.description) html += '<div style="font-size:12.5px;color:#64748b;line-height:1.5;margin-bottom:8px">'+esc(p.description)+'</div>';
-    html += '<div style="font-size:11px;color:#94a3b8;margin-bottom:8px">Oleh '+esc(p.createdByName||'?')+' · '+totalVotes+' suara'+(p.deadline>0?' · deadline '+fmtDate(p.deadline):'')+'</div>';
+    if(p.description) html += '<div style="font-size:12.5px;color:#64748b;line-height:1.55;margin-bottom:9px">'+esc(p.description)+'</div>';
+    html += '<div style="font-size:11px;color:#94a3b8;margin-bottom:10px;font-weight:600">Oleh '+esc(p.createdByName||'?')+' · '+totalVotes+' suara'+(p.deadline>0?' · deadline '+fmtDate(p.deadline):'')+'</div>';
 
     (p.options||[]).forEach(function(opt){
       var optVotes = 0;
@@ -1683,12 +1766,12 @@ function renderVoting(){
       var voted = myVote === opt.id;
       var disabled = expired || myVote;
       html += '<div class="poll-opt '+(voted?'voted':'')+'" data-vote="'+opt.id+'" data-poll="'+p.id+'" style="'+(disabled?'cursor:default;opacity:'+(myVote && !voted ? .7 : 1):'')+'">';
-      html += '<div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:700">'+(voted?'✅ ':'')+esc(opt.text)+'</div>';
-      html += '<div style="height:6px;border-radius:99px;background:#e2e8f0;overflow:hidden;margin-top:6px"><div class="bar" style="width:'+pct+'%"></div></div></div>';
+      html += '<div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:800">'+(voted?'✅ ':'')+esc(opt.text)+'</div>';
+      html += '<div style="height:7px;border-radius:99px;background:#e2e8f0;overflow:hidden;margin-top:7px"><div class="bar" style="width:'+pct+'%"></div></div></div>';
       html += '<div class="pct">'+pct+'%</div></div>';
     });
 
-    if(isAdmin()) html += '<button class="btn-s" style="width:100%;margin-top:10px;padding:8px;font-size:12px" data-poll-del="'+p.id+'">🗑️ Hapus Voting</button>';
+    if(isAdmin()) html += '<button class="btn-s" style="width:100%;margin-top:12px;padding:9px;font-size:12px;font-weight:700" data-poll-del="'+p.id+'">🗑️ Hapus Voting</button>';
     html += '</div>';
   });
 
@@ -1704,7 +1787,7 @@ function renderVoting(){
     optEl.onclick = async function(){
       try {
         await rtdb.ref('polls/' + p.id + '/votes/' + me.uid).set(optEl.dataset.vote);
-        toast('Suara terkirim');
+        toast('Suara terkirim 🗳️');
       } catch(e){ toast('Gagal: '+(e.message||'').slice(0,40), true); }
     };
   });
@@ -1719,16 +1802,16 @@ function renderVoting(){
 
 function openNewPoll(){
   openModal('Voting Baru',
-    '<div style="font-size:11.5px;font-weight:800;color:#94a3b8;text-transform:uppercase;margin-bottom:6px">Judul</div>'+
-    '<input id="pollTitle" type="text" class="dt" maxlength="100" placeholder="Contoh: Jadwal Kerja Bakti" style="margin-bottom:14px"/>'+
-    '<div style="font-size:11.5px;font-weight:800;color:#94a3b8;text-transform:uppercase;margin-bottom:6px">Deskripsi (opsional)</div>'+
-    '<textarea id="pollDesc" class="dt" rows="2" placeholder="Keterangan tambahan..." style="margin-bottom:14px;resize:none"></textarea>'+
-    '<div style="font-size:11.5px;font-weight:800;color:#94a3b8;text-transform:uppercase;margin-bottom:6px">Opsi (minimal 2)</div>'+
-    '<input id="pollOpt1" type="text" class="dt" placeholder="Opsi 1" style="margin-bottom:8px"/>'+
-    '<input id="pollOpt2" type="text" class="dt" placeholder="Opsi 2" style="margin-bottom:8px"/>'+
-    '<input id="pollOpt3" type="text" class="dt" placeholder="Opsi 3 (kosongkan jika tidak perlu)" style="margin-bottom:14px"/>'+
-    '<div style="font-size:11.5px;font-weight:800;color:#94a3b8;text-transform:uppercase;margin-bottom:6px">Deadline (opsional)</div>'+
-    '<input id="pollDeadline" type="datetime-local" class="dt" style="margin-bottom:16px"/>'+
+    '<div style="font-size:11.5px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin-bottom:7px">Judul</div>'+
+    '<input id="pollTitle" type="text" class="dt" maxlength="100" placeholder="Contoh: Jadwal Kerja Bakti" style="margin-bottom:16px"/>'+
+    '<div style="font-size:11.5px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin-bottom:7px">Deskripsi (opsional)</div>'+
+    '<textarea id="pollDesc" class="dt" rows="2" placeholder="Keterangan tambahan..." style="margin-bottom:16px;resize:none"></textarea>'+
+    '<div style="font-size:11.5px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin-bottom:7px">Opsi (minimal 2)</div>'+
+    '<input id="pollOpt1" type="text" class="dt" placeholder="Opsi 1" style="margin-bottom:9px"/>'+
+    '<input id="pollOpt2" type="text" class="dt" placeholder="Opsi 2" style="margin-bottom:9px"/>'+
+    '<input id="pollOpt3" type="text" class="dt" placeholder="Opsi 3 (kosongkan jika tidak perlu)" style="margin-bottom:16px"/>'+
+    '<div style="font-size:11.5px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin-bottom:7px">Deadline (opsional)</div>'+
+    '<input id="pollDeadline" type="datetime-local" class="dt" style="margin-bottom:18px"/>'+
     '<button id="savePollBtn" class="btn-p" style="width:100%">Buat Voting</button>'
   );
   $('savePollBtn').onclick = async function(){
@@ -1746,14 +1829,14 @@ function openNewPoll(){
         createdBy: me.uid, createdByName: me.name,
         deadline: deadline, createdAt: TS
       });
-      loader(false); closeModal(); toast('Voting dibuat');
+      loader(false); closeModal(); toast('Voting dibuat 🗳️');
     } catch(e){ loader(false); toast('Gagal: '+(e.message||'').slice(0,40), true); }
   };
 }
 
 // ================== PROFILE ==================
 function renderProfile(){
-  $('profileAvatar').innerHTML = avatarHtml(me, 68, 26);
+  $('profileAvatar').innerHTML = avatarHtml(me, 70, 26);
   $('profileName').textContent = me.name;
   $('profileEmail').textContent = me.email || 'Google Account';
   var roleBadge = $('profileRoleBadge');
@@ -1771,17 +1854,17 @@ function renderProfile(){
 
 $('editProfileBtn').onclick = function(){
   openModal('Edit Profil',
-    '<div style="text-align:center;margin-bottom:18px"><div id="pvAvatar" style="display:inline-block"></div></div>'+
-    '<div style="font-size:11.5px;font-weight:800;color:#94a3b8;text-transform:uppercase;margin-bottom:7px">Nama</div>'+
-    '<input id="editName" type="text" value="'+esc(me.name)+'" maxlength="30" class="dt" style="margin-bottom:12px"/>'+
-    '<div style="font-size:11.5px;font-weight:800;color:#94a3b8;text-transform:uppercase;margin-bottom:7px">Blok / No. Rumah</div>'+
-    '<input id="editBlok" type="text" value="'+esc(me.blok||'')+'" maxlength="10" class="dt" style="margin-bottom:12px" placeholder="Contoh: A5"/>'+
-    '<div style="font-size:11.5px;font-weight:800;color:#94a3b8;text-transform:uppercase;margin-bottom:7px">Foto Profil</div>'+
-    '<button type="button" id="uploadAvBtn" style="width:100%;padding:12px;border-radius:12px;border:1px solid #cbd5e1;background:#fff;font-size:13.5px;font-weight:600;margin-bottom:7px;cursor:pointer">📷 Upload Foto</button>'+
-    '<button type="button" id="resetAvBtn" style="width:100%;padding:10px;background:transparent;border:none;font-size:13px;color:#64748b;margin-bottom:15px;cursor:pointer">Reset ke foto Google</button>'+
+    '<div style="text-align:center;margin-bottom:20px"><div id="pvAvatar" style="display:inline-block"></div></div>'+
+    '<div style="font-size:11.5px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px">Nama</div>'+
+    '<input id="editName" type="text" value="'+esc(me.name)+'" maxlength="30" class="dt" style="margin-bottom:14px"/>'+
+    '<div style="font-size:11.5px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px">Blok / No. Rumah</div>'+
+    '<input id="editBlok" type="text" value="'+esc(me.blok||'')+'" maxlength="10" class="dt" style="margin-bottom:14px" placeholder="Contoh: A5"/>'+
+    '<div style="font-size:11.5px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px">Foto Profil</div>'+
+    '<button type="button" id="uploadAvBtn" style="width:100%;padding:13px;border-radius:13px;border:1.5px solid #cbd5e1;background:#fff;font-size:13.5px;font-weight:700;margin-bottom:8px;cursor:pointer">📷 Upload Foto</button>'+
+    '<button type="button" id="resetAvBtn" style="width:100%;padding:11px;background:transparent;border:none;font-size:13px;color:#64748b;margin-bottom:16px;cursor:pointer;font-weight:600">Reset ke foto Google</button>'+
     '<button type="button" id="saveProfBtn" class="btn-p" style="width:100%">Simpan</button>'
   );
-  function upd(){ $('pvAvatar').innerHTML = avatarHtml(me, 88, 32); }
+  function upd(){ $('pvAvatar').innerHTML = avatarHtml(me, 90, 32); }
   upd();
   $('uploadAvBtn').onclick = function(){ $('avatarInput').click(); };
   $('avatarInput').onchange = async function(e){
@@ -1822,20 +1905,20 @@ $('editProfileBtn').onclick = function(){
       if(Object.keys(updates).length) await rtdb.ref('posts').update(updates);
     } catch(e){}
     loader(false);
-    $('headerAvatarBtn').innerHTML = avatarHtml(me, 32, 13); renderProfile(); toast('Tersimpan');
+    $('headerAvatarBtn').innerHTML = avatarHtml(me, 32, 13); renderProfile(); toast('Tersimpan ✓');
   };
 };
 
 $('adminInviteCodeBtn').onclick = function(){
   var code = appConfig.inviteCode || '(belum diatur)';
   openModal('Kode Undangan RT',
-    '<div style="background:#f8fafc;border-radius:14px;padding:16px;text-align:center;margin-bottom:14px">'+
-    '<div style="font-size:11px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px">Kode Undangan Aktif</div>'+
-    '<div style="font-family:ui-monospace,monospace;font-size:22px;font-weight:900;letter-spacing:.16em;color:#6366f1" id="curInviteCode">'+esc(code)+'</div></div>'+
-    '<div style="font-size:11.5px;font-weight:800;color:#94a3b8;text-transform:uppercase;margin-bottom:7px">Kode Baru</div>'+
-    '<input id="newInviteCode" type="text" class="dt" style="text-transform:uppercase;text-align:center;font-weight:800;letter-spacing:.1em;margin-bottom:14px" placeholder="Contoh: RT09-2025" value="'+esc(appConfig.inviteCode||'')+'"/>'+
-    '<div style="font-size:11.5px;color:#64748b;margin-bottom:14px;line-height:1.5">Bagikan kode ini ke warga baru.</div>'+
-    '<button id="copyInviteBtn" class="btn-s" style="width:100%;margin-bottom:8px">📋 Salin Kode</button>'+
+    '<div style="background:linear-gradient(135deg,#f8fafc,#eef2ff);border-radius:16px;padding:18px;text-align:center;margin-bottom:16px;border:1px solid rgba(99,102,241,.15)">'+
+    '<div style="font-size:11px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.12em;margin-bottom:7px">Kode Undangan Aktif</div>'+
+    '<div style="font-family:ui-monospace,monospace;font-size:24px;font-weight:900;letter-spacing:.18em;background:linear-gradient(135deg,#6366f1,#a855f7,#ec4899);-webkit-background-clip:text;background-clip:text;color:transparent" id="curInviteCode">'+esc(code)+'</div></div>'+
+    '<div style="font-size:11.5px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px">Kode Baru</div>'+
+    '<input id="newInviteCode" type="text" class="dt" style="text-transform:uppercase;text-align:center;font-weight:900;letter-spacing:.14em;margin-bottom:16px" placeholder="Contoh: RT09-2025" value="'+esc(appConfig.inviteCode||'')+'"/>'+
+    '<div style="font-size:11.5px;color:#64748b;margin-bottom:16px;line-height:1.55;font-weight:500">Bagikan kode ini ke warga baru untuk verifikasi.</div>'+
+    '<button id="copyInviteBtn" class="btn-s" style="width:100%;margin-bottom:9px">📋 Salin Kode</button>'+
     '<button id="saveInviteBtn" class="btn-p" style="width:100%">Simpan Perubahan</button>'
   );
   $('copyInviteBtn').onclick = function(){ navigator.clipboard.writeText(code).then(function(){ toast('Tersalin'); }).catch(function(){ toast('Gagal', true); }); };
@@ -1855,11 +1938,11 @@ $('adminVerifyBtn').onclick = function(){
     el.innerHTML = users.map(function(u){
       var isMe2 = u.uid === me.uid;
       var role = u.role || 'warga';
-      return '<div class="user-row" style="padding:10px 0;border-bottom:1px solid rgba(148,163,184,.08)">'+avatarHtml(u, 34, 13)+
-        '<div style="flex:1;min-width:0"><div style="font-size:13.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(u.name||'?')+(isMe2?' (Anda)':'')+'</div>'+
-        '<div style="font-size:11px;color:#94a3b8;margin-top:1px">'+esc(u.email||'')+'</div></div>'+
+      return '<div class="user-row" style="padding:11px 0;border-bottom:1px solid rgba(148,163,184,.08)">'+avatarHtml(u, 36, 13)+
+        '<div style="flex:1;min-width:0"><div style="font-size:13.5px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(u.name||'?')+(isMe2?' (Anda)':'')+'</div>'+
+        '<div style="font-size:11px;color:#94a3b8;margin-top:2px;font-weight:500">'+esc(u.email||'')+'</div></div>'+
         (isMe2 ? '<span class="badge-pill pill-blue">Admin</span>' :
-          '<select data-uid="'+u.uid+'" style="background:#f1f5f9;border:none;border-radius:8px;padding:6px 8px;font-size:12px;font-weight:600">'+
+          '<select data-uid="'+u.uid+'" style="background:#f1f5f9;border:none;border-radius:9px;padding:7px 9px;font-size:12px;font-weight:700">'+
           '<option value="warga"'+(role==='warga'?' selected':'')+'>Warga</option>'+
           '<option value="admin"'+(role==='admin'?' selected':'')+'>Admin</option>'+
           '<option value="blocked"'+(role==='blocked'?' selected':'')+'>Blockir</option>'+
@@ -1879,23 +1962,29 @@ $('adminVerifyBtn').onclick = function(){
 $('myCodeBtn').onclick = function(){
   var code = me.uid.toUpperCase();
   openModal('Kode Akun',
-    '<p style="font-size:13px;color:#64748b;line-height:1.6;margin:0 0 14px">Simpan kode ini untuk backup.</p>'+
-    '<div style="background:#f8fafc;border-radius:14px;padding:16px;text-align:center;margin-bottom:12px">'+
-    '<div style="font-size:11px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px">Kode Akun</div>'+
-    '<div style="font-family:ui-monospace,monospace;font-size:20px;font-weight:900;letter-spacing:.16em;background:linear-gradient(135deg,#818cf8,#c084fc,#f472b6);-webkit-background-clip:text;background-clip:text;color:transparent">'+esc(code)+'</div></div>'+
-    '<button type="button" id="copyCode" class="btn-p" style="width:100%">Salin Kode</button>'
+    '<p style="font-size:13px;color:#64748b;line-height:1.6;margin:0 0 16px;font-weight:500">Simpan kode ini untuk backup akun Anda.</p>'+
+    '<div style="background:linear-gradient(135deg,#f8fafc,#eef2ff);border-radius:16px;padding:18px;text-align:center;margin-bottom:14px;border:1px solid rgba(99,102,241,.15)">'+
+    '<div style="font-size:11px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.12em;margin-bottom:7px">Kode Akun</div>'+
+    '<div style="font-family:ui-monospace,monospace;font-size:20px;font-weight:900;letter-spacing:.18em;background:linear-gradient(135deg,#818cf8,#c084fc,#f472b6);-webkit-background-clip:text;background-clip:text;color:transparent;word-break:break-all">'+esc(code)+'</div></div>'+
+    '<button type="button" id="copyCode" class="btn-p" style="width:100%">📋 Salin Kode</button>'
   );
   $('copyCode').onclick = async function(){ try { await navigator.clipboard.writeText(code); toast('Tersalin'); } catch(e){ toast('Gagal', true); } };
 };
 
 $('switchAccBtn').onclick = function(){
   openModal('Ganti Akun',
-    '<div style="padding:14px;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.3);border-radius:14px;margin-bottom:14px">'+
-    '<div style="font-size:13px;font-weight:700;color:#92400e;margin-bottom:5px">Perhatian</div>'+
-    '<div style="font-size:12.5px;color:#78350f;line-height:1.55">Login dengan akun berbeda akan jadi warga baru (perlu verifikasi ulang).</div></div>'+
-    '<button type="button" id="switchYes" style="width:100%;padding:12px;border-radius:12px;background:#f59e0b;color:white;font-size:13.5px;font-weight:600;border:none;cursor:pointer">Ya, Ganti Akun</button>'
+    '<div style="padding:15px;background:linear-gradient(135deg,rgba(245,158,11,.1),rgba(245,158,11,.05));border:1px solid rgba(245,158,11,.32);border-radius:16px;margin-bottom:16px">'+
+    '<div style="font-size:13px;font-weight:800;color:#92400e;margin-bottom:6px">⚠️ Perhatian</div>'+
+    '<div style="font-size:12.5px;color:#78350f;line-height:1.6;font-weight:500">Login dengan akun berbeda akan jadi warga baru (perlu verifikasi ulang).</div></div>'+
+    '<button type="button" id="switchYes" style="width:100%;padding:14px;border-radius:13px;background:linear-gradient(135deg,#f59e0b,#d97706);color:white;font-size:13.5px;font-weight:800;border:none;cursor:pointer;box-shadow:0 6px 18px -6px rgba(245,158,11,.5)">Ya, Ganti Akun</button>'
   );
-  $('switchYes').onclick = async function(){ clearPreferred(); cleanSubs(); await auth.signOut(); location.reload(); };
+  $('switchYes').onclick = async function(){
+    sessionStorage.setItem('spark_switch_acc', '1');
+    clearPreferred();
+    cleanSubs();
+    await auth.signOut();
+    location.reload();
+  };
 };
 
 $('backupBtn').onclick = async function(){
@@ -1919,19 +2008,19 @@ $('backupBtn').onclick = async function(){
     var url = URL.createObjectURL(blob);
     var a = document.createElement('a'); a.href = url; a.download = 'rt09-backup-' + Date.now() + '.json';
     document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
-    loader(false); toast('Backup terunduh');
+    loader(false); toast('Backup terunduh 💾');
   } catch(e){ loader(false); toast('Gagal: '+(e.message||'').slice(0,40), true); }
 };
 
-$('clearCacheBtn').onclick = function(){ toast('Cache dibersihkan'); };
+$('clearCacheBtn').onclick = function(){ toast('Cache dibersihkan ✓'); };
 
 $('deleteAccBtn').onclick = function(){
   openModal('Hapus Akun',
-    '<div style="padding:14px;background:rgba(244,63,94,.1);border:1px solid rgba(244,63,94,.3);border-radius:14px;margin-bottom:14px">'+
-    '<div style="font-size:13px;font-weight:700;color:#9f1239;margin-bottom:5px">Peringatan</div>'+
-    '<div style="font-size:12.5px;color:#881337;line-height:1.6">Semua data dihapus permanen! Ketik <b>HAPUS</b> untuk konfirmasi:</div></div>'+
-    '<input id="delConfirm" type="text" placeholder="HAPUS" class="dt" style="text-align:center;font-weight:800;letter-spacing:.2em;margin-bottom:14px"/>'+
-    '<button type="button" id="delYes" class="btn-danger" style="width:100%;margin-bottom:8px" disabled>Hapus Permanen</button>'+
+    '<div style="padding:15px;background:linear-gradient(135deg,rgba(244,63,94,.12),rgba(244,63,94,.05));border:1px solid rgba(244,63,94,.32);border-radius:16px;margin-bottom:16px">'+
+    '<div style="font-size:13px;font-weight:800;color:#9f1239;margin-bottom:6px">⚠️ Peringatan</div>'+
+    '<div style="font-size:12.5px;color:#881337;line-height:1.6;font-weight:500">Semua data dihapus permanen! Ketik <b>HAPUS</b> untuk konfirmasi:</div></div>'+
+    '<input id="delConfirm" type="text" placeholder="HAPUS" class="dt" style="text-align:center;font-weight:900;letter-spacing:.22em;margin-bottom:16px"/>'+
+    '<button type="button" id="delYes" class="btn-danger" style="width:100%;margin-bottom:9px;opacity:.5" disabled>Hapus Permanen</button>'+
     '<button type="button" id="delNo" class="btn-s" style="width:100%">Batal</button>'
   );
   var inp = $('delConfirm'), btn = $('delYes');
@@ -1961,7 +2050,7 @@ $('deleteAccBtn').onclick = function(){
 
 $('logoutBtn').onclick = function(){
   openModal('Keluar',
-    '<p style="font-size:13.5px;color:#64748b;margin:0 0 15px;line-height:1.55">Anda akan keluar. Bisa masuk lagi kapan saja.</p>'+
+    '<p style="font-size:13.5px;color:#64748b;margin:0 0 18px;line-height:1.6;font-weight:500">Anda akan keluar. Bisa masuk lagi kapan saja — akun akan otomatis terpilih tanpa picker.</p>'+
     '<button type="button" id="logoutYes" class="btn-danger" style="width:100%">Ya, Keluar</button>'
   );
   $('logoutYes').onclick = async function(){ cleanSubs(); await auth.signOut(); location.reload(); };
@@ -1996,64 +2085,35 @@ if('serviceWorker' in navigator){
 }
 
 // ============================================================
-// POLLING NOTIFIKASI + SUARA CHIME (bukan beep)
+// POLLING NOTIFIKASI + CHIME
 // ============================================================
 var lastPollTime = parseInt(localStorage.getItem('spark_last_poll') || '0', 10);
 var pollInterval = null;
 
-// ==== SUARA CHIME (3 nada turun, halus seperti notif HP) ====
-function playChime(){
-  if(localStorage.getItem('spark_sound') === 'off') return;
-  try {
-    var ctx = new (window.AudioContext || window.webkitAudioContext)();
-    function tone(freq, start, dur, vol){
-      var o = ctx.createOscillator();
-      var g = ctx.createGain();
-      o.connect(g); g.connect(ctx.destination);
-      o.type = 'sine';
-      o.frequency.value = freq;
-      vol = vol || 0.15;
-      g.gain.setValueAtTime(0.0001, start);
-      g.gain.exponentialRampToValueAtTime(vol, start + 0.02);
-      g.gain.exponentialRampToValueAtTime(0.0001, start + dur);
-      o.start(start); o.stop(start + dur + 0.02);
-    }
-    var t = ctx.currentTime;
-    // Nada chime: tinggi → sedang → rendah (seperti notif iOS)
-    tone(1046.5, t,       0.18, 0.14);  // C6
-    tone(880,    t + 0.10, 0.20, 0.13);  // A5
-    tone(659.25, t + 0.22, 0.35, 0.12);  // E5
-  } catch(e){ console.warn('chime error', e); }
-}
-
 function startPolling(){
   if(pollInterval) clearInterval(pollInterval);
-  
+
   function checkNewPosts(){
     if(!me || !me.uid) return;
-    
+
     rtdb.ref('posts').orderByChild('createdAt').limitToLast(20).once('value').then(function(snap){
       if(!snap.exists()) return;
-      
+
       var newestTime = lastPollTime;
       var newPosts = [];
-      
+
       snap.forEach(function(child){
         var p = child.val();
         if(!p || !p.createdAt) return;
         if(p.authorId !== me.uid && p.createdAt > lastPollTime && (Date.now() - p.createdAt) < 300000){
           newPosts.push({
-            id: child.key,
-            text: p.text,
-            author: p.authorName,
-            pinned: p.pinned,
-            category: p.category,
-            createdAt: p.createdAt
+            id: child.key, text: p.text, author: p.authorName,
+            pinned: p.pinned, category: p.category, createdAt: p.createdAt
           });
         }
         if(p.createdAt > newestTime) newestTime = p.createdAt;
       });
-      
+
       if(newPosts.length > 0){
         var p = newPosts[newPosts.length - 1];
         var title = p.pinned ? '📌 PENGUMUMAN PENTING'
@@ -2061,57 +2121,39 @@ function startPolling(){
                   : p.category === 'galeri' ? '📷 GALERI BARU'
                   : '📢 POSTINGAN BARU';
         var body = (p.author || 'Warga') + ': ' + ((p.text || '[Foto]').slice(0, 100));
-        
-        // Notif browser
+
         if('Notification' in window && Notification.permission === 'granted'){
           try {
             var n = new Notification(title, {
-              body: body,
-              icon: './icon-192.png',
-              badge: './icon-192.png',
+              body: body, icon: './icon-192.png', badge: './icon-192.png',
               tag: 'post-' + p.id,
               vibrate: [400, 200, 400, 200, 400],
-              requireInteraction: true,
-              renotify: true,
-              silent: true  // matikan suara default browser, pakai chime custom
+              requireInteraction: true, renotify: true, silent: true
             });
             n.onclick = function(){
-              window.focus();
-              this.close();
+              window.focus(); this.close();
               if(typeof openPostDetail === 'function') openPostDetail(p.id);
             };
-          } catch(e){ console.warn('notif error', e); }
+          } catch(e){}
         }
-        
-        // Toast (kalau app terbuka)
-        if(!document.hidden){
-          toast('🔔 ' + title + ' — ' + body, false);
-        }
-        
-        // 🔔 CHIME (bukan beep) — 3 nada turun
+
+        if(!document.hidden) toast('🔔 ' + title + ' — ' + body, false);
         playChime();
-        
-        // Getar panjang
-        if(navigator.vibrate){
-          try { navigator.vibrate([400, 200, 400, 200, 400]); } catch(e){}
-        }
+        if(navigator.vibrate){ try { navigator.vibrate([400, 200, 400, 200, 400]); } catch(e){} }
       }
-      
+
       lastPollTime = newestTime;
       if(newestTime > 0) localStorage.setItem('spark_last_poll', newestTime.toString());
     }).catch(function(e){ console.warn('poll error', e); });
   }
-  
+
   checkNewPosts();
   pollInterval = setInterval(checkNewPosts, 20000);
-  
+
   document.addEventListener('visibilitychange', function(){
     if(!document.hidden) checkNewPosts();
   });
-  
-  window.addEventListener('focus', function(){
-    checkNewPosts();
-  });
+  window.addEventListener('focus', function(){ checkNewPosts(); });
 }
 
 setTimeout(function(){
@@ -2123,9 +2165,7 @@ setTimeout(function(){
 
 auth.onAuthStateChanged(function(user){
   if(user){
-    setTimeout(function(){
-      if(!pollInterval) startPolling();
-    }, 3000);
+    setTimeout(function(){ if(!pollInterval) startPolling(); }, 3000);
   } else {
     if(pollInterval) clearInterval(pollInterval);
     pollInterval = null;
