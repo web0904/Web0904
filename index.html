@@ -267,7 +267,7 @@ body.dark #inviteOv{background:#070b14}
   <div style="flex:1;padding:0 20px;margin-top:-50px;max-width:460px;width:100%;margin-left:auto;margin-right:auto;padding-bottom:40px">
     <div style="background:#fff;border-radius:28px;padding:28px 24px;box-shadow:0 30px 60px -20px rgba(15,23,42,.25);border:1px solid rgba(148,163,184,.1)">
       <div style="font-size:17px;font-weight:900;margin-bottom:6px;color:#0b1220;letter-spacing:-.01em">Selamat datang 👋</div>
-      <div style="font-size:13px;color:#64748b;line-height:1.6;margin-bottom:22px">Masuk dengan akun Google Anda. Berikutnya otomatis — tanpa pilih akun lagi.</div>
+      <div style="font-size:13px;color:#64748b;line-height:1.6;margin-bottom:22px">Masuk dengan akun Google Anda untuk bergabung. Cukup satu kali — berikutnya otomatis.</div>
       <button id="googleBtn" type="button" style="width:100%;padding:15px 16px;border-radius:16px;border:1.5px solid #e2e8f0;background:#fff;color:#0b1220;font-weight:800;font-size:14.5px;display:flex;align-items:center;justify-content:center;gap:11px;cursor:pointer;transition:transform .15s cubic-bezier(.34,1.56,.64,1),box-shadow .2s, border-color .2s;box-shadow:0 2px 8px -4px rgba(15,23,42,.08)">
         <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.9 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.1 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.3-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 18.9 12 24 12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.1 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.3 26.7 36 24 36c-5.2 0-9.6-3.1-11.3-7.6l-6.5 5C9.6 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.1-4.1 5.5l6.2 5.2C40.9 35.5 44 30.2 44 24c0-1.3-.1-2.3-.4-3.5z"/></svg>
         Lanjutkan dengan Google
@@ -719,7 +719,7 @@ function toast(msg, err){
   var t = $('toast'); t.textContent = msg;
   t.style.background = err ? 'linear-gradient(135deg,#f43f5e,#e11d48)' : 'linear-gradient(135deg,#0b1220,#1e293b)';
   t.style.color = '#fff'; t.classList.add('on');
-  clearTimeout(t._t); t._t = setTimeout(function(){ t.classList.remove('on'); }, 2600);
+  clearTimeout(t._t); t._t = setTimeout(function(){ t.classList.remove('on'); }, 2800);
 }
 function loader(on, msg){ $('loaderMsg').textContent = msg || 'Memproses...'; $('loader').classList.toggle('on', on); }
 function timeAgo(ts){
@@ -806,16 +806,8 @@ var TS = firebase.database.ServerValue.TIMESTAMP;
 auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(function(){});
 
 var messaging = null;
-try {
-  messaging = firebase.messaging();
-  // Bind messaging ke service worker kita (sw.js)
-  navigator.serviceWorker.register('./sw.js').then(function(reg) {
-    console.log('FCM SW bound:', reg.scope);
-    messaging.useServiceWorker(reg);
-  }).catch(function(e) {
-    console.warn('FCM SW bind failed:', e);
-  });
-} catch (e) { console.warn('FCM not supported:', e); }
+try { messaging = firebase.messaging(); } catch(e){ console.warn('FCM not supported:', e); }
+
 var me = null;
 var tab = 'home';
 var activeCat = 'umum';
@@ -838,6 +830,37 @@ function isAdmin(){ return me && me.role === 'admin'; }
 function getPreferred(){ return localStorage.getItem('spark_pref_email'); }
 function setPreferred(e){ if(e) localStorage.setItem('spark_pref_email', e); }
 function clearPreferred(){ localStorage.removeItem('spark_pref_email'); }
+
+// ==== SEEN POSTS TRACKER ====
+function getSeenPosts(){
+  if(!me || !me.uid) return {};
+  try { return JSON.parse(localStorage.getItem('spark_seen_posts_'+me.uid) || '{}'); }
+  catch(e){ return {}; }
+}
+function markPostSeen(pid){
+  if(!me || !me.uid || !pid) return;
+  var seen = getSeenPosts();
+  seen[pid] = Date.now();
+  var keys = Object.keys(seen);
+  if(keys.length > 500){
+    keys.sort(function(a,b){ return seen[b] - seen[a]; });
+    var ns = {};
+    for(var i = 0; i < 300; i++) ns[keys[i]] = seen[keys[i]];
+    seen = ns;
+  }
+  try { localStorage.setItem('spark_seen_posts_'+me.uid, JSON.stringify(seen)); } catch(e){}
+}
+function markCatSeen(cat){
+  if(!me || !me.uid) return;
+  var seen = getSeenPosts();
+  var changed = false;
+  feed.forEach(function(p){
+    if((p.category||'umum') === cat && p.authorId !== me.uid && !seen[p.id]){
+      seen[p.id] = Date.now(); changed = true;
+    }
+  });
+  if(changed){ try { localStorage.setItem('spark_seen_posts_'+me.uid, JSON.stringify(seen)); } catch(e){} }
+}
 
 function applyTheme(t){
   document.documentElement.classList.toggle('dark', t==='dark');
@@ -913,7 +936,7 @@ if(messaging){
     var body = (payload.notification && payload.notification.body) || 'Ada aktivitas baru';
     toast(title + ' — ' + body, false);
     playChime();
-    if(navigator.vibrate) try { navigator.vibrate([400, 200, 400, 200, 400]); } catch(e){}
+    if(navigator.vibrate) try { navigator.vibrate([400, 200, 200, 400]); } catch(e){}
   });
 }
 
@@ -944,8 +967,9 @@ function setTab(t){
   $('topSub').textContent = titles[t] ? titles[t][1] : '';
   if(t === 'home'){ renderHome(); updateAllBadges(); }
   if(t === 'category'){
-    localStorage.setItem('spark_cat_seen_'+activeCat, Date.now().toString());
-    renderCategory(); updateAllBadges();
+    renderCategory();
+    markCatSeen(activeCat);
+    updateAllBadges();
   }
   if(t === 'warga') renderWargaList();
   if(t === 'voting'){ renderVoting(); updateAllBadges(); }
@@ -973,13 +997,14 @@ function maybeShowRulesFirstTime(){
   }, 1500);
 }
 
-function getCatSeen(cat){ return parseInt(localStorage.getItem('spark_cat_seen_'+cat) || '0', 10); }
 function computeCatStats(cat){
+  var seen = getSeenPosts();
   var newPosts = 0;
-  var catSeen = getCatSeen(cat);
   feed.forEach(function(p){
     if((p.category||'umum') !== cat) return;
-    if(p.authorId !== me.uid && p.createdAt > catSeen) newPosts++;
+    if(p.authorId === me.uid) return;
+    if(seen[p.id]) return;
+    newPosts++;
   });
   return { newPosts: newPosts };
 }
@@ -1070,7 +1095,8 @@ function renderPostCard(p){
   var colorCls = isInfo ? 'b-info' : cat === 'galeri' ? 'b-gal' : 'b-umum';
   var stripCls = isInfo ? 's-info' : cat === 'galeri' ? 's-gal' : 's-umum';
   var hasEvent = p.eventDate && p.eventDate > 0;
-  var showNew = !isMine && (p.createdAt > getCatSeen(cat)) && !hasEvent && !p.pinned;
+  var seen = getSeenPosts();
+  var showNew = !isMine && !seen[p.id] && !p.pinned;
   var likeCount = toCount(p.likedBy);
 
   var html = '<div class="post-card '+colorCls+'" data-pid="'+p.id+'">';
@@ -1169,11 +1195,6 @@ auth.onAuthStateChanged(function(user){
         setTimeout(function(){
           $('splash').style.display = 'none';
           hide('welcomeOv');
-          ['umum','informasi','galeri'].forEach(function(c){
-            if(!localStorage.getItem('spark_cat_seen_'+c)){
-              localStorage.setItem('spark_cat_seen_'+c, Date.now().toString());
-            }
-          });
           if(!me.verified && me.role !== 'admin'){
             $('inviteOv').style.display = 'flex';
             hide('app');
@@ -1192,19 +1213,6 @@ auth.onAuthStateChanged(function(user){
     setTimeout(function(){
       $('splash').style.display = 'none';
       $('welcomeOv').style.display = 'flex';
-
-      // 🪄 AUTO SILENT LOGIN (tanpa picker)
-      var pref = getPreferred();
-      var wantSwitch = sessionStorage.getItem('spark_switch_acc') === '1';
-      if(pref && !wantSwitch){
-        setTimeout(function(){
-          var p = new firebase.auth.GoogleAuthProvider();
-          p.setCustomParameters({ login_hint: pref, prompt: 'none' });
-          auth.signInWithPopup(p).catch(function(err){
-            console.log('Auto silent-login skip:', err.code);
-          });
-        }, 600);
-      }
     }, 400);
   }
 });
@@ -1223,52 +1231,16 @@ function syncUser(){
   return rtdb.ref('users/' + me.uid).update(data).catch(function(e){ console.warn(e); });
 }
 
-// === LOGIN GOOGLE — SILENT AUTO PAKAI AKUN TERAKHIR ===
 $('googleBtn').onclick = async function(){
-  var pref = getPreferred();
-  var wantSwitch = sessionStorage.getItem('spark_switch_acc') === '1';
+  var p = new firebase.auth.GoogleAuthProvider();
+  p.setCustomParameters({ prompt: 'select_account' });
   $('googleBtn').disabled = true;
-
-  function buildProvider(mode){
-    var p = new firebase.auth.GoogleAuthProvider();
-    if(mode === 'silent' && pref){
-      p.setCustomParameters({ login_hint: pref, prompt: 'none' });
-    } else if(mode === 'hint' && pref){
-      p.setCustomParameters({ login_hint: pref, prompt: 'select_account' });
-    } else {
-      p.setCustomParameters({ prompt: 'select_account' });
+  try { await auth.signInWithPopup(p); }
+  catch(e){
+    if(['auth/popup-blocked','auth/popup-closed-by-user','auth/cancelled-popup-request','auth/operation-not-supported-in-this-environment'].indexOf(e.code) > -1 || /mobile/i.test(navigator.userAgent)){
+      try { await auth.signInWithRedirect(p); return; } catch(err){}
     }
-    return p;
-  }
-
-  try {
-    if(wantSwitch){
-      sessionStorage.removeItem('spark_switch_acc');
-      await auth.signInWithPopup(buildProvider('picker'));
-    } else if(pref){
-      try {
-        await auth.signInWithPopup(buildProvider('silent'));
-      } catch(errSilent){
-        if(errSilent.code === 'auth/popup-closed-by-user' ||
-           errSilent.code === 'auth/cancelled-popup-request'){
-          throw errSilent;
-        }
-        await auth.signInWithPopup(buildProvider('hint'));
-      }
-    } else {
-      await auth.signInWithPopup(buildProvider('picker'));
-    }
-  } catch(e){
-    if(['auth/popup-blocked','auth/popup-closed-by-user','auth/cancelled-popup-request','auth/operation-not-supported-in-this-environment','auth/web-storage-unsupported'].indexOf(e.code) > -1 || /mobile/i.test(navigator.userAgent)){
-      try {
-        await auth.signInWithRedirect(buildProvider(pref ? 'hint' : 'picker'));
-        return;
-      } catch(err){}
-    }
-    if(e.code !== 'auth/popup-closed-by-user' && e.code !== 'auth/cancelled-popup-request'){
-      toast('Gagal login: ' + (e.message||e.code), true);
-    }
-  } finally {
+    if(e.code !== 'auth/popup-closed-by-user' && e.code !== 'auth/cancelled-popup-request') toast('Gagal login: ' + (e.message||e.code), true);
     $('googleBtn').disabled = false;
   }
 };
@@ -1292,11 +1264,7 @@ $('inviteSubmit').onclick = async function(){
     } else { loader(false); toast('Kode salah. Hubungi pengurus RT.', true); }
   } catch(e){ loader(false); toast('Gagal: ' + (e.message||'').slice(0,40), true); }
 };
-$('inviteLogout').onclick = async function(){
-  sessionStorage.setItem('spark_switch_acc', '1');
-  clearPreferred();
-  await auth.signOut(); location.reload();
-};
+$('inviteLogout').onclick = async function(){ await auth.signOut(); location.reload(); };
 
 function subscribeConfig(){
   if(unsubConfig){ try { unsubConfig(); } catch(e){} }
@@ -1398,6 +1366,8 @@ function openPostDetail(postId){
   var p = feed.filter(function(x){ return x.id === postId; })[0];
   if(!p){ toast('Postingan tidak ditemukan', true); return; }
   activePostId = postId; activePost = p;
+  markPostSeen(postId);
+  updateAllBadges();
   setTab('post'); renderPostDetail(p); loadComments(postId);
   setTimeout(function(){ if(p.eventDate && p.eventDate > 0) startCountdown(); }, 150);
 }
@@ -1468,20 +1438,25 @@ function renderPostDetail(p){
   };
 
   var delBtn = $('delPostBtn');
-if(delBtn) delBtn.onclick = async function(){
-  if(!confirm('Hapus postingan?')) return;
-  loader(true, 'Menghapus...');
-  try {
-    await rtdb.ref('comments/' + p.id).remove();
-    await rtdb.ref('posts/' + p.id).remove();
-    loader(false); toast('Postingan terhapus');
-    setTab('home');
-  } catch(e){
-    console.error('Delete post error:', e);
-    loader(false);
-    toast('Gagal hapus: ' + (e.message || e.code || 'Error').slice(0, 60), true);
-  }
-};
+  if(delBtn) delBtn.onclick = async function(){
+    if(!confirm('Hapus postingan ini?')) return;
+    loader(true, 'Menghapus...');
+    try {
+      // Hapus post dulu (aksi utama)
+      await rtdb.ref('posts/' + p.id).remove();
+      // Cleanup comments (best-effort, kalau gagal tetap oke)
+      try { await rtdb.ref('comments/' + p.id).remove(); } catch(err){ console.warn('cleanup comments skipped:', err); }
+      loader(false);
+      toast('Postingan terhapus ✓');
+      setTab('home');
+    } catch(e){
+      console.error('Delete failed:', e);
+      loader(false);
+      toast('Gagal hapus: ' + (e.message||e.code||'Error').slice(0, 60), true);
+    }
+  };
+}
+
 function renderPhotoGrid(p){
   var items = [];
   (p.images || []).forEach(function(b64){ items.push({ b64: b64, isMain: true, author: p.authorName }); });
@@ -1551,7 +1526,9 @@ $('commentSend').onclick = async function(){
       authorPhoto: me.photoURL || null, authorAvatarBase64: me.avatarBase64 || null,
       createdAt: TS
     });
-    await rtdb.ref('posts/' + activePostId + '/commentCount').transaction(function(c){ return (c || 0) + 1; });
+    try {
+      await rtdb.ref('posts/' + activePostId + '/commentCount').transaction(function(c){ return (c || 0) + 1; });
+    } catch(e){ console.warn('count update skipped:', e); }
     await loadComments(activePostId);
     toast('Komentar terkirim');
     setTimeout(function(){ $('postScroll').scrollTop = $('postScroll').scrollHeight; }, 200);
@@ -1680,10 +1657,10 @@ $('composePost').onclick = async function(){
       payload.eventLocation = $('eventLocation').value.trim();
     }
     if(isAdmin() && $('pinCheck').checked) payload.pinned = true;
-    await rtdb.ref('posts').push(payload);
+    var ref = await rtdb.ref('posts').push(payload);
+    if(ref && ref.key) markPostSeen(ref.key);
     $('composeSheet').style.display = 'none';
     if(activeCat !== composeCat) activeCat = composeCat;
-    localStorage.setItem('spark_cat_seen_'+composeCat, Date.now().toString());
     setTab('home');
     toast('Postingan terkirim');
   } catch(e){
@@ -1989,13 +1966,7 @@ $('switchAccBtn').onclick = function(){
     '<div style="font-size:12.5px;color:#78350f;line-height:1.6;font-weight:500">Login dengan akun berbeda akan jadi warga baru (perlu verifikasi ulang).</div></div>'+
     '<button type="button" id="switchYes" style="width:100%;padding:14px;border-radius:13px;background:linear-gradient(135deg,#f59e0b,#d97706);color:white;font-size:13.5px;font-weight:800;border:none;cursor:pointer;box-shadow:0 6px 18px -6px rgba(245,158,11,.5)">Ya, Ganti Akun</button>'
   );
-  $('switchYes').onclick = async function(){
-    sessionStorage.setItem('spark_switch_acc', '1');
-    clearPreferred();
-    cleanSubs();
-    await auth.signOut();
-    location.reload();
-  };
+  $('switchYes').onclick = async function(){ clearPreferred(); cleanSubs(); await auth.signOut(); location.reload(); };
 };
 
 $('backupBtn').onclick = async function(){
@@ -2044,15 +2015,13 @@ $('deleteAccBtn').onclick = function(){
     loader(true, 'Menghapus...');
     try {
       var snap = await rtdb.ref('posts').orderByChild('authorId').equalTo(me.uid).once('value');
-      var updates = {};
       var ids = [];
       snap.forEach(function(c){ ids.push(c.key); });
       for(var i = 0; i < ids.length; i++){
-        updates['posts/' + ids[i]] = null;
-        updates['comments/' + ids[i]] = null;
+        try { await rtdb.ref('posts/' + ids[i]).remove(); } catch(e){}
+        try { await rtdb.ref('comments/' + ids[i]).remove(); } catch(e){}
       }
-      updates['users/' + me.uid] = null;
-      await rtdb.ref().update(updates);
+      try { await rtdb.ref('users/' + me.uid).remove(); } catch(e){}
       localStorage.clear(); loader(false); toast('Akun terhapus');
       await auth.signOut(); setTimeout(function(){ location.reload(); }, 800);
     } catch(e){ loader(false); toast('Gagal: '+(e.message||'').slice(0,50), true); }
@@ -2061,7 +2030,7 @@ $('deleteAccBtn').onclick = function(){
 
 $('logoutBtn').onclick = function(){
   openModal('Keluar',
-    '<p style="font-size:13.5px;color:#64748b;margin:0 0 18px;line-height:1.6;font-weight:500">Anda akan keluar. Bisa masuk lagi kapan saja — akun akan otomatis terpilih tanpa picker.</p>'+
+    '<p style="font-size:13.5px;color:#64748b;margin:0 0 18px;line-height:1.6;font-weight:500">Anda akan keluar. Bisa masuk lagi kapan saja.</p>'+
     '<button type="button" id="logoutYes" class="btn-danger" style="width:100%">Ya, Keluar</button>'
   );
   $('logoutYes').onclick = async function(){ cleanSubs(); await auth.signOut(); location.reload(); };
@@ -2085,7 +2054,16 @@ function cleanSubs(){
   unsubFeed = unsubUsers = unsubPolls = unsubConfig = null;
 }
 
-
+if('serviceWorker' in navigator){
+  window.addEventListener('load', function(){
+    navigator.serviceWorker.register('./sw.js').then(function(reg){
+      console.log('SW registered:', reg.scope);
+      if(messaging) try { messaging.useServiceWorker(reg); } catch(e){}
+    }).catch(function(err){
+      console.warn('SW failed:', err);
+    });
+  });
+}
 
 // ============================================================
 // POLLING NOTIFIKASI + CHIME
@@ -2162,7 +2140,7 @@ function startPolling(){
 setTimeout(function(){
   if(me && me.uid){
     startPolling();
-    console.log('🔔 Polling aktif — chime + getar');
+    console.log('🔔 Polling aktif');
   }
 }, 4000);
 
