@@ -806,8 +806,16 @@ var TS = firebase.database.ServerValue.TIMESTAMP;
 auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(function(){});
 
 var messaging = null;
-try { messaging = firebase.messaging(); } catch(e){ console.warn('FCM not supported:', e); }
-
+try {
+  messaging = firebase.messaging();
+  // Bind messaging ke service worker kita (sw.js)
+  navigator.serviceWorker.register('./sw.js').then(function(reg) {
+    console.log('FCM SW bound:', reg.scope);
+    messaging.useServiceWorker(reg);
+  }).catch(function(e) {
+    console.warn('FCM SW bind failed:', e);
+  });
+} catch (e) { console.warn('FCM not supported:', e); }
 var me = null;
 var tab = 'home';
 var activeCat = 'umum';
@@ -2074,15 +2082,7 @@ function cleanSubs(){
   unsubFeed = unsubUsers = unsubPolls = unsubConfig = null;
 }
 
-if('serviceWorker' in navigator){
-  window.addEventListener('load', function(){
-    navigator.serviceWorker.register('./sw.js').then(function(reg){
-      console.log('SW registered:', reg.scope);
-    }).catch(function(err){
-      console.warn('SW failed:', err);
-    });
-  });
-}
+
 
 // ============================================================
 // POLLING NOTIFIKASI + CHIME
