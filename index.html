@@ -1468,17 +1468,20 @@ function renderPostDetail(p){
   };
 
   var delBtn = $('delPostBtn');
-  if(delBtn) delBtn.onclick = async function(){
-    if(!confirm('Hapus postingan?')) return;
-    loader(true, 'Menghapus...');
-    try {
-      await rtdb.ref('comments/' + p.id).remove();
-      await rtdb.ref('posts/' + p.id).remove();
-      loader(false); toast('Terhapus'); setTab('home');
-    } catch(e){ loader(false); toast('Gagal', true); }
-  };
-}
-
+if(delBtn) delBtn.onclick = async function(){
+  if(!confirm('Hapus postingan?')) return;
+  loader(true, 'Menghapus...');
+  try {
+    await rtdb.ref('comments/' + p.id).remove();
+    await rtdb.ref('posts/' + p.id).remove();
+    loader(false); toast('Postingan terhapus');
+    setTab('home');
+  } catch(e){
+    console.error('Delete post error:', e);
+    loader(false);
+    toast('Gagal hapus: ' + (e.message || e.code || 'Error').slice(0, 60), true);
+  }
+};
 function renderPhotoGrid(p){
   var items = [];
   (p.images || []).forEach(function(b64){ items.push({ b64: b64, isMain: true, author: p.authorName }); });
