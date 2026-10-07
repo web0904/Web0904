@@ -1994,6 +1994,143 @@ if('serviceWorker' in navigator){
     });
   });
 }
+
+// ============================================================
+// POLLING NOTIFIKASI + SUARA CHIME (bukan beep)
+// ============================================================
+var lastPollTime = parseInt(localStorage.getItem('spark_last_poll') || '0', 10);
+var pollInterval = null;
+
+// ==== SUARA CHIME (3 nada turun, halus seperti notif HP) ====
+function playChime(){
+  if(localStorage.getItem('spark_sound') === 'off') return;
+  try {
+    var ctx = new (window.AudioContext || window.webkitAudioContext)();
+    function tone(freq, start, dur, vol){
+      var o = ctx.createOscillator();
+      var g = ctx.createGain();
+      o.connect(g); g.connect(ctx.destination);
+      o.type = 'sine';
+      o.frequency.value = freq;
+      vol = vol || 0.15;
+      g.gain.setValueAtTime(0.0001, start);
+      g.gain.exponentialRampToValueAtTime(vol, start + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, start + dur);
+      o.start(start); o.stop(start + dur + 0.02);
+    }
+    var t = ctx.currentTime;
+    // Nada chime: tinggi → sedang → rendah (seperti notif iOS)
+    tone(1046.5, t,       0.18, 0.14);  // C6
+    tone(880,    t + 0.10, 0.20, 0.13);  // A5
+    tone(659.25, t + 0.22, 0.35, 0.12);  // E5
+  } catch(e){ console.warn('chime error', e); }
+}
+
+function startPolling(){
+  if(pollInterval) clearInterval(pollInterval);
+  
+  function checkNewPosts(){
+    if(!me || !me.uid) return;
+    
+    rtdb.ref('posts').orderByChild('createdAt').limitToLast(20).once('value').then(function(snap){
+      if(!snap.exists()) return;
+      
+      var newestTime = lastPollTime;
+      var newPosts = [];
+      
+      snap.forEach(function(child){
+        var p = child.val();
+        if(!p || !p.createdAt) return;
+        if(p.authorId !== me.uid && p.createdAt > lastPollTime && (Date.now() - p.createdAt) < 300000){
+          newPosts.push({
+            id: child.key,
+            text: p.text,
+            author: p.authorName,
+            pinned: p.pinned,
+            category: p.category,
+            createdAt: p.createdAt
+          });
+        }
+        if(p.createdAt > newestTime) newestTime = p.createdAt;
+      });
+      
+      if(newPosts.length > 0){
+        var p = newPosts[newPosts.length - 1];
+        var title = p.pinned ? '📌 PENGUMUMAN PENTING'
+                  : p.category === 'informasi' ? '📢 INFO RT'
+                  : p.category === 'galeri' ? '📷 GALERI BARU'
+                  : '📢 POSTINGAN BARU';
+        var body = (p.author || 'Warga') + ': ' + ((p.text || '[Foto]').slice(0, 100));
+        
+        // Notif browser
+        if('Notification' in window && Notification.permission === 'granted'){
+          try {
+            var n = new Notification(title, {
+              body: body,
+              icon: './icon-192.png',
+              badge: './icon-192.png',
+              tag: 'post-' + p.id,
+              vibrate: [400, 200, 400, 200, 400],
+              requireInteraction: true,
+              renotify: true,
+              silent: true  // matikan suara default browser, pakai chime custom
+            });
+            n.onclick = function(){
+              window.focus();
+              this.close();
+              if(typeof openPostDetail === 'function') openPostDetail(p.id);
+            };
+          } catch(e){ console.warn('notif error', e); }
+        }
+        
+        // Toast (kalau app terbuka)
+        if(!document.hidden){
+          toast('🔔 ' + title + ' — ' + body, false);
+        }
+        
+        // 🔔 CHIME (bukan beep) — 3 nada turun
+        playChime();
+        
+        // Getar panjang
+        if(navigator.vibrate){
+          try { navigator.vibrate([400, 200, 400, 200, 400]); } catch(e){}
+        }
+      }
+      
+      lastPollTime = newestTime;
+      if(newestTime > 0) localStorage.setItem('spark_last_poll', newestTime.toString());
+    }).catch(function(e){ console.warn('poll error', e); });
+  }
+  
+  checkNewPosts();
+  pollInterval = setInterval(checkNewPosts, 20000);
+  
+  document.addEventListener('visibilitychange', function(){
+    if(!document.hidden) checkNewPosts();
+  });
+  
+  window.addEventListener('focus', function(){
+    checkNewPosts();
+  });
+}
+
+setTimeout(function(){
+  if(me && me.uid){
+    startPolling();
+    console.log('🔔 Polling aktif — chime + getar');
+  }
+}, 4000);
+
+auth.onAuthStateChanged(function(user){
+  if(user){
+    setTimeout(function(){
+      if(!pollInterval) startPolling();
+    }, 3000);
+  } else {
+    if(pollInterval) clearInterval(pollInterval);
+    pollInterval = null;
+  }
+});
 </script>
 
 </body>
