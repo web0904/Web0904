@@ -261,7 +261,6 @@ body.dark .loader .box{background:#111a2e}
     <p style="font-size:13.5px;color:#64748b;line-height:1.5;margin:0 0 20px">Masukkan kode undangan dari Pengurus RT untuk bergabung.</p>
     <input id="inviteInput" type="text" placeholder="Contoh: RT09-2025" class="dt" style="text-align:center;font-weight:800;letter-spacing:.15em;text-transform:uppercase;margin-bottom:14px;padding:14px">
     <button id="inviteSubmit" class="btn-p" style="width:100%;margin-bottom:10px">Verifikasi</button>
-    <div style="font-size:11.5px;color:#94a3b8;text-align:center">Login sebagai: <span id="inviteEmail" style="font-weight:600;color:#64748b"></span></div>
     <button id="inviteLogout" class="btn-s" style="width:100%;margin-top:14px;background:transparent;font-size:12.5px;color:#94a3b8">Ganti akun Google</button>
   </div>
 </div>
@@ -679,7 +678,7 @@ var FB = {
   messagingSenderId: "618121526268",
   appId: "1:618121526268:web:439521109a847c9ec25079"
 };
-var BOOTSTRAP_ADMIN_EMAIL = ""; // GANTI dengan email Google Anda (yang jadi Admin RT)
+var BOOTSTRAP_ADMIN_EMAIL = ""; // GANTI dengan email Google Ketua RT
 var VAPID_KEY = "BCLp9zYnmE6YeGU8g_BOla0B0wvAPIUdXfKaFZ_1Vlak7AkUWQ_8m50UkGiiaLbnE2BjyKYymiBq5V_MzYWcEvE";
 
 function $(id){ return document.getElementById(id); }
@@ -695,6 +694,7 @@ function toast(msg, err){
 }
 function loader(on, msg){ $('loaderMsg').textContent = msg || 'Memproses...'; $('loader').classList.toggle('on', on); }
 function timeAgo(ts){
+  if(!ts) return 'baru';
   var d = Date.now() - ts;
   if(d<60000) return 'baru';
   if(d<3600000) return Math.floor(d/60000)+'m';
@@ -744,7 +744,6 @@ function compressAvatar(file){
     r.onerror = rej; r.readAsDataURL(file);
   });
 }
-// RTDB: konversi objek array ke array sebenarnya
 function toArr(obj){
   if(!obj) return [];
   if(Array.isArray(obj)) return obj;
@@ -797,7 +796,6 @@ var unsubFeed = null, unsubUsers = null, unsubPolls = null, unsubConfig = null;
 var countdownTimer = null, miniCountdownTimer = null;
 var initializedNotif = false;
 var knownPostIds = {};
-var chatReadAt = {}; // untuk kompatibilitas, tidak dipakai
 
 function isAdmin(){ return me && me.role === 'admin'; }
 function getPreferred(){ return localStorage.getItem('spark_pref_email'); }
@@ -1138,7 +1136,6 @@ auth.onAuthStateChanged(function(user){
             }
           });
           if(!me.verified && me.role !== 'admin'){
-            $('inviteEmail').textContent = me.email;
             $('inviteOv').style.display = 'flex';
             hide('app');
           } else {
@@ -1174,10 +1171,10 @@ function syncUser(){
   return rtdb.ref('users/' + me.uid).update(data).catch(function(e){ console.warn(e); });
 }
 
+// === LOGIN GOOGLE dengan pilihan akun ===
 $('googleBtn').onclick = async function(){
   var p = new firebase.auth.GoogleAuthProvider();
-  var pref = getPreferred();
-  if(pref) p.setCustomParameters({ login_hint: pref });
+  p.setCustomParameters({ prompt: 'select_account' });
   $('googleBtn').disabled = true;
   try { await auth.signInWithPopup(p); }
   catch(e){
@@ -1988,7 +1985,6 @@ function cleanSubs(){
   unsubFeed = unsubUsers = unsubPolls = unsubConfig = null;
 }
 
-// === SERVICE WORKER REGISTER ===
 if('serviceWorker' in navigator){
   window.addEventListener('load', function(){
     navigator.serviceWorker.register('./sw.js').then(function(reg){
