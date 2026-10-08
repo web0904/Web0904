@@ -1,10 +1,16 @@
-// ==== FCM SETUP ====
+// ============================================================
+// firebase-messaging-sw.js
+// Service Worker untuk RT09RW04 — FCM + Cache
+// PENTING: File ini HARUS di root repo, sejajar index.html
+// ============================================================
+
 importScripts('https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js');
 importScripts('https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging-compat.js');
 
 firebase.initializeApp({
   apiKey: "AIzaSyCEttPAa6glm2qHUw3_QIcj2C8qqB9ZwOI",
   authDomain: "spark-61d51.firebaseapp.com",
+  databaseURL: "https://spark-61d51-default-rtdb.asia-southeast1.firebasedatabase.app/",
   projectId: "spark-61d51",
   storageBucket: "spark-61d51.firebasestorage.app",
   messagingSenderId: "618121526268",
@@ -13,42 +19,61 @@ firebase.initializeApp({
 
 var messaging = firebase.messaging();
 
-// Handle notifikasi saat app di background/tertutup
+// ============================================================
+// NOTIFIKASI BACKGROUND (app tertutup)
+// ============================================================
 messaging.onBackgroundMessage(function(payload) {
-  console.log('[SW] Background message:', payload);
+  console.log('[FCM SW] Background message:', payload);
+  
   var title = (payload.notification && payload.notification.title) || 'RT09 RW04';
   var body = (payload.notification && payload.notification.body) || 'Ada aktivitas baru';
   var icon = (payload.notification && payload.notification.icon) || './icon-192.png';
+  
   var options = {
     body: body,
     icon: icon,
     badge: './icon-192.png',
-    vibrate: [200, 100, 200],
-    tag: (payload.data && payload.data.tag) || 'default',
+    vibrate: [400, 200, 400, 200, 400],
+    tag: (payload.data && payload.data.tag) || 'rt09-post',
     data: payload.data || {},
+    renotify: true,
     requireInteraction: false
   };
+  
   return self.registration.showNotification(title, options);
 });
 
-// Klik notifikasi → buka / fokus ke app
+// ============================================================
+// KLIK NOTIFIKASI → BUKA / FOKUS APP
+// ============================================================
 self.addEventListener('notificationclick', function(e) {
   e.notification.close();
+  
   var urlToOpen = (e.notification.data && e.notification.data.url) || './';
+  var postId = (e.notification.data && e.notification.data.postId) || null;
+  
   e.waitUntil(
     clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function(list) {
+      // Kalau app sudah terbuka → fokus
       for (var i = 0; i < list.length; i++) {
-        if (list[i].url.indexOf(self.location.origin) === 0 && 'focus' in list[i]) {
-          return list[i].focus();
+        var c = list[i];
+        if (c.url.indexOf(self.location.origin) === 0 && 'focus' in c) {
+          if (postId) {
+            c.postMessage({ type: 'OPEN_POST', postId: postId });
+          }
+          return c.focus();
         }
       }
+      // App belum terbuka → buka baru
       if (clients.openWindow) return clients.openWindow(urlToOpen);
     })
   );
 });
 
-// ==== CACHE ====
-const CACHE = 'rt09rw04-v13';
+// ============================================================
+// CACHE STRATEGY
+// ============================================================
+const CACHE = 'rt09rw04-v15';
 const ASSETS = [
   './',
   './index.html',
@@ -78,10 +103,14 @@ self.addEventListener('activate', function(e) {
 
 self.addEventListener('fetch', function(e) {
   if (e.request.method !== 'GET') return;
+  
   var url;
   try { url = new URL(e.request.url); } catch (err) { return; }
   if (url.protocol !== 'http:' && url.protocol !== 'https:') return;
-  if (url.hostname.indexOf('identitytoolkit') > -1 || url.hostname.indexOf('securetoken') > -1) return;
+  
+  // Skip Firebase auth / FCM / installations — biar selalu fresh
+  if (url.hostname.indexOf('identitytoolkit') > -1) return;
+  if (url.hostname.indexOf('securetoken') > -1) return;
   if (url.hostname.indexOf('fcm.googleapis.com') > -1) return;
   if (url.hostname.indexOf('firebaseinstallations') > -1) return;
   if (url.hostname.indexOf('firestore.googleapis.com') > -1) return;
