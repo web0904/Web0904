@@ -266,7 +266,7 @@ body.dark #inviteOv{background:#070b14}
   <div style="flex:1;padding:0 20px;margin-top:-50px;max-width:460px;width:100%;margin-left:auto;margin-right:auto;padding-bottom:40px">
     <div style="background:#fff;border-radius:28px;padding:28px 24px;box-shadow:0 30px 60px -20px rgba(15,23,42,.25);border:1px solid rgba(148,163,184,.1)">
       <div style="font-size:17px;font-weight:900;margin-bottom:6px;color:#0b1220;letter-spacing:-.01em">Selamat datang 👋</div>
-      <div style="font-size:13px;color:#64748b;line-height:1.6;margin-bottom:22px">Masuk dengan akun Google Anda. Berikutnya otomatis — tanpa pilih akun lagi.</div>
+      <div style="font-size:13px;color:#64748b;line-height:1.6;margin-bottom:22px">Masuk dengan akun Google Anda untuk bergabung. Cukup satu kali.</div>
       <button id="googleBtn" type="button" style="width:100%;padding:15px 16px;border-radius:16px;border:1.5px solid #e2e8f0;background:#fff;color:#0b1220;font-weight:800;font-size:14.5px;display:flex;align-items:center;justify-content:center;gap:11px;cursor:pointer;transition:transform .15s cubic-bezier(.34,1.56,.64,1),box-shadow .2s, border-color .2s;box-shadow:0 2px 8px -4px rgba(15,23,42,.08)">
         <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.9 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.1 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.3-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 18.9 12 24 12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.1 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.3 26.7 36 24 36c-5.2 0-9.6-3.1-11.3-7.6l-6.5 5C9.6 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.1-4.1 5.5l6.2 5.2C40.9 35.5 44 30.2 44 24c0-1.3-.1-2.3-.4-3.5z"/></svg>
         Lanjutkan dengan Google
@@ -714,6 +714,14 @@ function show(id){ var e = $(id); if(e) e.classList.remove('hide'); }
 function hide(id){ var e = $(id); if(e) e.classList.add('hide'); }
 function esc(t){ return String(t==null?'':t).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
 function cap(s){ return s.charAt(0).toUpperCase()+s.slice(1); }
+
+// ==== PERF HELPERS ====
+var _deb = {};
+function debouncedRender(key, fn, delay){
+  if(_deb[key]) clearTimeout(_deb[key]);
+  _deb[key] = setTimeout(fn, delay || 120);
+}
+
 function toast(msg, err){
   var t = $('toast'); t.textContent = msg;
   t.style.background = err ? 'linear-gradient(135deg,#f43f5e,#e11d48)' : 'linear-gradient(135deg,#0b1220,#1e293b)';
@@ -794,7 +802,7 @@ function avatarHtml(user, size, fontSize){
   if(!user) return '<div class="avatar" style="width:'+size+'px;height:'+size+'px;font-size:'+fontSize+'px">?</div>';
   var url = user.avatarBase64 ? ('data:image/jpeg;base64,'+user.avatarBase64) : (user.photoURL||null);
   var initial = (user.name||user.displayName||'?').trim().charAt(0).toUpperCase();
-  if(url) return '<div class="avatar" style="width:'+size+'px;height:'+size+'px;font-size:'+fontSize+'px"><img src="'+url+'" referrerpolicy="no-referrer" onerror="this.style.display=\'none\'"/></div>';
+  if(url) return '<div class="avatar" style="width:'+size+'px;height:'+size+'px;font-size:'+fontSize+'px"><img src="'+url+'" referrerpolicy="no-referrer" loading="lazy" decoding="async" onerror="this.style.display=\'none\'"/></div>';
   return '<div class="avatar" style="width:'+size+'px;height:'+size+'px;font-size:'+fontSize+'px">'+esc(initial)+'</div>';
 }
 
@@ -830,7 +838,6 @@ function getPreferred(){ return localStorage.getItem('spark_pref_email'); }
 function setPreferred(e){ if(e) localStorage.setItem('spark_pref_email', e); }
 function clearPreferred(){ localStorage.removeItem('spark_pref_email'); }
 
-// ==== BASE PATH (untuk GitHub Pages project page) ====
 function getBasePath(){
   return location.pathname.substring(0, location.pathname.lastIndexOf('/') + 1);
 }
@@ -928,7 +935,6 @@ function initFCM(){
       console.log('✅ FCM SW registered:', reg.scope);
       return navigator.serviceWorker.ready;
     }).then(function(reg){
-      console.log('Requesting FCM token...');
       return messaging.getToken({ vapidKey: VAPID_KEY, serviceWorkerRegistration: reg });
     }).then(function(token){
       if(!token){ toast('Gagal dapat token FCM', true); return; }
@@ -988,8 +994,14 @@ function setTab(t){
     markCatSeen(activeCat);
     updateAllBadges();
   }
-  if(t === 'warga') renderWargaList();
-  if(t === 'voting'){ renderVoting(); updateAllBadges(); }
+  if(t === 'warga'){
+    if(!unsubUsers) subscribeUsers();
+    renderWargaList();
+  }
+  if(t === 'voting'){
+    if(!unsubPolls) subscribePolls();
+    renderVoting(); updateAllBadges();
+  }
   if(t === 'profile') renderProfile();
   if(t !== 'post') $('main').scrollTop = 0;
 }
@@ -1122,7 +1134,7 @@ function renderPostCard(p){
   if(p.pinned) html += '<div class="pin-tag">📌 PIN</div>';
   if(isMine) html += '<span style="position:absolute;top:10px;left:8px;z-index:2;font-size:9px;font-weight:800;background:linear-gradient(135deg,#6366f1,#a855f7);color:white;padding:3px 8px;border-radius:6px;letter-spacing:.03em;box-shadow:0 3px 8px -2px rgba(99,102,241,.6)">KAMU</span>';
   if(hasEvent) html += '<span style="position:absolute;top:8px;right:8px;background:linear-gradient(135deg,#10b981,#059669);color:white;font-size:9.5px;font-weight:800;padding:4px 9px;border-radius:7px;z-index:2;box-shadow:0 3px 8px -2px rgba(16,185,129,.5)">📅 Kegiatan</span>';
-  if(firstImg) html += '<div class="thumb"><img src="data:image/jpeg;base64,'+firstImg+'"/></div>';
+  if(firstImg) html += '<div class="thumb"><img src="data:image/jpeg;base64,'+firstImg+'" loading="lazy" decoding="async"/></div>';
   html += '<div class="body">';
   html += '<div class="title">'+esc(preview)+'</div>';
   if(hasEvent){
@@ -1148,6 +1160,8 @@ function renderPostCard(p){
 function startMiniCountdowns(){
   if(miniCountdownTimer) clearInterval(miniCountdownTimer);
   function tick(){
+    // Skip kalau tab tidak aktif — hemat CPU & baterai
+    if(document.hidden) return;
     document.querySelectorAll('[data-cd]').forEach(function(el){
       var ts = parseInt(el.dataset.cd, 10);
       if(!ts) return;
@@ -1200,7 +1214,7 @@ auth.onAuthStateChanged(function(user){
         rtdb.ref('users/' + user.uid).update({ role: 'admin', verified: true });
       }
       syncUser().then(function(){
-        subscribeConfig(); subscribeFeed(); subscribeUsers(); subscribePolls();
+        subscribeConfig(); subscribeFeed();
         if(messaging && typeof Notification !== 'undefined' && Notification.permission === 'granted' && VAPID_KEY){
           messaging.getToken({ vapidKey: VAPID_KEY }).then(function(token){
             if(token){
@@ -1296,7 +1310,8 @@ function subscribeConfig(){
 // ================== FEED ==================
 function subscribeFeed(){
   if(unsubFeed){ try { unsubFeed(); } catch(e){} }
-  var ref = rtdb.ref('posts').orderByChild('createdAt').limitToLast(100);
+  // ✅ OPTIMASI: limit 30 post (cukup untuk RT)
+  var ref = rtdb.ref('posts').orderByChild('createdAt').limitToLast(30);
   var listener = ref.on('value', function(snap){
     var newList = [];
     snap.forEach(function(child){
@@ -1327,13 +1342,16 @@ function subscribeFeed(){
     initializedNotif = true;
 
     feed = newList;
-    if(tab === 'home') renderHome();
-    if(tab === 'category') renderCategory();
-    if(tab === 'post' && activePostId){
-      var p = feed.filter(function(x){ return x.id === activePostId; })[0];
-      if(p) renderPostDetail(p);
-    }
-    updateAllBadges();
+    // ✅ OPTIMASI: debounce render (tunggu 120ms sebelum render)
+    debouncedRender('feed', function(){
+      if(tab === 'home') renderHome();
+      if(tab === 'category') renderCategory();
+      if(tab === 'post' && activePostId){
+        var p = feed.filter(function(x){ return x.id === activePostId; })[0];
+        if(p) renderPostDetail(p);
+      }
+      updateAllBadges();
+    }, 120);
   }, function(e){ console.warn('feed', e); });
   unsubFeed = function(){ ref.off('value', listener); };
 }
@@ -1481,10 +1499,10 @@ function renderPhotoGrid(p){
   }
   if(items.length === 1){
     var it = items[0];
-    return '<div class="photo-grid single" style="margin-bottom:14px"><div class="pg-item"><img src="data:image/jpeg;base64,'+it.b64+'" data-pimg="1"/></div><button type="button" id="addPhotoBtn" style="width:100%;padding:11px;border-radius:11px;border:1.5px dashed #cbd5e1;background:#f8fafc;color:#64748b;font-size:12px;font-weight:700;cursor:pointer;margin-top:7px">📷 Tambah Foto Warga</button></div>';
+    return '<div class="photo-grid single" style="margin-bottom:14px"><div class="pg-item"><img src="data:image/jpeg;base64,'+it.b64+'" data-pimg="1" loading="lazy" decoding="async"/></div><button type="button" id="addPhotoBtn" style="width:100%;padding:11px;border-radius:11px;border:1.5px dashed #cbd5e1;background:#f8fafc;color:#64748b;font-size:12px;font-weight:700;cursor:pointer;margin-top:7px">📷 Tambah Foto Warga</button></div>';
   }
   var grid = '<div class="photo-grid" style="margin-bottom:14px">';
-  items.forEach(function(it){ grid += '<div class="pg-item"><img src="data:image/jpeg;base64,'+it.b64+'" data-pimg="1"/></div>'; });
+  items.forEach(function(it){ grid += '<div class="pg-item"><img src="data:image/jpeg;base64,'+it.b64+'" data-pimg="1" loading="lazy" decoding="async"/></div>'; });
   grid += addTile + '</div>';
   return grid;
 }
@@ -1503,7 +1521,7 @@ async function loadComments(pid){
   if(!el) return;
   el.innerHTML = '<div style="text-align:center;color:#94a3b8;font-size:13px;padding:18px 0;font-weight:600">Memuat komentar...</div>';
   try {
-    var snap = await rtdb.ref('comments/' + pid).orderByChild('createdAt').limitToLast(100).once('value');
+    var snap = await rtdb.ref('comments/' + pid).orderByChild('createdAt').limitToLast(50).once('value');
     var list = [];
     snap.forEach(function(child){
       var x = child.val() || {};
@@ -1523,7 +1541,7 @@ function renderComments(list){
     if(imgs.length) imgs.forEach(function(u){ t = t.replace(u, '').trim(); });
     var body = '<span class="name">'+esc(c.authorName)+'</span>';
     if(t) body += ' ' + esc(t);
-    var imgsHtml = imgs.map(function(u){ return '<img src="'+esc(u)+'" data-gif="'+esc(u)+'" style="max-width:180px;border-radius:12px;margin-top:8px;display:block;cursor:pointer;box-shadow:0 4px 12px -4px rgba(0,0,0,.15)" loading="lazy"/>'; }).join('');
+    var imgsHtml = imgs.map(function(u){ return '<img src="'+esc(u)+'" data-gif="'+esc(u)+'" style="max-width:180px;border-radius:12px;margin-top:8px;display:block;cursor:pointer;box-shadow:0 4px 12px -4px rgba(0,0,0,.15)" loading="lazy" decoding="async"/>'; }).join('');
     return '<div class="comment-item">'+avatarHtml({name:c.authorName, photoURL:c.authorPhoto, avatarBase64:c.authorAvatarBase64}, 34, 13)+'<div class="body"><div class="txt">'+body+'</div>'+imgsHtml+'<div class="time">'+timeAgo(c.createdAt)+'</div></div></div>';
   }).join('');
   el.querySelectorAll('[data-gif]').forEach(function(img){ img.onclick = function(){ openLightbox(img.src); }; });
@@ -1579,6 +1597,7 @@ $('collabInput').onchange = async function(e){
 function startCountdown(){
   if(countdownTimer) clearInterval(countdownTimer);
   function tick(){
+    if(document.hidden) return;
     var el = $('countdownBox');
     if(!el) return;
     if(!activePost || !activePost.eventDate) return;
@@ -1613,7 +1632,7 @@ $('composeCancel').onclick = function(){ $('composeSheet').style.display = 'none
 function renderAttach(){
   var el = $('composeAttach');
   var add = '<button type="button" id="attachAdd" class="thumb-add"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg><span>Tambah</span></button>';
-  el.innerHTML = composeImgs.map(function(b, i){ return '<div class="thumb-sm"><img src="data:image/jpeg;base64,'+b+'"/><button type="button" data-rm="'+i+'">×</button></div>'; }).join('') + add;
+  el.innerHTML = composeImgs.map(function(b, i){ return '<div class="thumb-sm"><img src="data:image/jpeg;base64,'+b+'" loading="lazy" decoding="async"/><button type="button" data-rm="'+i+'">×</button></div>'; }).join('') + add;
   $('attachAdd').onclick = function(){ $('imgInput').click(); };
   el.querySelectorAll('[data-rm]').forEach(function(b){ b.onclick = function(){ composeImgs.splice(parseInt(b.dataset.rm,10), 1); renderAttach(); checkReady(); }; });
 }
@@ -2080,7 +2099,6 @@ if('serviceWorker' in navigator){
     console.log('📍 Base path:', basePath);
     console.log('📍 SW URL:', swUrl);
 
-    // Bersihkan SW lama (misal sw.js dari versi sebelumnya)
     navigator.serviceWorker.getRegistrations().then(function(regs){
       regs.forEach(function(reg){
         var url = (reg.active && reg.active.scriptURL) ||
@@ -2093,7 +2111,6 @@ if('serviceWorker' in navigator){
       });
     });
 
-    // Register FCM SW
     navigator.serviceWorker.register(swUrl, { scope: basePath })
       .then(function(reg){
         console.log('✅ FCM SW registered:', reg.scope);
@@ -2103,7 +2120,6 @@ if('serviceWorker' in navigator){
       });
   });
 
-  // Terima pesan dari SW (dari klik notifikasi)
   navigator.serviceWorker.addEventListener('message', function(e){
     if(e.data && e.data.type === 'OPEN_POST' && e.data.postId){
       setTimeout(function(){
@@ -2114,7 +2130,7 @@ if('serviceWorker' in navigator){
 }
 
 // ============================================================
-// POLLING NOTIFIKASI + CHIME
+// POLLING NOTIFIKASI + CHIME (adaptive)
 // ============================================================
 var lastPollTime = parseInt(localStorage.getItem('spark_last_poll') || '0', 10);
 var pollInterval = null;
@@ -2177,7 +2193,11 @@ function startPolling(){
   }
 
   checkNewPosts();
-  pollInterval = setInterval(checkNewPosts, 20000);
+  // ✅ OPTIMASI: skip polling saat background — hemat baterai
+  pollInterval = setInterval(function(){
+    if(document.hidden) return;
+    checkNewPosts();
+  }, 15000);
 
   document.addEventListener('visibilitychange', function(){
     if(!document.hidden) checkNewPosts();
