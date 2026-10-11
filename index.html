@@ -23,8 +23,6 @@ input,textarea,select{font-size:16px!important}
 .scroll-y::-webkit-scrollbar{width:0}
 .hide{display:none!important}
 .grow{flex:1;min-height:0}
-
-/* ============ ANIMATIONS (dikurangi) ============ */
 @keyframes spin{to{transform:rotate(360deg)}}
 .spin{animation:spin .7s linear infinite}
 @keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
@@ -41,10 +39,8 @@ input,textarea,select{font-size:16px!important}
 @keyframes sheetUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
 @keyframes toastIn{from{opacity:0;transform:translateY(30px) scale(.9)}to{opacity:1;transform:none}}
 @keyframes connIn{from{opacity:0;transform:translateY(-100%)}to{opacity:1;transform:translateY(0)}}
-
+@keyframes searchIn{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
 .grad-anim{background:linear-gradient(90deg,#6366f1,#a855f7,#ec4899,#6366f1);background-size:200% 100%;animation:grad 2.4s linear infinite}
-
-/* ============ BUTTONS ============ */
 .btn-p{background:linear-gradient(135deg,#6366f1 0%,#8b5cf6 50%,#ec4899 100%);color:white;font-weight:700;border:none;cursor:pointer;border-radius:14px;padding:13px 18px;font-size:15px;transition:transform .15s cubic-bezier(.34,1.56,.64,1),filter .2s;box-shadow:0 6px 20px -8px rgba(99,102,241,.65),inset 0 1px 0 rgba(255,255,255,.2);letter-spacing:.01em;position:relative;overflow:hidden}
 .btn-p::after{content:'';position:absolute;inset:0;background:linear-gradient(120deg,transparent 30%,rgba(255,255,255,.28) 50%,transparent 70%);background-size:200% 100%;animation:shine 3s linear infinite;pointer-events:none}
 .btn-p:active{transform:scale(.97);filter:brightness(.96)}
@@ -53,24 +49,16 @@ input,textarea,select{font-size:16px!important}
 .btn-s{background:#f1f5f9;color:#0f172a;font-weight:600;border:none;cursor:pointer;border-radius:14px;padding:13px 18px;font-size:15px;transition:transform .15s}
 .btn-s:active{transform:scale(.97)}
 .btn-danger{background:linear-gradient(135deg,#f43f5e,#e11d48);color:white;font-weight:700;border:none;cursor:pointer;border-radius:14px;padding:13px 18px;font-size:15px;box-shadow:0 6px 20px -8px rgba(244,63,94,.6)}
-
-/* ============ CARDS (lebih flat) ============ */
 .card{background:#fff;border-radius:18px;border:1px solid rgba(148,163,184,.1);padding:16px;box-shadow:0 1px 3px rgba(15,23,42,.03)}
 body.dark{background:#070b14;color:#e2e8f0}
 body.dark .card{background:#101a2e;border-color:rgba(255,255,255,.06);box-shadow:0 1px 3px rgba(0,0,0,.3)}
-
-/* ============ HEADER ============ */
 .header{background:rgba(245,247,251,.86);backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);border-bottom:1px solid rgba(148,163,184,.12);flex-shrink:0;z-index:15;position:relative}
 body.dark .header{background:rgba(7,11,20,.86);border-color:rgba(255,255,255,.05)}
-
-/* ============ KONEKSI BANNER ============ */
 #connBanner{position:fixed;top:0;left:0;right:0;z-index:300;padding:calc(env(safe-area-inset-top,0px) + 8px) 16px 8px;font-size:13px;font-weight:700;text-align:center;display:none;box-shadow:0 2px 12px -4px rgba(0,0,0,.25)}
 #connBanner.on{display:block;animation:connIn .3s cubic-bezier(.22,1,.36,1)}
 #connBanner.offline{background:linear-gradient(135deg,#f43f5e,#e11d48);color:white}
 #connBanner.slow{background:linear-gradient(135deg,#f59e0b,#d97706);color:white}
 #connBanner.online{background:linear-gradient(135deg,#10b981,#059669);color:white}
-
-/* ============ NAV ============ */
 .nav{background:rgba(255,255,255,.9);backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);border-top:1px solid rgba(148,163,184,.12);flex-shrink:0;position:relative}
 body.dark .nav{background:rgba(7,11,20,.9);border-color:rgba(255,255,255,.05)}
 .nav-btn{display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 3px;background:transparent;border:none;cursor:pointer;position:relative;transition:transform .2s}
@@ -83,12 +71,8 @@ body.dark .nav{background:rgba(7,11,20,.9);border-color:rgba(255,255,255,.05)}
 .nav-badge{position:absolute;top:-1px;right:calc(50% - 26px);min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:#e11d48;color:white;font-size:10px;font-weight:800;display:none;align-items:center;justify-content:center;border:2px solid #fff;box-shadow:0 2px 6px -2px rgba(244,63,94,.6);letter-spacing:-.02em;z-index:10}
 body.dark .nav-badge{border-color:#0f172a}
 .nav-badge.on{display:flex;animation:pop .3s cubic-bezier(.34,1.56,.64,1) both}
-
-/* ============ FAB (pulse 3x lalu stop) ============ */
 .fab{position:fixed;bottom:calc(env(safe-area-inset-bottom,0px) + 78px);right:16px;width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#6366f1,#8b5cf6,#ec4899);color:white;border:none;cursor:pointer;box-shadow:0 10px 26px -6px rgba(99,102,241,.6),inset 0 1px 0 rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;z-index:25;transition:transform .2s cubic-bezier(.34,1.56,.64,1);animation:pulseRingOnce 1.2s ease-out 3}
 .fab:active{transform:scale(.88) rotate(90deg)}
-
-/* ============ CATEGORY TILES (tetap premium, sedikit dikurangi) ============ */
 .cat-tile{border-radius:22px;padding:18px;cursor:pointer;color:white;display:flex;align-items:center;gap:14px;min-height:112px;box-shadow:0 8px 22px -10px rgba(0,0,0,.3);position:relative;overflow:hidden;transition:transform .18s cubic-bezier(.34,1.56,.64,1)}
 .cat-tile::before{content:'';position:absolute;top:-50%;right:-30%;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.14),transparent 70%);pointer-events:none}
 .cat-tile:active{transform:scale(.97)}
@@ -100,8 +84,6 @@ body.dark .nav-badge{border-color:#0f172a}
 .cat-badge.on{display:flex;animation:pop .3s cubic-bezier(.34,1.56,.64,1) both}
 .cat-detail{display:flex;gap:5px;flex-wrap:wrap;margin-top:10px}
 .cat-detail .chip{padding:4px 10px;border-radius:9px;background:rgba(255,255,255,.24);font-size:11px;font-weight:800;display:inline-flex;align-items:center;gap:3px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.25);letter-spacing:.02em}
-
-/* ============ POST CARD (flat, font lebih besar) ============ */
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .post-card{background:#fff;border-radius:18px;overflow:hidden;cursor:pointer;border:1px solid rgba(148,163,184,.14);display:flex;flex-direction:column;min-height:175px;transition:transform .18s cubic-bezier(.34,1.56,.64,1),box-shadow .25s;position:relative;box-shadow:0 1px 3px rgba(15,23,42,.06)}
 body.dark .post-card{background:#101a2e;border-color:rgba(255,255,255,.06)}
@@ -126,12 +108,8 @@ body.dark .cd-mini-done{background:#1a2540;color:#94a3b8}
 body.dark .post-card .title{color:#cbd5e1}
 .post-card .meta{display:flex;gap:8px;font-size:12px;color:#94a3b8;font-weight:700;align-items:center}
 .post-card .foot{padding:9px 12px;border-top:1px solid rgba(148,163,184,.1);display:flex;gap:7px;align-items:center;font-size:12px;font-weight:700;color:#64748b}
-
-/* BARU dot kecil (bukan badge besar) */
 .post-new-dot{position:absolute;top:11px;right:11px;z-index:3;width:10px;height:10px;border-radius:50%;background:#10b981;box-shadow:0 0 0 3px rgba(16,185,129,.2),0 0 8px rgba(16,185,129,.6)}
 .pin-tag{position:absolute;top:9px;right:9px;z-index:3;background:#f59e0b;color:white;font-size:10px;font-weight:800;padding:4px 9px;border-radius:9px;box-shadow:0 2px 6px -1px rgba(245,158,11,.5);letter-spacing:.04em}
-
-/* ============ PINNED ============ */
 .pin-card{background:#fffaf0;border:1.5px solid rgba(245,158,11,.28);border-radius:20px;padding:15px;margin-bottom:11px;cursor:pointer;position:relative;overflow:hidden;transition:transform .18s}
 body.dark .pin-card{background:#1a1408}
 .pin-card:active{transform:scale(.98)}
@@ -139,21 +117,15 @@ body.dark .pin-card{background:#1a1408}
 .pin-card .pin-title{font-size:14.5px;font-weight:800;line-height:1.45;margin-bottom:8px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;color:#0b1220}
 body.dark .pin-card .pin-title{color:#e2e8f0}
 .pin-card .pin-meta{display:flex;align-items:center;gap:6px;font-size:12px;color:#64748b;margin-top:8px}
-
-/* ============ SECTION ============ */
 .section{margin:22px 16px 0}
 .section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
 .section-title{font-size:16.5px;font-weight:900;letter-spacing:-.02em}
 .section-title .em{margin-right:6px}
 .section-sub{font-size:12.5px;color:#94a3b8;font-weight:700}
-
-/* ============ COUNTDOWN GLASS ============ */
 .cd-glass{background:rgba(255,255,255,.16);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.28);border-radius:16px;padding:11px 12px}
 .cd-glass .cd-box{flex:1;background:rgba(255,255,255,.24);border:1px solid rgba(255,255,255,.2);border-radius:11px;padding:7px 3px;text-align:center;backdrop-filter:blur(6px)}
 .cd-glass .cd-box .n{font-size:16px;font-weight:800;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-.03em}
 .cd-glass .cd-box .l{font-size:9px;font-weight:800;opacity:.9;margin-top:4px;text-transform:uppercase;letter-spacing:.05em}
-
-/* ============ POST DETAIL ============ */
 #view-post{display:none;flex-direction:column;height:100%}
 #view-post.on{display:flex}
 .post-scroll{flex:1;overflow-y:auto;padding:16px 16px 24px}
@@ -165,8 +137,6 @@ body.dark .post-input-bar{background:#101a2e;border-color:rgba(255,255,255,.05)}
 body.dark .comment-input textarea{background:#1a2540;color:#fff}
 .send-btn{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:white;display:flex;align-items:center;justify-content:center;flex-shrink:0;border:none;cursor:pointer;box-shadow:0 4px 12px -4px rgba(99,102,241,.55);transition:transform .15s}
 .send-btn:active{transform:scale(.88)}
-
-/* ============ PHOTO GRID ============ */
 .photo-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px;border-radius:14px;overflow:hidden;margin-bottom:12px}
 .photo-grid.single{grid-template-columns:1fr}
 .pg-item{position:relative;aspect-ratio:1/1;overflow:hidden;background:#f1f5f9}
@@ -177,18 +147,15 @@ body.dark .comment-input textarea{background:#1a2540;color:#fff}
 .photo-add:active{background:#eff2f7;border-color:#6366f1}
 .photo-add .plus{font-size:24px;color:#94a3b8}
 .photo-add .txt{font-size:11px;margin-top:4px}
-
-/* ============ COMMENT ============ */
 .comment-item{display:flex;gap:11px;margin-bottom:14px;padding:12px;background:#f8fafc;border-radius:14px}
 body.dark .comment-item{background:#0e1729}
 .comment-item .body{flex:1;min-width:0}
 .comment-item .txt{font-size:14.5px;line-height:1.55;word-break:break-word;color:#334155}
 body.dark .comment-item .txt{color:#cbd5e1}
-.comment-item .name{font-weight:800;color:#0b1220}
+.comment-item .name{font-weight:800;color:#0b1220;cursor:pointer}
+.comment-item .name:active{opacity:.6}
 body.dark .comment-item .name{color:#e2e8f0}
 .comment-item .time{font-size:11.5px;color:#94a3b8;margin-top:4px;font-weight:600}
-
-/* ============ POLL ============ */
 .poll-card{background:#fff;border-radius:20px;padding:18px;margin-bottom:14px;box-shadow:0 1px 3px rgba(15,23,42,.05);border:1px solid rgba(148,163,184,.12)}
 body.dark .poll-card{background:#101a2e;border-color:rgba(255,255,255,.08)}
 .poll-opt{display:flex;align-items:center;gap:11px;padding:12px 14px;border-radius:13px;background:#f8fafc;margin-top:9px;cursor:pointer;transition:all .18s;border:1.5px solid transparent}
@@ -197,30 +164,22 @@ body.dark .poll-opt{background:#1a2540}
 .poll-opt.voted{border-color:#6366f1;background:rgba(99,102,241,.06)}
 .poll-opt .bar{height:7px;border-radius:99px;background:linear-gradient(90deg,#6366f1,#a855f7,#ec4899);transition:width .5s cubic-bezier(.22,1,.36,1)}
 .poll-opt .pct{font-size:12.5px;font-weight:800;color:#6366f1;min-width:44px;text-align:right;font-variant-numeric:tabular-nums}
-
-/* ============ AVATAR ============ */
 .avatar{border-radius:50%;flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center;font-weight:800;color:white;font-size:15px;background:linear-gradient(135deg,#6366f1,#a855f7,#ec4899);box-shadow:0 2px 6px -2px rgba(99,102,241,.35);letter-spacing:-.02em}
 .avatar img{width:100%;height:100%;object-fit:cover;display:block}
-
-/* ============ USER / SETTING ROW ============ */
+.avatar.clickable{cursor:pointer;transition:transform .15s}
+.avatar.clickable:active{transform:scale(.92)}
 .user-row{display:flex;align-items:center;gap:13px;padding:12px 15px;cursor:pointer;border-radius:15px;transition:background .2s}
 .user-row:active{background:rgba(148,163,184,.12)}
 .setting-row{display:flex;align-items:center;gap:13px;padding:14px 16px;width:100%;background:transparent;border:none;cursor:pointer;text-align:left;color:inherit;font-family:inherit;transition:background .2s}
 .setting-row:active{background:rgba(148,163,184,.1)}
 .setting-icon{width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;box-shadow:inset 0 1px 0 rgba(255,255,255,.15)}
-
-/* ============ HINTS ============ */
 .hint{padding:12px 14px;border-radius:14px;font-size:13px;line-height:1.6;border:1.5px dashed;font-weight:600}
 .h-umum{background:rgba(148,163,184,.08);border-color:rgba(148,163,184,.32);color:#475569}
 .h-info{background:rgba(59,130,246,.08);border-color:rgba(59,130,246,.32);color:#1e40af}
 .h-gal{background:rgba(236,72,153,.08);border-color:rgba(236,72,153,.32);color:#be185d}
-
-/* ============ INPUT ============ */
 .dt{width:100%;background:#f1f5f9;border:1.5px solid transparent;border-radius:13px;padding:12px 14px;font-size:15.5px;font-family:inherit;transition:border-color .2s,background .2s,box-shadow .2s}
 .dt:focus{outline:none;border-color:#6366f1;background:#fff;box-shadow:0 0 0 4px rgba(99,102,241,.1)}
 body.dark .dt{background:#1a2540;color:#fff}
-
-/* ============ CAT / TOPIC ============ */
 .cat-btn{padding:14px 6px;border-radius:15px;background:rgba(148,163,184,.08);color:#64748b;border:1.5px solid transparent;cursor:pointer;text-align:center;font-weight:700;font-family:inherit;transition:all .2s cubic-bezier(.34,1.56,.64,1)}
 .cat-btn:active{transform:scale(.95)}
 .cat-btn.on{color:white;box-shadow:0 4px 12px -4px rgba(99,102,241,.4)}
@@ -230,14 +189,10 @@ body.dark .dt{background:#1a2540;color:#fff}
 .topic-chip{padding:8px 14px;border-radius:13px;background:rgba(148,163,184,.08);border:1.5px solid transparent;font-size:13px;font-weight:700;cursor:pointer;color:#64748b;font-family:inherit;transition:all .2s}
 .topic-chip:active{transform:scale(.95)}
 .topic-chip.on{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:white;box-shadow:0 4px 12px -4px rgba(99,102,241,.5)}
-
-/* ============ MASK / MODAL ============ */
 .mask{position:fixed;inset:0;background:rgba(15,23,42,.5);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:none;align-items:flex-end;justify-content:center;z-index:120;animation:fade .25s}
 .mask.on{display:flex}
 .modal{background:#fff;border-radius:26px 26px 0 0;max-width:520px;width:100%;max-height:90dvh;display:flex;flex-direction:column;animation:sheetUp .35s cubic-bezier(.22,1,.36,1)}
 body.dark .modal{background:#101a2e}
-
-/* ============ ATTACH ============ */
 .attach-row{display:flex;gap:8px;overflow-x:auto;padding:4px 0;margin-top:8px}
 .attach-row::-webkit-scrollbar{display:none}
 .thumb-sm{position:relative;width:82px;height:82px;border-radius:13px;overflow:hidden;flex-shrink:0;background:#f1f5f9;box-shadow:0 2px 8px -4px rgba(15,23,42,.15)}
@@ -245,15 +200,11 @@ body.dark .modal{background:#101a2e}
 .thumb-sm button{position:absolute;top:4px;right:4px;width:22px;height:22px;border-radius:50%;background:rgba(0,0,0,.72);color:white;border:none;font-size:14px;cursor:pointer;backdrop-filter:blur(6px)}
 .thumb-add{width:82px;height:82px;border-radius:13px;border:1.5px dashed #cbd5e1;background:#f8fafc;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:11px;color:#64748b;font-weight:700;cursor:pointer;transition:all .2s}
 .thumb-add:active{background:#eff2f7;border-color:#6366f1;transform:scale(.95)}
-
-/* ============ COMPOSE / LIGHTBOX ============ */
 #composeSheet{position:fixed;inset:0;z-index:110;background:#fff;display:none;flex-direction:column;animation:sheetUp .3s cubic-bezier(.22,1,.36,1)}
 body.dark #composeSheet{background:#070b14}
 .lightbox{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.96);display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(10px)}
 .lightbox.on{display:flex}
 .lightbox img{max-width:100%;max-height:90vh;object-fit:contain;border-radius:10px;box-shadow:0 30px 80px -20px rgba(0,0,0,.8);animation:pop .3s cubic-bezier(.34,1.56,.64,1)}
-
-/* ============ TOAST / LOADER ============ */
 .toast{position:fixed;bottom:100px;left:16px;right:16px;z-index:140;padding:15px 18px;border-radius:16px;font-size:14px;font-weight:700;text-align:center;max-width:440px;margin:0 auto;display:none;box-shadow:0 10px 30px -8px rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.1);backdrop-filter:blur(20px);letter-spacing:.01em}
 .toast.on{display:block;animation:toastIn .4s cubic-bezier(.34,1.56,.64,1) both}
 .loader{position:fixed;inset:0;z-index:130;background:rgba(15,23,42,.45);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:20px}
@@ -261,8 +212,6 @@ body.dark #composeSheet{background:#070b14}
 .loader .box{background:#fff;border-radius:18px;padding:20px 24px;display:flex;align-items:center;gap:13px;box-shadow:0 10px 30px -8px rgba(0,0,0,.4)}
 body.dark .loader .box{background:#101a2e}
 .spinner{width:20px;height:20px;border:2.5px solid #e2e8f0;border-top-color:#6366f1;border-radius:50%}
-
-/* ============ BADGE PILL / EMPTY ============ */
 .badge-pill{display:inline-block;padding:4px 11px;border-radius:99px;font-size:11.5px;font-weight:800;letter-spacing:.04em}
 .pill-green{background:rgba(16,185,129,.15);color:#059669}
 .pill-red{background:rgba(244,63,94,.15);color:#e11d48}
@@ -272,8 +221,6 @@ body.dark .loader .box{background:#101a2e}
 .empty-state .em{font-size:38px;margin-bottom:14px;display:inline-block;animation:float 3s ease-in-out infinite}
 .empty-state .title{font-size:16.5px;font-weight:800;margin-bottom:6px;letter-spacing:-.01em}
 .empty-state .sub{font-size:13.5px;color:#64748b;margin-bottom:20px;line-height:1.55}
-
-/* ============ SPLASH / WELCOME / INVITE ============ */
 #splash{position:fixed;inset:0;z-index:200;background:linear-gradient(165deg,#f5f7fb 0%,#eef2ff 50%,#fce7f3 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;overflow:hidden}
 #splash::before{content:'';position:absolute;top:-20%;left:-20%;width:60vw;height:60vw;border-radius:50%;background:radial-gradient(circle,rgba(99,102,241,.18),transparent 65%);animation:meshMove 12s ease-in-out infinite}
 #splash::after{content:'';position:absolute;bottom:-20%;right:-20%;width:60vw;height:60vw;border-radius:50%;background:radial-gradient(circle,rgba(236,72,153,.15),transparent 65%);animation:meshMove 10s ease-in-out infinite reverse}
@@ -282,11 +229,43 @@ body.dark #welcomeOv{background:#070b14}
 #inviteOv{position:fixed;inset:0;z-index:160;background:#f5f7fb;display:none;flex-direction:column;overflow-y:auto}
 body.dark #inviteOv{background:#070b14}
 .pb-nav{padding-bottom:110px}
+/* SEARCH OVERLAY */
+#searchOv{position:fixed;inset:0;z-index:130;background:rgba(248,250,252,.98);backdrop-filter:blur(20px);display:none;flex-direction:column;animation:searchIn .25s cubic-bezier(.22,1,.36,1)}
+body.dark #searchOv{background:rgba(7,11,20,.98)}
+#searchOv.on{display:flex}
+.search-header{padding:calc(env(safe-area-inset-top,0px) + 12px) 14px 12px;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(148,163,184,.12)}
+.search-input{flex:1;background:#f1f5f9;border:1.5px solid transparent;border-radius:14px;padding:12px 16px 12px 42px;font-size:15.5px;font-family:inherit;position:relative}
+body.dark .search-input{background:#1a2540;color:#fff}
+.search-input:focus{outline:none;border-color:#6366f1;background:#fff}
+.search-icon-wrap{position:absolute;left:26px;top:50%;transform:translateY(-50%);color:#94a3b8;pointer-events:none;display:flex;align-items:center}
+.search-close{width:40px;height:40px;border-radius:50%;background:#f1f5f9;display:flex;align-items:center;justify-content:center;border:none;cursor:pointer;flex-shrink:0}
+body.dark .search-close{background:#1a2540;color:#fff}
+.search-tabs{display:flex;gap:8px;padding:12px 14px 4px;overflow-x:auto}
+.search-tabs::-webkit-scrollbar{display:none}
+.search-tab{padding:7px 14px;border-radius:12px;background:rgba(148,163,184,.1);border:1.5px solid transparent;font-size:13px;font-weight:700;color:#64748b;cursor:pointer;flex-shrink:0;font-family:inherit;transition:all .15s}
+.search-tab.on{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:white;box-shadow:0 4px 12px -4px rgba(99,102,241,.5)}
+.search-results{padding:14px 16px 100px}
+.search-count{font-size:12.5px;color:#94a3b8;font-weight:700;margin-bottom:12px;padding:0 2px}
+.highlight{background:linear-gradient(180deg,transparent 60%,#fef08a 60%);font-weight:700;color:#0b1220;padding:0 2px;border-radius:3px}
+body.dark .highlight{background:linear-gradient(180deg,transparent 60%,rgba(250,204,21,.35) 60%);color:#fef3c7}
+/* USER PROFILE VIEW */
+#userProfileOv{position:fixed;inset:0;z-index:135;background:#f5f7fb;display:none;flex-direction:column;animation:sheetUp .3s cubic-bezier(.22,1,.36,1)}
+body.dark #userProfileOv{background:#070b14}
+#userProfileOv.on{display:flex}
+/* REPORT MODAL OPTIONS */
+.report-opt{display:flex;align-items:center;gap:13px;padding:14px;border-radius:14px;background:#f8fafc;margin-bottom:9px;cursor:pointer;border:1.5px solid transparent;transition:all .15s}
+body.dark .report-opt{background:#1a2540}
+.report-opt:active{transform:scale(.98)}
+.report-opt.sel{border-color:#6366f1;background:rgba(99,102,241,.08)}
+.report-opt .ri{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;background:rgba(99,102,241,.12);color:#6366f1}
+.report-opt .rt{flex:1}
+.report-opt .rt .rn{font-size:14px;font-weight:800;color:#0b1220}
+body.dark .report-opt .rt .rn{color:#e2e8f0}
+.report-opt .rt .rd{font-size:12px;color:#94a3b8;margin-top:2px;font-weight:500}
 </style>
 </head>
 <body>
 
-<!-- ============ KONEKSI BANNER ============ -->
 <div id="connBanner"></div>
 
 <div id="lightbox" class="lightbox">
@@ -298,6 +277,44 @@ body.dark #inviteOv{background:#070b14}
 
 <div id="loader" class="loader">
   <div class="box"><div class="spinner spin"></div><span id="loaderMsg" style="font-size:14px;font-weight:700">Memproses...</span></div>
+</div>
+
+<!-- SEARCH OVERLAY -->
+<div id="searchOv">
+  <div class="search-header">
+    <div style="position:relative;flex:1;display:flex;align-items:center">
+      <div class="search-icon-wrap">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      </div>
+      <input id="searchInput" class="search-input" type="text" placeholder="Cari postingan, warga, topik..." autocomplete="off">
+    </div>
+    <button id="searchClose" class="search-close" type="button">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+  <div class="search-tabs" id="searchTabs">
+    <button class="search-tab on" data-scope="all" type="button">🔎 Semua</button>
+    <button class="search-tab" data-scope="umum" type="button">💬 Umum</button>
+    <button class="search-tab" data-scope="informasi" type="button">📢 Informasi</button>
+    <button class="search-tab" data-scope="galeri" type="button">📷 Galeri</button>
+    <button class="search-tab" data-scope="warga" type="button">👥 Warga</button>
+  </div>
+  <div class="scroll-y grow">
+    <div class="search-results" id="searchResults"></div>
+  </div>
+</div>
+
+<!-- USER PROFILE OVERLAY -->
+<div id="userProfileOv">
+  <header class="header safe-t" style="display:flex;align-items:center;gap:10px;padding:12px 14px 10px">
+    <button id="upBack" type="button" style="width:40px;height:40px;border-radius:50%;background:#fff;border:1px solid rgba(148,163,184,.18);display:flex;align-items:center;justify-content:center;cursor:pointer">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <div style="flex:1;font-size:16.5px;font-weight:900;letter-spacing:-.02em">Profil Warga</div>
+  </header>
+  <div class="scroll-y grow">
+    <div id="userProfileContent" style="padding:16px 16px 40px"></div>
+  </div>
 </div>
 
 <div id="splash">
@@ -359,7 +376,7 @@ body.dark #inviteOv{background:#070b14}
 <div id="app" style="display:none;flex-direction:column;height:100dvh;max-width:560px;margin:0 auto">
 
   <header class="header safe-t">
-    <div style="display:flex;align-items:center;gap:10px;padding:12px 14px 10px">
+    <div style="display:flex;align-items:center;gap:8px;padding:12px 14px 10px">
       <button id="backBtn" type="button" class="hide" style="width:40px;height:40px;border-radius:50%;background:#fff;border:1px solid rgba(148,163,184,.18);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .15s">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>
       </button>
@@ -367,6 +384,9 @@ body.dark #inviteOv{background:#070b14}
         <div id="topTitle" style="font-size:17.5px;font-weight:900;line-height:1.15;letter-spacing:-.02em">RT09RW04</div>
         <div id="topSub" style="font-size:12.5px;color:#64748b;margin-top:2px;font-weight:600">Candisari Wonotingal</div>
       </div>
+      <button id="searchBtn" type="button" style="width:40px;height:40px;border-radius:50%;background:#fff;border:1px solid rgba(148,163,184,.18);display:flex;align-items:center;justify-content:center;cursor:pointer">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      </button>
       <button id="headerAvatarBtn" type="button" class="avatar" style="border:2px solid rgba(255,255,255,.9);cursor:pointer;box-shadow:0 2px 8px -2px rgba(15,23,42,.2)"></button>
       <button id="themeBtn" type="button" style="width:40px;height:40px;border-radius:50%;background:#fff;border:1px solid rgba(148,163,184,.18);display:flex;align-items:center;justify-content:center;cursor:pointer">
         <svg id="themeIconDark" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/></svg>
@@ -557,6 +577,13 @@ body.dark #inviteOv{background:#070b14}
             <div style="flex:1;text-align:left">
               <div style="font-size:14.5px;font-weight:700">Kelola Warga</div>
               <div style="font-size:12.5px;color:#94a3b8;margin-top:2px;font-weight:500">Atur role, blokir warga</div>
+            </div>
+          </button>
+          <button id="adminReportsBtn" type="button" class="setting-row">
+            <div class="setting-icon" style="background:rgba(244,63,94,.15);color:#f43f5e">🚨</div>
+            <div style="flex:1;text-align:left">
+              <div style="font-size:14.5px;font-weight:700">Laporan Warga</div>
+              <div style="font-size:12.5px;color:#94a3b8;margin-top:2px;font-weight:500">Lihat laporan post <span id="reportCountBadge" style="color:#f43f5e;font-weight:900"></span></div>
             </div>
           </button>
         </div>
@@ -769,7 +796,7 @@ var FB = {
   messagingSenderId: "618121526268",
   appId: "1:618121526268:web:439521109a847c9ec25079"
 };
-var BOOTSTRAP_ADMIN_EMAIL = "swiwioffice@gmail.com"; // GANTI dengan email Google Ketua RT
+var BOOTSTRAP_ADMIN_EMAIL = "";
 var VAPID_KEY = "BCLp9zYnmE6YeGU8g_BOla0B0wvAPIUdXfKaFZ_1Vlak7AkUWQ_8m50UkGiiaLbnE2BjyKYymiBq5V_MzYWcEvE";
 
 function $(id){ return document.getElementById(id); }
@@ -777,15 +804,19 @@ function show(id){ var e = $(id); if(e) e.classList.remove('hide'); }
 function hide(id){ var e = $(id); if(e) e.classList.add('hide'); }
 function esc(t){ return String(t==null?'':t).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
 function cap(s){ return s.charAt(0).toUpperCase()+s.slice(1); }
+function escReg(s){ return String(s||'').replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+function highlightText(text, q){
+  if(!q) return esc(text);
+  var regex = new RegExp('(' + escReg(q) + ')', 'gi');
+  return esc(text).replace(regex, '<span class="highlight">$1</span>');
+}
 
-// ==== PERF HELPERS ====
 var _deb = {};
 function debouncedRender(key, fn, delay){
   if(_deb[key]) clearTimeout(_deb[key]);
   _deb[key] = setTimeout(fn, delay || 120);
 }
 
-// ==== KONEKSI BANNER ====
 var connTimer = null;
 var wasOffline = false;
 function showConn(type, msg, dur){
@@ -795,10 +826,6 @@ function showConn(type, msg, dur){
   b.classList.add(type, 'on');
   if(connTimer) clearTimeout(connTimer);
   if(dur) connTimer = setTimeout(function(){ b.classList.remove('on'); }, dur);
-}
-function hideConn(){
-  var b = $('connBanner');
-  b.classList.remove('on');
 }
 window.addEventListener('online', function(){
   if(wasOffline){ showConn('online', '✅ Kembali online', 2500); wasOffline = false; }
@@ -884,13 +911,16 @@ function extractImageUrls(text){
   while((m = re.exec(text)) !== null) urls.push(m[1]);
   return urls;
 }
-function avatarHtml(user, size, fontSize){
+function avatarHtml(user, size, fontSize, clickable){
   size = size || 36; fontSize = fontSize || 15;
-  if(!user) return '<div class="avatar" style="width:'+size+'px;height:'+size+'px;font-size:'+fontSize+'px">?</div>';
+  var cls = 'avatar' + (clickable ? ' clickable' : '');
+  var uid = user && (user.uid || user.authorId) || '';
+  var dataAttr = (clickable && uid) ? ' data-uid="'+esc(uid)+'"' : '';
+  if(!user) return '<div class="'+cls+'" style="width:'+size+'px;height:'+size+'px;font-size:'+fontSize+'px"'+dataAttr+'>?</div>';
   var url = user.avatarBase64 ? ('data:image/jpeg;base64,'+user.avatarBase64) : (user.photoURL||null);
   var initial = (user.name||user.displayName||'?').trim().charAt(0).toUpperCase();
-  if(url) return '<div class="avatar" style="width:'+size+'px;height:'+size+'px;font-size:'+fontSize+'px"><img src="'+url+'" referrerpolicy="no-referrer" loading="lazy" decoding="async" onerror="this.style.display=\'none\'"/></div>';
-  return '<div class="avatar" style="width:'+size+'px;height:'+size+'px;font-size:'+fontSize+'px">'+esc(initial)+'</div>';
+  if(url) return '<div class="'+cls+'" style="width:'+size+'px;height:'+size+'px;font-size:'+fontSize+'px"'+dataAttr+'><img src="'+url+'" referrerpolicy="no-referrer" loading="lazy" decoding="async" onerror="this.style.display=\'none\'"/></div>';
+  return '<div class="'+cls+'" style="width:'+size+'px;height:'+size+'px;font-size:'+fontSize+'px"'+dataAttr+'>'+esc(initial)+'</div>';
 }
 
 firebase.initializeApp(FB);
@@ -908,14 +938,17 @@ var activeCat = 'umum';
 var feed = [];
 var users = [];
 var polls = [];
+var reports = [];
 var appConfig = { inviteCode: '' };
 var activePostId = null;
 var activePost = null;
 var composeImgs = [];
 var composeCat = 'umum';
 var composeTopic = 'obrolan';
+var editingPostId = null;
+var editingOriginal = null;
 var uploading = false;
-var unsubFeed = null, unsubUsers = null, unsubPolls = null, unsubConfig = null;
+var unsubFeed = null, unsubUsers = null, unsubPolls = null, unsubConfig = null, unsubReports = null;
 var countdownTimer = null, miniCountdownTimer = null;
 var initializedNotif = false;
 var knownPostIds = {};
@@ -929,7 +962,6 @@ function getBasePath(){
   return location.pathname.substring(0, location.pathname.lastIndexOf('/') + 1);
 }
 
-// ==== SEEN POSTS TRACKER ====
 function getSeenPosts(){
   if(!me || !me.uid) return {};
   try { return JSON.parse(localStorage.getItem('spark_seen_posts_'+me.uid) || '{}'); }
@@ -1000,13 +1032,12 @@ function playChime(){
       o.start(start); o.stop(start + dur + 0.02);
     }
     var t = ctx.currentTime;
-    tone(1046.5, t,       0.18, 0.14);
-    tone(880,    t + 0.10, 0.20, 0.13);
+    tone(1046.5, t, 0.18, 0.14);
+    tone(880, t + 0.10, 0.20, 0.13);
     tone(659.25, t + 0.22, 0.35, 0.12);
   } catch(e){}
 }
 
-// ==== FCM ====
 function initFCM(){
   if(!messaging) return toast('Browser tidak mendukung FCM', true);
   if(!('Notification' in window)) return toast('Browser tidak mendukung notifikasi', true);
@@ -1014,12 +1045,9 @@ function initFCM(){
 
   return Notification.requestPermission().then(function(permission){
     if(permission !== 'granted'){ toast('Izin notifikasi ditolak', true); return; }
-
     var basePath = getBasePath();
     var swUrl = basePath + 'firebase-messaging-sw.js';
-
     return navigator.serviceWorker.register(swUrl, { scope: basePath }).then(function(reg){
-      console.log('✅ FCM SW registered:', reg.scope);
       return navigator.serviceWorker.ready;
     }).then(function(reg){
       return messaging.getToken({ vapidKey: VAPID_KEY, serviceWorkerRegistration: reg });
@@ -1031,7 +1059,6 @@ function initFCM(){
       });
     });
   }).catch(function(e){
-    console.error('FCM error:', e);
     var msg = (e && e.message) ? e.message.slice(0, 60) : 'Unknown error';
     toast('Gagal: ' + msg, true);
   });
@@ -1089,7 +1116,10 @@ function setTab(t){
     if(!unsubPolls) subscribePolls();
     renderVoting(); updateAllBadges();
   }
-  if(t === 'profile') renderProfile();
+  if(t === 'profile'){
+    renderProfile();
+    if(isAdmin() && !unsubReports) subscribeReports();
+  }
   if(t !== 'post') $('main').scrollTop = 0;
 }
 document.querySelectorAll('.nav-btn').forEach(function(b){ b.onclick = function(){ setTab(b.dataset.tab); }; });
@@ -1107,12 +1137,309 @@ $('rulesModal').addEventListener('click', function(e){ if(e.target.id === 'rules
 $('rulesBtn').onclick = openRules;
 function maybeShowRulesFirstTime(){
   if(localStorage.getItem('spark_rules_seen') === '1') return;
-  setTimeout(function(){
-    openRules();
-    localStorage.setItem('spark_rules_seen', '1');
-  }, 1500);
+  setTimeout(function(){ openRules(); localStorage.setItem('spark_rules_seen', '1'); }, 1500);
 }
 
+// ============================================================
+// SEARCH
+// ============================================================
+var searchScope = 'all';
+var searchQuery = '';
+
+function openSearch(){
+  $('searchOv').classList.add('on');
+  setTimeout(function(){ $('searchInput').focus(); }, 200);
+}
+function closeSearch(){
+  $('searchOv').classList.remove('on');
+  $('searchInput').value = '';
+  searchQuery = '';
+  renderSearchResults();
+}
+$('searchBtn').onclick = openSearch;
+$('searchClose').onclick = closeSearch;
+
+$('searchInput').addEventListener('input', function(e){
+  searchQuery = e.target.value.trim().toLowerCase();
+  debouncedRender('search', renderSearchResults, 150);
+});
+
+document.querySelectorAll('#searchTabs .search-tab').forEach(function(b){
+  b.onclick = function(){
+    searchScope = b.dataset.scope;
+    document.querySelectorAll('#searchTabs .search-tab').forEach(function(x){ x.classList.toggle('on', x === b); });
+    renderSearchResults();
+  };
+});
+
+function renderSearchResults(){
+  var el = $('searchResults');
+  var q = searchQuery;
+  if(!q){
+    el.innerHTML = '<div class="empty-state" style="padding-top:40px"><div class="em">🔍</div><div class="title">Cari sesuatu</div><div class="sub">Cari postingan, warga, atau topik di komunitas RT</div></div>';
+    return;
+  }
+
+  var results = [];
+
+  // Cari post
+  if(searchScope === 'all' || searchScope === 'umum' || searchScope === 'informasi' || searchScope === 'galeri'){
+    feed.forEach(function(p){
+      if(searchScope !== 'all' && (p.category||'umum') !== searchScope) return;
+      var hay = ((p.text||'') + ' ' + (p.authorName||'') + ' ' + (p.eventLocation||'')).toLowerCase();
+      if(hay.indexOf(q) > -1){
+        results.push({ type: 'post', item: p });
+      }
+    });
+  }
+
+  // Cari warga
+  if(searchScope === 'all' || searchScope === 'warga'){
+    users.forEach(function(u){
+      if(!(u.verified || u.role === 'admin')) return;
+      var hay = ((u.name||'') + ' ' + (u.blok||'') + ' ' + (u.email||'')).toLowerCase();
+      if(hay.indexOf(q) > -1){
+        results.push({ type: 'user', item: u });
+      }
+    });
+  }
+
+  if(!results.length){
+    el.innerHTML = '<div class="empty-state" style="padding-top:40px"><div class="em">🤷</div><div class="title">Tidak ditemukan</div><div class="sub">Coba kata kunci lain atau ubah filter kategori</div></div>';
+    return;
+  }
+
+  var html = '<div class="search-count">📊 '+results.length+' hasil ditemukan untuk "'+esc(q)+'"</div>';
+
+  // Group: users dulu
+  var userRes = results.filter(function(r){ return r.type === 'user'; });
+  var postRes = results.filter(function(r){ return r.type === 'post'; });
+
+  if(userRes.length){
+    html += '<div style="font-size:12px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.12em;margin:4px 2px 10px">👥 Warga ('+userRes.length+')</div>';
+    userRes.forEach(function(r){
+      var u = r.item;
+      html += '<div class="user-row" data-open-uid="'+esc(u.uid)+'" style="background:#fff;border:1px solid rgba(148,163,184,.12);margin-bottom:9px;border-radius:14px">'+avatarHtml(u, 44, 17)+
+        '<div style="flex:1;min-width:0"><div style="font-size:14.5px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+highlightText(u.name||'Warga', q)+'</div>'+
+        '<div style="font-size:12px;color:#64748b;margin-top:3px;font-weight:500">'+(u.blok ? 'Blok '+highlightText(u.blok, q)+' · ' : '')+(u.role === 'admin' ? '🛡️ Pengurus' : 'Warga')+'</div></div></div>';
+    });
+  }
+
+  if(postRes.length){
+    html += '<div style="font-size:12px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.12em;margin:16px 2px 10px">📝 Postingan ('+postRes.length+')</div>';
+    html += '<div class="grid2">';
+    postRes.forEach(function(r){
+      html += renderSearchPostCard(r.item, q);
+    });
+    html += '</div>';
+  }
+
+  el.innerHTML = html;
+
+  el.querySelectorAll('[data-open-uid]').forEach(function(e){
+    e.onclick = function(){ viewUserProfile(e.dataset.openUid); };
+  });
+  el.querySelectorAll('[data-search-pid]').forEach(function(e){
+    e.onclick = function(){
+      closeSearch();
+      setTimeout(function(){ openPostDetail(e.dataset.searchPid); }, 200);
+    };
+  });
+}
+
+function renderSearchPostCard(p, q){
+  var cat = p.category || 'umum';
+  var stripCls = cat === 'informasi' ? 's-info' : cat === 'galeri' ? 's-gal' : 's-umum';
+  var firstImg = (p.images && p.images.length) ? p.images[0] : null;
+  var hasText = p.text && p.text.trim().length > 0;
+  var preview = hasText ? p.text.replace(/\s+/g,' ').trim() : (firstImg ? 'Foto tanpa keterangan' : 'Postingan');
+  var html = '<div class="post-card" data-search-pid="'+p.id+'">';
+  html += '<div class="strip '+stripCls+'"></div>';
+  if(firstImg) html += '<div class="thumb"><img src="data:image/jpeg;base64,'+firstImg+'" loading="lazy" decoding="async"/></div>';
+  html += '<div class="body">';
+  html += '<div class="title">'+highlightText(preview, q)+'</div>';
+  html += '<div class="meta"><span>'+({umum:'💬',informasi:'📢',galeri:'📷'})[cat]+' '+esc(p.authorName||'')+'</span><span style="margin-left:auto">'+timeAgo(p.createdAt)+'</span></div>';
+  html += '</div></div>';
+  return html;
+}
+
+// ============================================================
+// VIEW USER PROFILE
+// ============================================================
+function viewUserProfile(uid){
+  if(!uid) return;
+  var u = users.filter(function(x){ return x.uid === uid || x.id === uid; })[0];
+  if(!u){
+    // fallback ambil dari post
+    var post = feed.filter(function(p){ return p.authorId === uid; })[0];
+    if(!post){ toast('Warga tidak ditemukan', true); return; }
+    u = { uid: uid, name: post.authorName, avatarBase64: post.authorAvatarBase64, photoURL: post.authorPhoto };
+  }
+
+  var userPosts = feed.filter(function(p){ return p.authorId === uid; }).sort(function(a,b){ return b.createdAt - a.createdAt; });
+  var isMe2 = uid === (me && me.uid);
+
+  var html = '';
+  html += '<div style="text-align:center;margin-bottom:22px">';
+  html += avatarHtml(u, 100, 38);
+  html += '<div style="font-size:19px;font-weight:900;margin-top:14px;letter-spacing:-.02em;word-break:break-word">'+esc(u.name||'Warga')+'</div>';
+  if(u.blok) html += '<div style="font-size:13px;color:#64748b;margin-top:5px;font-weight:600">🏠 Blok '+esc(u.blok)+'</div>';
+  html += '<div style="display:flex;gap:6px;justify-content:center;margin-top:10px">';
+  html += (u.role === 'admin') ? '<span class="badge-pill pill-blue">🛡️ Pengurus</span>' : '<span class="badge-pill pill-gray">Warga</span>';
+  if(isMe2) html += '<span class="badge-pill pill-green">Anda</span>';
+  html += '</div>';
+  html += '</div>';
+
+  var totalLikes = userPosts.reduce(function(s,p){ return s + toCount(p.likedBy); }, 0);
+  var totalComments = userPosts.reduce(function(s,p){ return s + (p.commentCount||0); }, 0);
+
+  html += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-bottom:22px">';
+  html += '<div class="card" style="text-align:center;padding:13px 4px"><div style="font-size:20px;font-weight:900;letter-spacing:-.02em">'+userPosts.length+'</div><div style="font-size:11.5px;color:#94a3b8;margin-top:3px;font-weight:700">Postingan</div></div>';
+  html += '<div class="card" style="text-align:center;padding:13px 4px"><div style="font-size:20px;font-weight:900;letter-spacing:-.02em">'+totalLikes+'</div><div style="font-size:11.5px;color:#94a3b8;margin-top:3px;font-weight:700">Suka</div></div>';
+  html += '<div class="card" style="text-align:center;padding:13px 4px"><div style="font-size:20px;font-weight:900;letter-spacing:-.02em">'+totalComments+'</div><div style="font-size:11.5px;color:#94a3b8;margin-top:3px;font-weight:700">Komentar</div></div>';
+  html += '</div>';
+
+  html += '<div style="font-size:12px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.12em;margin:0 2px 11px">📝 Postingan '+(isMe2?'Saya':'')+'</div>';
+  if(!userPosts.length){
+    html += '<div class="empty-state" style="padding:30px 20px"><div class="em">📭</div><div class="title">Belum ada postingan</div></div>';
+  } else {
+    html += '<div class="grid2">';
+    userPosts.forEach(function(p){ html += renderPostCard(p); });
+    html += '</div>';
+  }
+
+  $('userProfileContent').innerHTML = html;
+  $('userProfileOv').classList.add('on');
+
+  $('userProfileContent').querySelectorAll('[data-pid]').forEach(function(el){
+    el.onclick = function(){
+      $('userProfileOv').classList.remove('on');
+      setTimeout(function(){ openPostDetail(el.dataset.pid); }, 200);
+    };
+  });
+}
+$('upBack').onclick = function(){ $('userProfileOv').classList.remove('on'); };
+
+// ============================================================
+// SHARE TO WHATSAPP
+// ============================================================
+function sharePost(p){
+  var baseUrl = location.origin + location.pathname;
+  var postUrl = baseUrl + '#post=' + p.id;
+  var cat = p.category || 'umum';
+  var catEmoji = cat === 'informasi' ? '📢' : cat === 'galeri' ? '📷' : '💬';
+  var catName = cat === 'informasi' ? 'INFORMASI RT' : cat === 'galeri' ? 'GALERI' : 'UMUM';
+  var snippet = (p.text || '[Foto]').replace(/\s+/g,' ').trim().slice(0, 200);
+  if(p.text && p.text.length > 200) snippet += '...';
+
+  var message = catEmoji + ' *' + catName + ' RT09/RW04*\n\n';
+  message += snippet + '\n\n';
+  message += '👤 ' + (p.authorName || 'Warga') + '\n';
+  message += '🔗 ' + postUrl;
+
+  if(navigator.share){
+    navigator.share({
+      title: catEmoji + ' ' + catName + ' RT09/RW04',
+      text: message,
+      url: postUrl
+    }).catch(function(){ /* user cancel */ });
+  } else {
+    var waUrl = 'https://wa.me/?text=' + encodeURIComponent(message);
+    window.open(waUrl, '_blank');
+  }
+}
+
+// ============================================================
+// REPORT POST
+// ============================================================
+var reportReasons = [
+  { id: 'spam', icon: '🚫', name: 'Spam / Iklan', desc: 'Promosi berulang, bukan konten warga' },
+  { id: 'sara', icon: '⚠️', name: 'SARA / Ujaran Kebencian', desc: 'Menyerang suku, agama, ras, atau golongan' },
+  { id: 'bully', icon: '😡', name: 'Menghina / Bullying', desc: 'Merendahkan atau mengancam warga' },
+  { id: 'napak', icon: '🔞', name: 'Konten Tidak Pantas', desc: 'Gambar/video tidak sopan' },
+  { id: 'hoax', icon: '📰', name: 'Hoaks / Berita Bohong', desc: 'Informasi palsu yang menyesatkan' },
+  { id: 'other', icon: '❓', name: 'Lainnya', desc: 'Alasan lain yang tidak terdaftar' }
+];
+
+function openReportModal(p){
+  var html = '<p style="font-size:13.5px;color:#64748b;line-height:1.65;margin:0 0 16px;font-weight:500">Bantu jaga kenyamanan komunitas. Pilih alasan laporan:</p>';
+  reportReasons.forEach(function(r){
+    html += '<div class="report-opt" data-reason="'+r.id+'">';
+    html += '<div class="ri">'+r.icon+'</div>';
+    html += '<div class="rt"><div class="rn">'+r.name+'</div><div class="rd">'+r.desc+'</div></div>';
+    html += '</div>';
+  });
+  html += '<div id="reportNoteWrap" class="hide" style="margin-top:14px">';
+  html += '<div style="font-size:12px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px">Keterangan (opsional)</div>';
+  html += '<textarea id="reportNote" class="dt" rows="3" placeholder="Jelaskan lebih detail..." style="resize:none"></textarea>';
+  html += '</div>';
+  html += '<button id="reportSubmit" class="btn-p" style="width:100%;margin-top:18px;opacity:.5" disabled>Kirim Laporan</button>';
+
+  openModal('🚨 Lapor Postingan', html);
+
+  var selectedReason = null;
+  document.querySelectorAll('#modalBody .report-opt').forEach(function(el){
+    el.onclick = function(){
+      selectedReason = el.dataset.reason;
+      document.querySelectorAll('#modalBody .report-opt').forEach(function(x){ x.classList.toggle('sel', x === el); });
+      $('reportSubmit').disabled = false;
+      $('reportSubmit').style.opacity = '1';
+      if(selectedReason === 'other'){
+        $('reportNoteWrap').classList.remove('hide');
+      } else {
+        $('reportNoteWrap').classList.add('hide');
+      }
+    };
+  });
+
+  $('reportSubmit').onclick = async function(){
+    if(!selectedReason) return;
+    var note = ($('reportNote') && $('reportNote').value.trim()) || '';
+    loader(true, 'Mengirim laporan...');
+    try {
+      await rtdb.ref('reports/' + p.id).push({
+        postId: p.id,
+        postText: (p.text || '[Foto]').slice(0, 300),
+        postAuthor: p.authorName || 'Warga',
+        postCategory: p.category || 'umum',
+        reason: selectedReason,
+        note: note,
+        reporterId: me.uid,
+        reporterName: me.name,
+        createdAt: TS,
+        status: 'pending'
+      });
+      loader(false); closeModal();
+      toast('Laporan terkirim. Terima kasih! 🙏');
+    } catch(e){
+      loader(false);
+      toast('Gagal kirim: ' + (e.message||'').slice(0, 40), true);
+    }
+  };
+}
+
+function subscribeReports(){
+  if(unsubReports){ try { unsubReports(); } catch(e){} }
+  var ref = rtdb.ref('reports');
+  var listener = ref.on('value', function(snap){
+    reports = [];
+    snap.forEach(function(child){
+      var pid = child.key;
+      child.forEach(function(c){
+        var x = c.val() || {};
+        reports.push(Object.assign({ id: c.key, postId: pid }, x));
+      });
+    });
+    var pending = reports.filter(function(r){ return r.status === 'pending'; }).length;
+    var badge = $('reportCountBadge');
+    if(badge) badge.textContent = pending > 0 ? '(' + pending + ')' : '';
+  }, function(e){ console.warn('reports', e); });
+  unsubReports = function(){ ref.off('value', listener); };
+}
+
+// ============================================================
+// BADGE / RENDER HOME
+// ============================================================
 function computeCatStats(cat){
   var seen = getSeenPosts();
   var newPosts = 0;
@@ -1187,7 +1514,7 @@ function renderHome(){
       var html = '<div class="pin-card" data-pid="'+p.id+'">';
       html += '<div class="pin-badge">📌 PENTING</div>';
       html += '<div class="pin-title">'+esc(p.text || '[Foto]')+'</div>';
-      html += '<div class="pin-meta">'+avatarHtml({name:p.authorName, photoURL:p.authorPhoto, avatarBase64:p.authorAvatarBase64}, 20, 9)+'<span style="font-weight:800">'+esc(p.authorName)+'</span><span>·</span><span>'+timeAgo(p.createdAt)+'</span></div>';
+      html += '<div class="pin-meta">'+avatarHtml({name:p.authorName, photoURL:p.authorPhoto, avatarBase64:p.authorAvatarBase64, uid: p.authorId}, 20, 9, false)+'<span style="font-weight:800">'+esc(p.authorName)+'</span><span>·</span><span>'+timeAgo(p.createdAt)+'</span></div>';
       html += '</div>';
       return html;
     }).join('');
@@ -1217,10 +1544,8 @@ function renderPostCard(p){
 
   var html = '<div class="post-card '+colorCls+'" data-pid="'+p.id+'">';
   html += '<div class="strip '+stripCls+'"></div>';
-  // BARU: dot kecil, bukan badge besar
   if(showNew) html += '<div class="post-new-dot" title="Baru"></div>';
   if(p.pinned) html += '<div class="pin-tag">📌 PIN</div>';
-  // KAMU badge dihapus — tidak perlu label
   if(hasEvent) html += '<span style="position:absolute;top:8px;right:8px;background:#10b981;color:white;font-size:10px;font-weight:800;padding:4px 9px;border-radius:7px;z-index:2;box-shadow:0 2px 6px -1px rgba(16,185,129,.5);letter-spacing:.03em">📅 Kegiatan</span>';
   if(firstImg) html += '<div class="thumb"><img src="data:image/jpeg;base64,'+firstImg+'" loading="lazy" decoding="async"/></div>';
   html += '<div class="body">';
@@ -1240,7 +1565,7 @@ function renderPostCard(p){
   html += (totalImgs ? '<span>📷 '+totalImgs+'</span>' : '');
   html += '<span style="margin-left:auto">'+timeAgo(p.createdAt)+'</span>';
   html += '</div></div>';
-  html += '<div class="foot">'+avatarHtml({name:p.authorName, photoURL:p.authorPhoto, avatarBase64:p.authorAvatarBase64}, 20, 9)+'<span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(p.authorName)+'</span></div>';
+  html += '<div class="foot">'+avatarHtml({name:p.authorName, photoURL:p.authorPhoto, avatarBase64:p.authorAvatarBase64, uid: p.authorId}, 20, 9, false)+'<span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(p.authorName)+'</span></div>';
   html += '</div>';
   return html;
 }
@@ -1322,6 +1647,8 @@ auth.onAuthStateChanged(function(user){
             setTab('home');
             maybeShowRulesFirstTime();
           }
+          // Handle deep link #post=xxx
+          handleDeepLink();
         }, 400);
       });
     }).catch(function(){
@@ -1334,6 +1661,21 @@ auth.onAuthStateChanged(function(user){
     }, 400);
   }
 });
+
+function handleDeepLink(){
+  var hash = location.hash || '';
+  var m = hash.match(/#post=([^&]+)/);
+  if(m && m[1]){
+    var pid = m[1];
+    setTimeout(function(){
+      var p = feed.filter(function(x){ return x.id === pid; })[0];
+      if(p){ openPostDetail(pid); }
+      else { toast('Postingan tidak ditemukan', true); }
+    }, 800);
+    // Bersihkan hash
+    setTimeout(function(){ history.replaceState(null,'',location.pathname); }, 1500);
+  }
+}
 
 function syncUser(){
   if(!me) return Promise.resolve();
@@ -1394,7 +1736,6 @@ function subscribeConfig(){
   unsubConfig = function(){ ref.off('value', listener); };
 }
 
-// ================== FEED ==================
 function subscribeFeed(){
   if(unsubFeed){ try { unsubFeed(); } catch(e){} }
   var ref = rtdb.ref('posts').orderByChild('createdAt').limitToLast(30);
@@ -1436,6 +1777,7 @@ function subscribeFeed(){
         if(p) renderPostDetail(p);
       }
       updateAllBadges();
+      if($('searchOv').classList.contains('on') && searchQuery) renderSearchResults();
     }, 120);
   }, function(e){ console.warn('feed', e); });
   unsubFeed = function(){ ref.off('value', listener); };
@@ -1499,18 +1841,47 @@ function renderPostDetail(p){
   var cat = p.category || 'umum';
   var hasEvent = p.eventDate && p.eventDate > 0;
   var likeCount = toCount(p.likedBy);
+  var canManage = isMine || isAdmin();
 
   var html = '';
   if(p.pinned) html += '<div style="background:#f59e0b;color:white;border-radius:14px;padding:12px 16px;margin-bottom:14px;font-size:13px;font-weight:800;display:flex;align-items:center;gap:7px;box-shadow:0 4px 14px -6px rgba(245,158,11,.5)">📌 PENGUMUMAN PENTING</div>';
+
   html += '<div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">';
-  html += avatarHtml({name:p.authorName, photoURL:p.authorPhoto, avatarBase64:p.authorAvatarBase64}, 44, 17);
+  html += '<div data-open-author="'+esc(p.authorId)+'" style="cursor:pointer;display:flex;align-items:center;gap:12px;flex:1;min-width:0">';
+  html += avatarHtml({name:p.authorName, photoURL:p.authorPhoto, avatarBase64:p.authorAvatarBase64, uid:p.authorId}, 44, 17);
   html += '<div style="flex:1;min-width:0">';
   html += '<div style="font-size:15px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(p.authorName)+'</div>';
-  html += '<div style="font-size:12px;color:#94a3b8;margin-top:2px;font-weight:600">'+({umum:'Umum',informasi:'Informasi',galeri:'Galeri'})[cat]+' · '+timeAgo(p.createdAt)+'</div></div>';
-  if(isMine || isAdmin()){
-    html += '<button type="button" id="pinBtn" style="width:38px;height:38px;border-radius:50%;background:rgba(245,158,11,.12);color:#f59e0b;display:flex;align-items:center;justify-content:center;border:none;cursor:pointer;margin-right:6px;font-size:16px">'+(p.pinned?'📌':'📍')+'</button>';
-    html += '<button type="button" id="delPostBtn" style="width:38px;height:38px;border-radius:50%;background:rgba(244,63,94,.12);color:#f43f5e;display:flex;align-items:center;justify-content:center;border:none;cursor:pointer"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6"/></svg></button>';
+  html += '<div style="font-size:12px;color:#94a3b8;margin-top:2px;font-weight:600">'+({umum:'Umum',informasi:'Informasi',galeri:'Galeri'})[cat]+' · '+timeAgo(p.createdAt)+'</div>';
+  html += '</div></div>';
+
+  // TOMBOL AKSI
+  // Share selalu ada
+  html += '<button type="button" id="shareBtn" title="Bagikan" style="width:38px;height:38px;border-radius:50%;background:rgba(37,99,235,.12);color:#2563eb;display:flex;align-items:center;justify-content:center;border:none;cursor:pointer;margin-right:6px">';
+  html += '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.59 13.51l6.83 3.98M15.41 6.51l-6.82 3.98"/></svg>';
+  html += '</button>';
+
+  if(canManage){
+    html += '<button type="button" id="pinBtn" title="Pin" style="width:38px;height:38px;border-radius:50%;background:rgba(245,158,11,.12);color:#f59e0b;display:flex;align-items:center;justify-content:center;border:none;cursor:pointer;margin-right:6px;font-size:16px">'+(p.pinned?'📌':'📍')+'</button>';
   }
+
+  if(isMine){
+    html += '<button type="button" id="editPostBtn" title="Edit" style="width:38px;height:38px;border-radius:50%;background:rgba(99,102,241,.12);color:#6366f1;display:flex;align-items:center;justify-content:center;border:none;cursor:pointer;margin-right:6px">';
+    html += '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 20h9M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4z"/></svg>';
+    html += '</button>';
+  }
+
+  if(canManage){
+    html += '<button type="button" id="delPostBtn" title="Hapus" style="width:38px;height:38px;border-radius:50%;background:rgba(244,63,94,.12);color:#f43f5e;display:flex;align-items:center;justify-content:center;border:none;cursor:pointer">';
+    html += '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6"/></svg>';
+    html += '</button>';
+  }
+
+  if(!canManage){
+    html += '<button type="button" id="reportBtn" title="Lapor" style="width:38px;height:38px;border-radius:50%;background:rgba(244,63,94,.12);color:#f43f5e;display:flex;align-items:center;justify-content:center;border:none;cursor:pointer">';
+    html += '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>';
+    html += '</button>';
+  }
+
   html += '</div>';
 
   if(hasEvent){
@@ -1535,6 +1906,11 @@ function renderPostDetail(p){
   $('postScroll').innerHTML = html;
   wirePhotoGrid(p);
 
+  // Handler
+  var shareBtn = $('shareBtn'); if(shareBtn) shareBtn.onclick = function(){ sharePost(p); };
+  var authorEl = $('postScroll').querySelector('[data-open-author]');
+  if(authorEl) authorEl.onclick = function(){ viewUserProfile(authorEl.dataset.openAuthor); };
+
   $('likeBtn').onclick = async function(){
     var was = p.likedBy && p.likedBy[me.uid];
     try {
@@ -1557,6 +1933,9 @@ function renderPostDetail(p){
     } catch(e){ toast('Gagal', true); }
   };
 
+  var editBtn = $('editPostBtn');
+  if(editBtn) editBtn.onclick = function(){ openEditPost(p); };
+
   var delBtn = $('delPostBtn');
   if(delBtn) delBtn.onclick = async function(){
     if(!confirm('Hapus postingan ini?')) return;
@@ -1568,13 +1947,53 @@ function renderPostDetail(p){
       toast('Postingan terhapus ✓');
       setTab('home');
     } catch(e){
-      console.error('Delete failed:', e);
       loader(false);
       toast('Gagal hapus: ' + (e.message||e.code||'Error').slice(0, 60), true);
     }
   };
+
+  var reportBtn = $('reportBtn');
+  if(reportBtn) reportBtn.onclick = function(){ openReportModal(p); };
 }
 
+// ============================================================
+// EDIT POST
+// ============================================================
+function openEditPost(p){
+  editingPostId = p.id;
+  editingOriginal = p;
+  composeImgs = (p.images || []).slice();
+  composeCat = p.category || 'umum';
+  composeTopic = p.topic || 'obrolan';
+
+  $('composeText').value = p.text || '';
+  $('eventDate').value = '';
+  $('eventLocation').value = p.eventLocation || '';
+  $('pinCheck').checked = !!p.pinned;
+
+  // Set eventDate ke local datetime string
+  if(p.eventDate && p.eventDate > 0){
+    var d = new Date(p.eventDate);
+    var pad = function(n){ return (n<10?'0':'')+n; };
+    var iso = d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())+'T'+pad(d.getHours())+':'+pad(d.getMinutes());
+    $('eventDate').value = iso;
+  }
+
+  renderAttach();
+  $('composeAvatar').innerHTML = avatarHtml(me, 40, 15);
+  $('composeName').textContent = me.name;
+  $('composeTitle').textContent = '✏️ Edit Postingan';
+  $('composeBtnText').textContent = 'Simpan';
+
+  document.querySelectorAll('#topicWrap .topic-chip').forEach(function(x){ x.classList.toggle('on', x.dataset.t === composeTopic); });
+  updateComposeUI();
+  $('composeSheet').style.display = 'flex';
+  setTimeout(function(){ $('composeText').focus(); }, 300);
+}
+
+// ============================================================
+// FOTO GRID
+// ============================================================
 function renderPhotoGrid(p){
   var items = [];
   (p.images || []).forEach(function(b64){ items.push({ b64: b64, isMain: true, author: p.authorName }); });
@@ -1624,12 +2043,15 @@ function renderComments(list){
     var t = c.text || '';
     var imgs = extractImageUrls(t);
     if(imgs.length) imgs.forEach(function(u){ t = t.replace(u, '').trim(); });
-    var body = '<span class="name">'+esc(c.authorName)+'</span>';
+    var body = '<span class="name" data-c-uid="'+esc(c.authorId)+'">'+esc(c.authorName)+'</span>';
     if(t) body += ' ' + esc(t);
     var imgsHtml = imgs.map(function(u){ return '<img src="'+esc(u)+'" data-gif="'+esc(u)+'" style="max-width:180px;border-radius:12px;margin-top:8px;display:block;cursor:pointer" loading="lazy" decoding="async"/>'; }).join('');
-    return '<div class="comment-item">'+avatarHtml({name:c.authorName, photoURL:c.authorPhoto, avatarBase64:c.authorAvatarBase64}, 34, 13)+'<div class="body"><div class="txt">'+body+'</div>'+imgsHtml+'<div class="time">'+timeAgo(c.createdAt)+'</div></div></div>';
+    return '<div class="comment-item">'+avatarHtml({name:c.authorName, photoURL:c.authorPhoto, avatarBase64:c.authorAvatarBase64, uid:c.authorId}, 34, 13, false)+'<div class="body"><div class="txt">'+body+'</div>'+imgsHtml+'<div class="time">'+timeAgo(c.createdAt)+'</div></div></div>';
   }).join('');
   el.querySelectorAll('[data-gif]').forEach(function(img){ img.onclick = function(){ openLightbox(img.src); }; });
+  el.querySelectorAll('[data-c-uid]').forEach(function(span){
+    span.onclick = function(){ viewUserProfile(span.dataset.cUid); };
+  });
 }
 
 $('commentSend').onclick = async function(){
@@ -1644,9 +2066,7 @@ $('commentSend').onclick = async function(){
       authorPhoto: me.photoURL || null, authorAvatarBase64: me.avatarBase64 || null,
       createdAt: TS
     });
-    try {
-      await rtdb.ref('posts/' + activePostId + '/commentCount').transaction(function(c){ return (c || 0) + 1; });
-    } catch(e){ console.warn('count update skipped:', e); }
+    try { await rtdb.ref('posts/' + activePostId + '/commentCount').transaction(function(c){ return (c || 0) + 1; }); } catch(e){}
     await loadComments(activePostId);
     toast('Komentar terkirim');
     setTimeout(function(){ $('postScroll').scrollTop = $('postScroll').scrollHeight; }, 200);
@@ -1700,11 +2120,15 @@ function startCountdown(){
 $('fab').onclick = function(){ openCompose(activeCat); };
 $('catEmptyBtn').onclick = function(){ openCompose(activeCat); };
 function openCompose(cat){
+  editingPostId = null;
+  editingOriginal = null;
   $('composeText').value = ''; composeImgs = [];
   composeCat = cat || 'umum'; composeTopic = 'obrolan';
   renderAttach();
   $('composeAvatar').innerHTML = avatarHtml(me, 40, 15);
   $('composeName').textContent = me.name;
+  $('composeTitle').textContent = 'Tulis Postingan';
+  $('composeBtnText').textContent = 'Kirim';
   $('composePost').disabled = true; $('composePost').style.opacity = '.5';
   $('eventDate').value = ''; $('eventLocation').value = '';
   $('pinCheck').checked = false;
@@ -1713,7 +2137,11 @@ function openCompose(cat){
   $('composeSheet').style.display = 'flex';
   setTimeout(function(){ $('composeText').focus(); }, 300);
 }
-$('composeCancel').onclick = function(){ $('composeSheet').style.display = 'none'; };
+$('composeCancel').onclick = function(){
+  editingPostId = null;
+  editingOriginal = null;
+  $('composeSheet').style.display = 'none';
+};
 function renderAttach(){
   var el = $('composeAttach');
   var add = '<button type="button" id="attachAdd" class="thumb-add"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg><span>Tambah</span></button>';
@@ -1737,7 +2165,9 @@ function updateComposeUI(){
   $('topicWrap').classList.toggle('hide', composeCat !== 'umum');
   $('eventWrap').classList.toggle('hide', composeCat !== 'informasi');
   $('pinWrap').classList.toggle('hide', !isAdmin());
-  $('composeTitle').textContent = composeCat === 'informasi' ? '📢 Info Kegiatan' : composeCat === 'galeri' ? '📷 Galeri Foto' : 'Tulis Postingan';
+  if(!editingPostId){
+    $('composeTitle').textContent = composeCat === 'informasi' ? '📢 Info Kegiatan' : composeCat === 'galeri' ? '📷 Galeri Foto' : 'Tulis Postingan';
+  }
   checkReady();
 }
 document.querySelectorAll('#composeCats .cat-btn').forEach(function(b){ b.onclick = function(){ composeCat = b.dataset.c; updateComposeUI(); }; });
@@ -1760,6 +2190,42 @@ $('composePost').onclick = async function(){
   var text = $('composeText').value.trim();
   if(composeCat === 'galeri' && !composeImgs.length) return toast('Galeri wajib ada foto', true);
   if(!text && !composeImgs.length) return;
+
+  // EDIT MODE
+  if(editingPostId){
+    $('composePost').disabled = true; $('composeBtnText').textContent = '...';
+    try {
+      var upd = {
+        text: text,
+        images: composeImgs.slice(),
+        category: composeCat,
+        editedAt: TS
+      };
+      if(composeCat === 'umum') upd.topic = composeTopic;
+      else upd.topic = null;
+      if(composeCat === 'informasi' && $('eventDate').value){
+        upd.eventDate = new Date($('eventDate').value).getTime();
+        upd.eventLocation = $('eventLocation').value.trim();
+      } else {
+        upd.eventDate = null;
+        upd.eventLocation = null;
+      }
+      if(isAdmin()) upd.pinned = $('pinCheck').checked;
+
+      await rtdb.ref('posts/' + editingPostId).update(upd);
+      $('composeSheet').style.display = 'none';
+      toast('Postingan diperbarui ✓');
+      editingPostId = null; editingOriginal = null;
+    } catch(e){
+      toast('Gagal simpan: ' + (e.message||'').slice(0,50), true);
+      $('composePost').disabled = false;
+    } finally {
+      $('composeBtnText').textContent = 'Kirim';
+    }
+    return;
+  }
+
+  // NEW POST
   $('composePost').disabled = true; $('composeBtnText').textContent = '...';
   try {
     var payload = {
@@ -1799,6 +2265,7 @@ function subscribeUsers(){
     });
     users.reverse();
     if(tab === 'warga') renderWargaList();
+    if($('searchOv').classList.contains('on') && searchQuery) renderSearchResults();
   }, function(e){ console.warn('users', e); });
   unsubUsers = function(){ ref.off('value', listener); };
 }
@@ -1814,10 +2281,13 @@ function renderWargaList(){
   }
   el.innerHTML = others.map(function(u){
     var roleBadge = u.role === 'admin' ? '<span class="badge-pill pill-blue" style="margin-left:5px">Pengurus</span>' : '';
-    return '<div class="user-row">'+avatarHtml(u, 46, 17)+
+    return '<div class="user-row" data-uid="'+esc(u.uid)+'">'+avatarHtml(u, 46, 17)+
       '<div style="flex:1;min-width:0"><div style="font-size:14.5px;font-weight:800;display:flex;align-items:center;gap:3px"><span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(u.name||'Warga')+'</span>'+roleBadge+'</div>'+
       '<div style="font-size:12px;color:#64748b;margin-top:3px;font-weight:500">'+(u.blok ? 'Blok '+esc(u.blok)+' · ' : '')+'Terdaftar '+timeAgo(u.createdAt || 0)+'</div></div></div>';
   }).join('');
+  el.querySelectorAll('[data-uid]').forEach(function(row){
+    row.onclick = function(){ viewUserProfile(row.dataset.uid); };
+  });
 }
 
 // ================== VOTING ==================
@@ -1845,16 +2315,13 @@ function renderVoting(){
   var el = $('votingContent');
   var html = '';
   var now = Date.now();
-
   if(isAdmin()) html += '<button id="newPollBtn" class="btn-p" style="width:100%;margin-bottom:14px">➕ Buat Voting Baru</button>';
-
   if(!polls.length){
     html += '<div class="empty-state"><div class="em">🗳️</div><div class="title">Belum ada voting</div><div class="sub">'+(isAdmin()?'Buat voting pertama untuk RT':'Tunggu pengurus membuat voting')+'</div></div>';
     el.innerHTML = html;
     var npb = $('newPollBtn'); if(npb) npb.onclick = openNewPoll;
     return;
   }
-
   polls.forEach(function(p){
     var expired = p.deadline > 0 && p.deadline < now;
     var totalVotes = toCount(p.votes);
@@ -1865,7 +2332,6 @@ function renderVoting(){
     html += '<span class="badge-pill '+(expired?'pill-gray':'pill-green')+'">'+(expired?'Selesai':'Aktif')+'</span></div>';
     if(p.description) html += '<div style="font-size:13px;color:#64748b;line-height:1.6;margin-bottom:9px">'+esc(p.description)+'</div>';
     html += '<div style="font-size:11.5px;color:#94a3b8;margin-bottom:10px;font-weight:600">Oleh '+esc(p.createdByName||'?')+' · '+totalVotes+' suara'+(p.deadline>0?' · deadline '+fmtDate(p.deadline):'')+'</div>';
-
     (p.options||[]).forEach(function(opt){
       var optVotes = 0;
       Object.keys(p.votes||{}).forEach(function(uid){ if(p.votes[uid] === opt.id) optVotes++; });
@@ -1877,14 +2343,11 @@ function renderVoting(){
       html += '<div style="height:7px;border-radius:99px;background:#e2e8f0;overflow:hidden;margin-top:7px"><div class="bar" style="width:'+pct+'%"></div></div></div>';
       html += '<div class="pct">'+pct+'%</div></div>';
     });
-
     if(isAdmin()) html += '<button class="btn-s" style="width:100%;margin-top:12px;padding:9px;font-size:12.5px;font-weight:700" data-poll-del="'+p.id+'">🗑️ Hapus Voting</button>';
     html += '</div>';
   });
-
   el.innerHTML = html;
   var npb = $('newPollBtn'); if(npb) npb.onclick = openNewPoll;
-
   el.querySelectorAll('[data-vote]').forEach(function(optEl){
     var p = polls.filter(function(x){ return x.id === optEl.dataset.poll; })[0];
     if(!p) return;
@@ -1957,6 +2420,13 @@ function renderProfile(){
   $('statVotes').textContent = polls.filter(function(p){ return (p.votes||{})[me.uid]; }).length;
 
   $('adminPanel').classList.toggle('hide', !isAdmin());
+
+  // Update badge laporan
+  if(isAdmin()){
+    var pending = reports.filter(function(r){ return r.status === 'pending'; }).length;
+    var b = $('reportCountBadge');
+    if(b) b.textContent = pending > 0 ? '(' + pending + ')' : '';
+  }
 }
 
 $('editProfileBtn').onclick = function(){
@@ -2066,6 +2536,78 @@ $('adminVerifyBtn').onclick = function(){
   renderList();
 };
 
+// ============================================================
+// ADMIN: LAPORAN WARGA
+// ============================================================
+$('adminReportsBtn').onclick = function(){
+  var html = '';
+  if(!reports.length){
+    html = '<div class="empty-state" style="padding:30px 10px"><div class="em">✅</div><div class="title">Tidak ada laporan</div><div class="sub">Semua aman dan tertib</div></div>';
+  } else {
+    var sorted = reports.slice().sort(function(a,b){ return (b.createdAt||0) - (a.createdAt||0); });
+    var pending = sorted.filter(function(r){ return r.status === 'pending'; });
+    var resolved = sorted.filter(function(r){ return r.status !== 'pending'; });
+    if(pending.length){
+      html += '<div style="font-size:12px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.12em;margin:0 0 10px">⏳ Menunggu ('+pending.length+')</div>';
+      pending.forEach(function(r){ html += renderReportItem(r, true); });
+    }
+    if(resolved.length){
+      html += '<div style="font-size:12px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.12em;margin:18px 0 10px">✅ Selesai ('+resolved.length+')</div>';
+      resolved.slice(0,10).forEach(function(r){ html += renderReportItem(r, false); });
+    }
+  }
+  openModal('🚨 Laporan Warga', html);
+
+  // Wire tombol
+  document.querySelectorAll('#modalBody [data-view-post]').forEach(function(b){
+    b.onclick = function(){
+      closeModal();
+      setTimeout(function(){ openPostDetail(b.dataset.viewPost); }, 250);
+    };
+  });
+  document.querySelectorAll('#modalBody [data-resolve]').forEach(function(b){
+    b.onclick = async function(){
+      try {
+        await rtdb.ref('reports/' + b.dataset.pid + '/' + b.dataset.resolve).update({ status: 'resolved', resolvedAt: Date.now(), resolvedBy: me.uid });
+        toast('Laporan diselesaikan');
+        closeModal();
+        setTimeout(function(){ $('adminReportsBtn').click(); }, 200);
+      } catch(e){ toast('Gagal', true); }
+    };
+  });
+  document.querySelectorAll('#modalBody [data-delete-post]').forEach(function(b){
+    b.onclick = async function(){
+      if(!confirm('Hapus postingan yang dilaporkan?')) return;
+      try {
+        await rtdb.ref('posts/' + b.dataset.deletePost).remove();
+        try { await rtdb.ref('comments/' + b.dataset.deletePost).remove(); } catch(e){}
+        toast('Postingan dihapus');
+        closeModal();
+      } catch(e){ toast('Gagal', true); }
+    };
+  });
+};
+
+function renderReportItem(r, isPending){
+  var cat = r.postCategory || 'umum';
+  var reasonName = { spam: '🚫 Spam', sara: '⚠️ SARA', bully: '😡 Menghina', napak: '🔞 Tidak Pantas', hoax: '📰 Hoaks', other: '❓ Lainnya' }[r.reason] || r.reason;
+  var html = '<div style="background:#fff;border:1.5px solid '+(isPending?'rgba(244,63,94,.3)':'rgba(148,163,184,.2)')+';border-radius:14px;padding:14px;margin-bottom:10px">';
+  html += '<div style="display:flex;justify-content:space-between;align-items:start;gap:8px;margin-bottom:8px">';
+  html += '<span class="badge-pill '+(isPending?'pill-red':'pill-gray')+'">'+reasonName+'</span>';
+  html += '<span style="font-size:11.5px;color:#94a3b8;font-weight:700">'+timeAgo(r.createdAt)+'</span>';
+  html += '</div>';
+  html += '<div style="font-size:13px;color:#0b1220;font-weight:700;margin-bottom:6px;line-height:1.5">📝 '+esc((r.postText||'').slice(0, 120))+'</div>';
+  if(r.note) html += '<div style="font-size:12.5px;color:#475569;background:#f8fafc;padding:8px 10px;border-radius:9px;margin-bottom:8px;line-height:1.5">💬 '+esc(r.note)+'</div>';
+  html += '<div style="font-size:11.5px;color:#94a3b8;margin-bottom:10px;font-weight:600">Post oleh: <b style="color:#0b1220">'+esc(r.postAuthor||'?')+'</b> · Dilaporkan oleh: <b style="color:#0b1220">'+esc(r.reporterName||'?')+'</b></div>';
+  html += '<div style="display:flex;gap:6px;flex-wrap:wrap">';
+  html += '<button data-view-post="'+r.postId+'" style="padding:8px 12px;border-radius:9px;background:#f1f5f9;color:#0b1220;font-size:12.5px;font-weight:700;border:none;cursor:pointer">👁️ Lihat Post</button>';
+  if(isPending) html += '<button data-delete-post="'+r.postId+'" style="padding:8px 12px;border-radius:9px;background:rgba(244,63,94,.15);color:#f43f5e;font-size:12.5px;font-weight:700;border:none;cursor:pointer">🗑️ Hapus Post</button>';
+  if(isPending) html += '<button data-resolve="'+r.id+'" data-pid="'+r.postId+'" style="padding:8px 12px;border-radius:9px;background:rgba(16,185,129,.15);color:#059669;font-size:12.5px;font-weight:700;border:none;cursor:pointer">✅ Selesai</button>';
+  html += '</div>';
+  html += '</div>';
+  return html;
+}
+
 $('myCodeBtn').onclick = function(){
   var code = me.uid.toUpperCase();
   openModal('Kode Akun',
@@ -2168,62 +2710,44 @@ function cleanSubs(){
   try { unsubUsers && unsubUsers(); } catch(e){}
   try { unsubPolls && unsubPolls(); } catch(e){}
   try { unsubConfig && unsubConfig(); } catch(e){}
+  try { unsubReports && unsubReports(); } catch(e){}
   if(countdownTimer) clearInterval(countdownTimer);
   if(miniCountdownTimer) clearInterval(miniCountdownTimer);
-  unsubFeed = unsubUsers = unsubPolls = unsubConfig = null;
+  unsubFeed = unsubUsers = unsubPolls = unsubConfig = unsubReports = null;
 }
 
-// ============================================================
-// SERVICE WORKER REGISTRATION
-// ============================================================
 if('serviceWorker' in navigator){
   window.addEventListener('load', function(){
     var basePath = getBasePath();
     var swUrl = basePath + 'firebase-messaging-sw.js';
-
     navigator.serviceWorker.getRegistrations().then(function(regs){
       regs.forEach(function(reg){
-        var url = (reg.active && reg.active.scriptURL) ||
-                  (reg.installing && reg.installing.scriptURL) ||
-                  (reg.waiting && reg.waiting.scriptURL) || '';
-        if(url.indexOf('firebase-messaging-sw.js') === -1){
-          reg.unregister();
-        }
+        var url = (reg.active && reg.active.scriptURL) || '';
+        if(url.indexOf('firebase-messaging-sw.js') === -1) reg.unregister();
       });
     });
-
     navigator.serviceWorker.register(swUrl, { scope: basePath })
       .then(function(reg){ console.log('✅ FCM SW registered:', reg.scope); })
       .catch(function(err){ console.error('❌ FCM SW failed:', err); });
   });
-
   navigator.serviceWorker.addEventListener('message', function(e){
     if(e.data && e.data.type === 'OPEN_POST' && e.data.postId){
-      setTimeout(function(){
-        if(typeof openPostDetail === 'function') openPostDetail(e.data.postId);
-      }, 800);
+      setTimeout(function(){ if(typeof openPostDetail === 'function') openPostDetail(e.data.postId); }, 800);
     }
   });
 }
 
-// ============================================================
-// POLLING NOTIFIKASI (adaptive)
-// ============================================================
 var lastPollTime = parseInt(localStorage.getItem('spark_last_poll') || '0', 10);
 var pollInterval = null;
 
 function startPolling(){
   if(pollInterval) clearInterval(pollInterval);
-
   function checkNewPosts(){
     if(!me || !me.uid) return;
-
     rtdb.ref('posts').orderByChild('createdAt').limitToLast(20).once('value').then(function(snap){
       if(!snap.exists()) return;
-
       var newestTime = lastPollTime;
       var newPosts = [];
-
       snap.forEach(function(child){
         var p = child.val();
         if(!p || !p.createdAt) return;
@@ -2232,45 +2756,31 @@ function startPolling(){
         }
         if(p.createdAt > newestTime) newestTime = p.createdAt;
       });
-
       if(newPosts.length > 0){
         var p = newPosts[newPosts.length - 1];
         var title = p.pinned ? '📌 PENGUMUMAN PENTING' : p.category === 'informasi' ? '📢 INFO RT' : p.category === 'galeri' ? '📷 GALERI BARU' : '📢 POSTINGAN BARU';
         var body = (p.author || 'Warga') + ': ' + ((p.text || '[Foto]').slice(0, 100));
-
         if('Notification' in window && Notification.permission === 'granted'){
           try {
             var n = new Notification(title, { body: body, icon: './icon-192.png', badge: './icon-192.png', tag: 'post-' + p.id, vibrate: [400, 200, 400, 200, 400], requireInteraction: true, renotify: true, silent: true });
             n.onclick = function(){ window.focus(); this.close(); if(typeof openPostDetail === 'function') openPostDetail(p.id); };
           } catch(e){}
         }
-
         if(!document.hidden) toast('🔔 ' + title + ' — ' + body, false);
         playChime();
         if(navigator.vibrate){ try { navigator.vibrate([400, 200, 400, 200, 400]); } catch(e){} }
       }
-
       lastPollTime = newestTime;
       if(newestTime > 0) localStorage.setItem('spark_last_poll', newestTime.toString());
     }).catch(function(e){ console.warn('poll error', e); });
   }
-
   checkNewPosts();
-  pollInterval = setInterval(function(){
-    if(document.hidden) return;
-    checkNewPosts();
-  }, 15000);
-
-  document.addEventListener('visibilitychange', function(){
-    if(!document.hidden) checkNewPosts();
-  });
+  pollInterval = setInterval(function(){ if(document.hidden) return; checkNewPosts(); }, 15000);
+  document.addEventListener('visibilitychange', function(){ if(!document.hidden) checkNewPosts(); });
   window.addEventListener('focus', function(){ checkNewPosts(); });
 }
 
-setTimeout(function(){
-  if(me && me.uid){ startPolling(); }
-}, 4000);
-
+setTimeout(function(){ if(me && me.uid){ startPolling(); } }, 4000);
 auth.onAuthStateChanged(function(user){
   if(user){
     setTimeout(function(){ if(!pollInterval) startPolling(); }, 3000);
