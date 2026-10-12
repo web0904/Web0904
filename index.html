@@ -981,6 +981,8 @@ var seenLikers = {};
 var seenComments = {};
 var notifInitDone = false;
 var commentNotifTimer = null;
+// ✅ Flag untuk mencegah re-render post detail saat user sendiri yang berinteraksi
+var suppressPostRerender = 0;
 
 function isAdmin(){ return me && me.role === 'admin'; }
 function getPreferred(){ return localStorage.getItem('spark_pref_email'); }
@@ -1626,7 +1628,6 @@ function renderPostCard(p){
   html += '<div class="strip '+stripCls+'"></div>';
   if(showNew) html += '<div class="post-new-dot" title="Baru"></div>';
   if(p.pinned) html += '<div class="pin-tag">📌 PIN</div>';
-  // ✅ Badge jumlah notif (suka + komentar baru) untuk postingan saya
   var unseen = getUnseenCount(p);
   if(unseen > 0) html += '<div class="notif-badge on">' + (unseen > 99 ? '99+' : unseen) + '</div>';
   if(hasEvent) html += '<span style="position:absolute;top:8px;right:8px;background:#10b981;color:white;font-size:10px;font-weight:800;padding:4px 9px;border-radius:7px;z-index:2;box-shadow:0 2px 6px -1px rgba(16,185,129,.5);letter-spacing:.03em">📅 Kegiatan</span>';
@@ -1711,7 +1712,6 @@ auth.onAuthStateChanged(function(user){
       syncUser().then(function(){
         loadNotifState();
         subscribeConfig(); subscribeFeed();
-        // Priming: tandai semua like/komentar lama sebagai sudah dibaca
         setTimeout(function(){
           if(!notifInitDone){
             checkLikeNotifications(true);
@@ -1874,9 +1874,26 @@ function subscribeFeed(){
     debouncedRender('feed', function(){
       if(tab === 'home') renderHome();
       if(tab === 'category') renderCategory();
+      // ✅ FIX UTAMA: JANGAN renderPostDetail di sini!
+      // Cukup update angka like & komentar secara selektif agar #commentsList tidak hancur.
       if(tab === 'post' && activePostId){
         var p = feed.filter(function(x){ return x.id === activePostId; })[0];
-        if(p) renderPostDetail(p);
+        if(p){
+          activePost = p;
+          // Update tombol like tanpa menyentuh DOM komentar
+          var likeBtn = $('likeBtn');
+          if(likeBtn){
+            var liked = p.likedBy && p.likedBy[me.uid];
+            var likeCount = toCount(p.likedBy);
+            var svg = likeBtn.querySelector('svg');
+            var span = likeBtn.querySelector('span');
+            likeBtn.style.color = liked ? '#f43f5e' : '#64748b';
+            if(svg) svg.setAttribute('fill', liked ? 'currentColor' : 'none');
+            if(span) span.textContent = likeCount + ' Suka';
+          }
+          var ccEl = $('postCommentCount');
+          if(ccEl) ccEl.textContent = (p.commentCount||0) + ' Komentar';
+        }
       }
       updateAllBadges();
       if($('searchOv').classList.contains('on') && searchQuery) renderSearchResults();
@@ -1930,7 +1947,7 @@ function openPostDetail(postId){
   if(!p){ toast('Postingan tidak ditemukan', true); return; }
   activePostId = postId; activePost = p;
   markPostSeen(postId);
-  markPostActivitySeen(p); // ✅ tandai like sudah dibaca
+  markPostActivitySeen(p);
   updateAllBadges();
   setTab('post'); renderPostDetail(p); loadComments(postId);
   setTimeout(function(){ if(p.eventDate && p.eventDate > 0) startCountdown(); }, 150);
@@ -1995,7 +2012,8 @@ function renderPostDetail(p){
   html += '<span>'+likeCount+' Suka</span></button>';
   html += '<div style="display:flex;align-items:center;gap:7px;color:#64748b;font-weight:800;font-size:14px">';
   html += '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>';
-  html += '<span>'+(p.commentCount||0)+' Komentar</span></div></div>';
+  // ✅ ID ini penting untuk selective update
+  html += '<span id="postCommentCount">'+(p.commentCount||0)+' Komentar</span></div></div>';
   html += '<div style="font-size:13px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.12em;margin-bottom:14px">💬 Komentar</div>';
   html += '<div id="commentsList" style="display:flex;flex-direction:column;gap:12px"></div>';
 
@@ -2006,28 +2024,42 @@ function renderPostDetail(p){
   var authorEl = $('postScroll').querySelector('[data-open-author]');
   if(authorEl) authorEl.onclick = function(){ viewUserProfile(authorEl.dataset.openAuthor); };
 
-  // ✅ FIX: Like hanya update tombol, tidak render ulang seluruh detail
+  // ✅ Like handler: update tombol saja, tanpa re-render detail
   $('likeBtn').onclick = async function(){
     var was = p.likedBy && p.likedBy[me.uid];
+    // optimistic update di UI dulu
+    p.likedBy = p.likedBy || {};
+    if(was) delete p.likedBy[me.uid]; else p.likedBy[me.uid] = true;
+    var liked2 = p.likedBy[me.uid];
+    var likeCount2 = toCount(p.likedBy);
+    var btn = $('likeBtn');
+    if(btn){
+      var svg = btn.querySelector('svg');
+      var span = btn.querySelector('span');
+      btn.style.color = liked2 ? '#f43f5e' : '#64748b';
+      if(svg) svg.setAttribute('fill', liked2 ? 'currentColor' : 'none');
+      if(span) span.textContent = likeCount2 + ' Suka';
+    }
     try {
       if(was){
         await rtdb.ref('posts/' + p.id + '/likedBy/' + me.uid).remove();
-        if(p.likedBy) delete p.likedBy[me.uid];
       } else {
         await rtdb.ref('posts/' + p.id + '/likedBy/' + me.uid).set(true);
-        p.likedBy = p.likedBy || {}; p.likedBy[me.uid] = true;
       }
-      var liked2 = p.likedBy && p.likedBy[me.uid];
-      var likeCount2 = toCount(p.likedBy);
-      var btn = $('likeBtn');
+    } catch(e){
+      toast('Gagal like', true);
+      // rollback
+      if(was){ p.likedBy[me.uid] = true; } else { delete p.likedBy[me.uid]; }
+      var liked3 = p.likedBy[me.uid];
+      var likeCount3 = toCount(p.likedBy);
       if(btn){
-        var svg = btn.querySelector('svg');
-        var span = btn.querySelector('span');
-        btn.style.color = liked2 ? '#f43f5e' : '#64748b';
-        if(svg) svg.setAttribute('fill', liked2 ? 'currentColor' : 'none');
-        if(span) span.textContent = likeCount2 + ' Suka';
+        var svg2 = btn.querySelector('svg');
+        var span2 = btn.querySelector('span');
+        btn.style.color = liked3 ? '#f43f5e' : '#64748b';
+        if(svg2) svg2.setAttribute('fill', liked3 ? 'currentColor' : 'none');
+        if(span2) span2.textContent = likeCount3 + ' Suka';
       }
-    } catch(e){ toast('Gagal like', true); }
+    }
   };
   var pinBtn = $('pinBtn');
   if(pinBtn) pinBtn.onclick = async function(){
@@ -2123,7 +2155,6 @@ async function loadComments(pid){
       list.push(Object.assign({ id: child.key }, x, { createdAt: x.createdAt || Date.now() }));
     });
     renderComments(list);
-    // ✅ Tandai komentar sudah dibaca (hanya untuk postingan milik saya)
     if(activePost && activePost.authorId === me.uid){
       if(!seenComments[pid]) seenComments[pid] = {};
       var changed = false;
@@ -2299,7 +2330,12 @@ $('collabInput').onchange = async function(e){
       arr.push(await compressImage(files[i], 1080, 0.72));
     }
     await rtdb.ref('posts/' + p.id + '/images').set(arr);
-    p.images = arr; renderPostDetail(p);
+    p.images = arr;
+    // ✅ Cukup re-render grid foto saja — TAPI karena grid ada di dalam postScroll,
+    // kita update hanya bagian fotonya tanpa sentuh komentar.
+    // Cara paling aman: rebuild seluruh detail lalu load ulang komentar.
+    renderPostDetail(p);
+    loadComments(p.id);
     loader(false); toast(files.length + ' foto ditambahkan');
   } catch(e){ loader(false); toast('Gagal: ' + (e.message||'').slice(0,40), true); }
 };
