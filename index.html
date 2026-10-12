@@ -110,6 +110,10 @@ body.dark .post-card .title{color:#cbd5e1}
 .post-card .foot{padding:9px 12px;border-top:1px solid rgba(148,163,184,.1);display:flex;gap:7px;align-items:center;font-size:12px;font-weight:700;color:#64748b}
 .post-new-dot{position:absolute;top:11px;right:11px;z-index:3;width:10px;height:10px;border-radius:50%;background:#10b981;box-shadow:0 0 0 3px rgba(16,185,129,.2),0 0 8px rgba(16,185,129,.6)}
 .pin-tag{position:absolute;top:9px;right:9px;z-index:3;background:#f59e0b;color:white;font-size:10px;font-weight:800;padding:4px 9px;border-radius:9px;box-shadow:0 2px 6px -1px rgba(245,158,11,.5);letter-spacing:.04em}
+.notif-badge{position:absolute;top:8px;left:8px;min-width:22px;height:22px;padding:0 7px;border-radius:11px;background:linear-gradient(135deg,#ef4444,#dc2626);color:white;font-size:11.5px;font-weight:800;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 8px -2px rgba(239,68,68,.7),0 0 0 2px rgba(255,255,255,.9);z-index:5;letter-spacing:-.02em}
+body.dark .notif-badge{box-shadow:0 3px 8px -2px rgba(239,68,68,.7),0 0 0 2px rgba(16,26,46,.9)}
+@keyframes badgePulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+.notif-badge.on{animation:badgePulse 2s ease-in-out infinite}
 .pin-card{background:#fffaf0;border:1.5px solid rgba(245,158,11,.28);border-radius:20px;padding:15px;margin-bottom:11px;cursor:pointer;position:relative;overflow:hidden;transition:transform .18s}
 body.dark .pin-card{background:#1a1408}
 .pin-card:active{transform:scale(.98)}
@@ -265,7 +269,6 @@ body.dark .report-opt{background:#1a2540}
 .report-opt .rt .rn{font-size:14px;font-weight:800;color:#0b1220}
 body.dark .report-opt .rt .rn{color:#e2e8f0}
 .report-opt .rt .rd{font-size:12px;color:#94a3b8;margin-top:2px;font-weight:500}
-/* SIMPLE LOGIN LOADING */
 #loginLoading{position:fixed;inset:0;z-index:210;background:linear-gradient(165deg,#f5f7fb 0%,#eef2ff 50%,#fce7f3 100%);display:none;flex-direction:column;align-items:center;justify-content:center;padding:24px}
 #loginLoading.on{display:flex}
 #loginLoading::before{content:'';position:absolute;top:-20%;left:-20%;width:60vw;height:60vw;border-radius:50%;background:radial-gradient(circle,rgba(99,102,241,.18),transparent 65%);animation:meshMove 12s ease-in-out infinite}
@@ -289,7 +292,6 @@ body.dark .report-opt .rt .rn{color:#e2e8f0}
   <div class="box"><div class="spinner spin"></div><span id="loaderMsg" style="font-size:14px;font-weight:700">Memproses...</span></div>
 </div>
 
-<!-- SIMPLE LOGIN LOADING -->
 <div id="loginLoading">
   <div class="ll-box">
     <div class="ll-spinner"></div>
@@ -297,7 +299,6 @@ body.dark .report-opt .rt .rn{color:#e2e8f0}
   </div>
 </div>
 
-<!-- SEARCH OVERLAY -->
 <div id="searchOv">
   <div class="search-header">
     <div style="position:relative;flex:1;display:flex;align-items:center">
@@ -322,7 +323,6 @@ body.dark .report-opt .rt .rn{color:#e2e8f0}
   </div>
 </div>
 
-<!-- USER PROFILE OVERLAY -->
 <div id="userProfileOv">
   <header class="header safe-t" style="display:flex;align-items:center;gap:10px;padding:12px 14px 10px">
     <button id="upBack" type="button" style="width:40px;height:40px;border-radius:50%;background:#fff;border:1px solid rgba(148,163,184,.18);display:flex;align-items:center;justify-content:center;cursor:pointer">
@@ -977,6 +977,10 @@ var unsubFeed = null, unsubUsers = null, unsubPolls = null, unsubConfig = null, 
 var countdownTimer = null, miniCountdownTimer = null;
 var initializedNotif = false;
 var knownPostIds = {};
+var seenLikers = {};
+var seenComments = {};
+var notifInitDone = false;
+var commentNotifTimer = null;
 
 function isAdmin(){ return me && me.role === 'admin'; }
 function getPreferred(){ return localStorage.getItem('spark_pref_email'); }
@@ -1012,6 +1016,129 @@ function markCatSeen(cat){
     }
   });
   if(changed){ try { localStorage.setItem('spark_seen_posts_'+me.uid, JSON.stringify(seen)); } catch(e){} }
+}
+
+// ============ NOTIFIKASI LIKE & KOMENTAR ============
+function loadNotifState(){
+  if(!me || !me.uid) return;
+  try {
+    seenLikers = JSON.parse(localStorage.getItem('spark_likers_' + me.uid) || '{}') || {};
+    seenComments = JSON.parse(localStorage.getItem('spark_comments_' + me.uid) || '{}') || {};
+    notifInitDone = localStorage.getItem('spark_notif_init_' + me.uid) === '1';
+  } catch(e){ seenLikers = {}; seenComments = {}; notifInitDone = false; }
+}
+function saveNotifState(){
+  if(!me || !me.uid) return;
+  try {
+    localStorage.setItem('spark_likers_' + me.uid, JSON.stringify(seenLikers));
+    localStorage.setItem('spark_comments_' + me.uid, JSON.stringify(seenComments));
+    if(!notifInitDone){
+      localStorage.setItem('spark_notif_init_' + me.uid, '1');
+      notifInitDone = true;
+    }
+  } catch(e){}
+}
+function notifyPostActivity(title, body, postId){
+  if('Notification' in window && Notification.permission === 'granted'){
+    try {
+      var n = new Notification(title, { body: body, icon: './icon-192.png', badge: './icon-192.png', tag: 'act-' + postId + '-' + Date.now(), vibrate: [300,150,300], silent: true });
+      n.onclick = function(){ window.focus(); this.close(); if(typeof openPostDetail === 'function') openPostDetail(postId); };
+    } catch(e){}
+  }
+  if(!document.hidden) toast('🔔 ' + title + ' — ' + body, false);
+  playChime();
+  if(navigator.vibrate){ try { navigator.vibrate([300,150,300]); } catch(e){} }
+}
+function getUnseenCount(p){
+  if(!p || !me || p.authorId !== me.uid) return 0;
+  var likedBy = p.likedBy || {};
+  var seenL = seenLikers[p.id] || {};
+  var unseenLikes = 0;
+  Object.keys(likedBy).forEach(function(uid){
+    if(uid === me.uid) return;
+    if(!seenL[uid]) unseenLikes++;
+  });
+  var seenC = Object.keys(seenComments[p.id] || {}).length;
+  var totalC = p.commentCount || 0;
+  var unseenComments = Math.max(0, totalC - seenC);
+  return unseenLikes + unseenComments;
+}
+function markPostActivitySeen(p){
+  if(!p || !me || p.authorId !== me.uid) return;
+  var changed = false;
+  if(!seenLikers[p.id]) seenLikers[p.id] = {};
+  Object.keys(p.likedBy || {}).forEach(function(uid){
+    if(uid === me.uid) return;
+    if(!seenLikers[p.id][uid]){ seenLikers[p.id][uid] = Date.now(); changed = true; }
+  });
+  if(changed) saveNotifState();
+}
+function checkLikeNotifications(silent){
+  if(!me || !me.uid) return;
+  var changed = false;
+  feed.forEach(function(p){
+    if(p.authorId !== me.uid) return;
+    var likedBy = p.likedBy || {};
+    if(!seenLikers[p.id]) seenLikers[p.id] = {};
+    Object.keys(likedBy).forEach(function(uid){
+      if(uid === me.uid) return;
+      if(seenLikers[p.id][uid]) return;
+      seenLikers[p.id][uid] = Date.now();
+      changed = true;
+      if(!silent){
+        var u = users.filter(function(x){ return x.uid === uid; })[0];
+        var name = u ? (u.name || 'Warga') : 'Warga';
+        notifyPostActivity('❤️ Suka Baru', name + ' menyukai postingan Anda', p.id);
+      }
+    });
+  });
+  if(changed){
+    saveNotifState();
+    debouncedRender('grid-refresh', function(){
+      if(tab === 'category') renderCategory();
+      if(tab === 'home') renderHome();
+    }, 250);
+  }
+}
+async function checkCommentNotifications(silent){
+  if(!me || !me.uid) return;
+  var myPosts = feed.filter(function(p){ return p.authorId === me.uid; }).slice(0, 5);
+  var changed = false;
+  for(var i = 0; i < myPosts.length; i++){
+    var p = myPosts[i];
+    try {
+      var snap = await rtdb.ref('comments/' + p.id).orderByChild('createdAt').limitToLast(30).once('value');
+      if(!seenComments[p.id]) seenComments[p.id] = {};
+      snap.forEach(function(c){
+        var cid = c.key;
+        var data = c.val() || {};
+        if(data.authorId === me.uid) return;
+        if(seenComments[p.id][cid]) return;
+        seenComments[p.id][cid] = Date.now();
+        changed = true;
+        if(!silent && (Date.now() - (data.createdAt || 0)) < 300000){
+          notifyPostActivity('💬 Komentar Baru', (data.authorName || 'Warga') + ': ' + (data.text || '').slice(0, 60), p.id);
+        }
+      });
+    } catch(e){}
+  }
+  if(changed){
+    saveNotifState();
+    debouncedRender('grid-refresh', function(){
+      if(tab === 'category') renderCategory();
+      if(tab === 'home') renderHome();
+    }, 250);
+  }
+}
+function startCommentNotifPolling(){
+  if(commentNotifTimer) clearInterval(commentNotifTimer);
+  setTimeout(function(){
+    if(feed.length) checkCommentNotifications(false);
+  }, 6000);
+  commentNotifTimer = setInterval(function(){
+    if(document.hidden) return;
+    if(feed.length) checkCommentNotifications(false);
+  }, 30000);
 }
 
 function applyTheme(t){
@@ -1060,7 +1187,6 @@ function playChime(){
   } catch(e){}
 }
 
-// ==== SIMPLE LOGIN LOADING ====
 function showLoginLoading(){ $('loginLoading').classList.add('on'); }
 function hideLoginLoading(){ $('loginLoading').classList.remove('on'); }
 
@@ -1500,6 +1626,9 @@ function renderPostCard(p){
   html += '<div class="strip '+stripCls+'"></div>';
   if(showNew) html += '<div class="post-new-dot" title="Baru"></div>';
   if(p.pinned) html += '<div class="pin-tag">📌 PIN</div>';
+  // ✅ Badge jumlah notif (suka + komentar baru) untuk postingan saya
+  var unseen = getUnseenCount(p);
+  if(unseen > 0) html += '<div class="notif-badge on">' + (unseen > 99 ? '99+' : unseen) + '</div>';
   if(hasEvent) html += '<span style="position:absolute;top:8px;right:8px;background:#10b981;color:white;font-size:10px;font-weight:800;padding:4px 9px;border-radius:7px;z-index:2;box-shadow:0 2px 6px -1px rgba(16,185,129,.5);letter-spacing:.03em">📅 Kegiatan</span>';
   if(firstImg) html += '<div class="thumb"><img src="data:image/jpeg;base64,'+firstImg+'" loading="lazy" decoding="async"/></div>';
   html += '<div class="body">';
@@ -1580,7 +1709,21 @@ auth.onAuthStateChanged(function(user){
         rtdb.ref('users/' + user.uid).update({ role: 'admin', verified: true });
       }
       syncUser().then(function(){
+        loadNotifState();
         subscribeConfig(); subscribeFeed();
+        // Priming: tandai semua like/komentar lama sebagai sudah dibaca
+        setTimeout(function(){
+          if(!notifInitDone){
+            checkLikeNotifications(true);
+            checkCommentNotifications(true).then(function(){
+              notifInitDone = true;
+              try { localStorage.setItem('spark_notif_init_' + me.uid, '1'); } catch(e){}
+              startCommentNotifPolling();
+            });
+          } else {
+            startCommentNotifPolling();
+          }
+        }, 2500);
         if(messaging && typeof Notification !== 'undefined' && Notification.permission === 'granted' && VAPID_KEY){
           messaging.getToken({ vapidKey: VAPID_KEY }).then(function(token){
             if(token){
@@ -1676,7 +1819,6 @@ $('inviteSubmit').onclick = async function(){
       me.verified = true;
       await rtdb.ref('users/' + me.uid).update({ verified: true });
       loader(false); toast('Verifikasi berhasil!');
-      // FIX: hapus class .hide sebelum set display
       $('inviteOv').style.display = 'none';
       $('app').classList.remove('hide');
       $('app').style.display = 'flex';
@@ -1738,6 +1880,7 @@ function subscribeFeed(){
       }
       updateAllBadges();
       if($('searchOv').classList.contains('on') && searchQuery) renderSearchResults();
+      if(notifInitDone) checkLikeNotifications(false);
     }, 120);
   }, function(e){ console.warn('feed', e); });
   unsubFeed = function(){ ref.off('value', listener); };
@@ -1787,6 +1930,7 @@ function openPostDetail(postId){
   if(!p){ toast('Postingan tidak ditemukan', true); return; }
   activePostId = postId; activePost = p;
   markPostSeen(postId);
+  markPostActivitySeen(p); // ✅ tandai like sudah dibaca
   updateAllBadges();
   setTab('post'); renderPostDetail(p); loadComments(postId);
   setTimeout(function(){ if(p.eventDate && p.eventDate > 0) startCountdown(); }, 150);
@@ -1862,6 +2006,7 @@ function renderPostDetail(p){
   var authorEl = $('postScroll').querySelector('[data-open-author]');
   if(authorEl) authorEl.onclick = function(){ viewUserProfile(authorEl.dataset.openAuthor); };
 
+  // ✅ FIX: Like hanya update tombol, tidak render ulang seluruh detail
   $('likeBtn').onclick = async function(){
     var was = p.likedBy && p.likedBy[me.uid];
     try {
@@ -1872,7 +2017,16 @@ function renderPostDetail(p){
         await rtdb.ref('posts/' + p.id + '/likedBy/' + me.uid).set(true);
         p.likedBy = p.likedBy || {}; p.likedBy[me.uid] = true;
       }
-      renderPostDetail(p);
+      var liked2 = p.likedBy && p.likedBy[me.uid];
+      var likeCount2 = toCount(p.likedBy);
+      var btn = $('likeBtn');
+      if(btn){
+        var svg = btn.querySelector('svg');
+        var span = btn.querySelector('span');
+        btn.style.color = liked2 ? '#f43f5e' : '#64748b';
+        if(svg) svg.setAttribute('fill', liked2 ? 'currentColor' : 'none');
+        if(span) span.textContent = likeCount2 + ' Suka';
+      }
     } catch(e){ toast('Gagal like', true); }
   };
   var pinBtn = $('pinBtn');
@@ -1969,6 +2123,22 @@ async function loadComments(pid){
       list.push(Object.assign({ id: child.key }, x, { createdAt: x.createdAt || Date.now() }));
     });
     renderComments(list);
+    // ✅ Tandai komentar sudah dibaca (hanya untuk postingan milik saya)
+    if(activePost && activePost.authorId === me.uid){
+      if(!seenComments[pid]) seenComments[pid] = {};
+      var changed = false;
+      list.forEach(function(c){
+        if(c.authorId === me.uid) return;
+        if(!seenComments[pid][c.id]){ seenComments[pid][c.id] = Date.now(); changed = true; }
+      });
+      if(changed){
+        saveNotifState();
+        debouncedRender('grid-refresh', function(){
+          if(tab === 'category') renderCategory();
+          if(tab === 'home') renderHome();
+        }, 250);
+      }
+    }
   } catch(e){ if(el) el.innerHTML = '<div style="color:#f43f5e;font-size:13px;text-align:center;padding:10px;font-weight:600">Gagal memuat komentar</div>'; }
 }
 
@@ -2716,6 +2886,8 @@ function cleanSubs(){
   try { unsubReports && unsubReports(); } catch(e){}
   if(countdownTimer) clearInterval(countdownTimer);
   if(miniCountdownTimer) clearInterval(miniCountdownTimer);
+  if(commentNotifTimer) clearInterval(commentNotifTimer);
+  commentNotifTimer = null;
   unsubFeed = unsubUsers = unsubPolls = unsubConfig = unsubReports = null;
 }
 
