@@ -294,7 +294,7 @@ body.dark .notif-body .n-snippet{background:#1a2540;color:#94a3b8;border-left-co
 #chatFab:active{transform:scale(.9)}
 #chatOv{position:fixed;inset:0;z-index:150;background:#f5f7fb;display:none;flex-direction:column;animation:sheetUp .28s}
 body.dark #chatOv{background:#070b14}
-#chatOv.on{display:flex}
+#chatOv.on{display:flex !important}
 .chat-msg{display:flex;gap:10px;margin-bottom:14px}
 .chat-msg.user{flex-direction:row-reverse}
 .chat-msg .bubble{max-width:78%;padding:11px 15px;border-radius:16px;font-size:14.5px;line-height:1.55;word-wrap:break-word;white-space:pre-wrap}
@@ -574,22 +574,24 @@ body.dark .typing{background:#101a2e}
 
 <script>
 // ============================================================
+// GLOBAL ERROR HANDLER (PATCH)
+// ============================================================
+window.addEventListener('error', function(e){
+  console.error('❌ Global error:', e.message, 'at line', e.lineno, e.filename);
+});
+window.addEventListener('unhandledrejection', function(e){
+  console.error('❌ Promise error:', e.reason);
+});
+
+// ============================================================
 // KONFIGURASI — Firebase
 // ============================================================
-var FB = {
-  apiKey: "AIzaSyCEttPAa6glm2qHUw3_QIcj2C8qqB9ZwOI",
-  authDomain: "spark-61d51.firebaseapp.com",
-  databaseURL: "https://spark-61d51-default-rtdb.asia-southeast1.firebasedatabase.app/",
-  projectId: "spark-61d51",
-  storageBucket: "spark-61d51.firebasestorage.app",
-  messagingSenderId: "618121526268",
-  appId: "1:618121526268:web:439521109a847c9ec25079"
-};
+var FB = {apiKey:"AIzaSyCEttPAa6glm2qHUw3_QIcj2C8qqB9ZwOI",authDomain:"spark-61d51.firebaseapp.com",databaseURL:"https://spark-61d51-default-rtdb.asia-southeast1.firebasedatabase.app/",projectId:"spark-61d51",storageBucket:"spark-61d51.firebasestorage.app",messagingSenderId:"618121526268",appId:"1:618121526268:web:439521109a847c9ec25079"};
 var BOOTSTRAP_ADMIN_EMAIL = "ngudiartosinarutama@gmail.com";
 var VAPID_KEY = "BCLp9zYnmE6YeGU8g_BOla0B0wvAPIUdXfKaFZ_1Vlak7AkUWQ_8m50UkGiiaLbnE2BjyKYymiBq5V_MzYWcEvE";
 
 // ============================================================
-// KONFIGURASI — Google Apps Script Web App URL
+// KONFIGURASI — Google Apps Script Web App URL (TERBARU)
 // ============================================================
 var AI_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbzOt9em2BGunSzateKt1O3Fi-1a64pk2t2v3W-e6EbR22Q7da_z4-SqCiQmQI1u2Pnf/exec";
 
@@ -752,8 +754,25 @@ function showChatTyping(){
   el.scrollTop = el.scrollHeight;
 }
 function hideChatTyping(){ var t = $('chatTyping'); if(t) t.remove(); }
-function openChat(){ $('chatOv').classList.add('on'); loadChatHistory(); renderChat(); setTimeout(function(){ $('chatInput').focus(); }, 300); }
-function closeChat(){ $('chatOv').classList.remove('on'); }
+
+// PATCH: openChat lebih robust
+function openChat(){
+  try {
+    var ov = document.getElementById('chatOv');
+    if(ov){
+      ov.classList.add('on');
+      ov.style.display = 'flex';
+      ov.style.zIndex = '150';
+    } else { console.error('chatOv tidak ditemukan!'); return; }
+    loadChatHistory();
+    renderChat();
+    setTimeout(function(){ try { document.getElementById('chatInput').focus(); } catch(e){} }, 300);
+    console.log('✅ Chat terbuka');
+  } catch(err){
+    console.error('openChat error:', err);
+  }
+}
+function closeChat(){ var ov = document.getElementById('chatOv'); if(ov){ ov.classList.remove('on'); ov.style.display = ''; } }
 
 async function sendChatMessage(text){
   if(!text || !text.trim()) return;
@@ -861,6 +880,54 @@ async function sendChatMessage(text){
     saveChatHistory(); renderChat();
   } finally { _chatBusy = false; }
 }
+
+// ============================================================
+// PATCH: BINDING TOMBOL CHAT YANG LEBIH KUAT
+// ============================================================
+(function bindChatFab(){
+  function attach(){
+    var fab = document.getElementById('chatFab');
+    if(!fab){ console.warn('chatFab tidak ditemukan!'); return; }
+    fab.onclick = null;
+    fab.addEventListener('click', function(ev){
+      if(ev){ ev.preventDefault(); ev.stopPropagation(); }
+      openChat();
+    }, false);
+    fab.addEventListener('touchend', function(ev){
+      if(ev){ ev.preventDefault(); ev.stopPropagation(); }
+      openChat();
+    }, { passive: false });
+    console.log('✅ Tombol chat berhasil dipasang');
+  }
+  if(document.readyState === 'loading'){ document.addEventListener('DOMContentLoaded', attach); }
+  else { setTimeout(attach, 50); }
+})();
+
+// Binding tombol lain di dalam chat
+(function bindChatOtherButtons(){
+  function attach(){
+    var back = document.getElementById('chatBack');
+    if(back) back.onclick = closeChat;
+    var clearBtn = document.getElementById('chatClear');
+    if(clearBtn) clearBtn.onclick = function(){
+      if(!confirm('Reset riwayat chat?')) return;
+      chatHistory = [];
+      var uid = (me && me.uid) || 'anon';
+      try { localStorage.removeItem('spark_chat_' + uid); } catch(e){}
+      loadChatHistory(); renderChat();
+    };
+    var sendBtn = document.getElementById('chatSend');
+    if(sendBtn) sendBtn.onclick = function(){ sendChatMessage(document.getElementById('chatInput').value); };
+    var chatInputEl = document.getElementById('chatInput');
+    if(chatInputEl){
+      chatInputEl.addEventListener('input', function(e){ e.target.style.height = 'auto'; e.target.style.height = Math.min(e.target.scrollHeight, 80) + 'px'; });
+      chatInputEl.addEventListener('keydown', function(e){ if(e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); document.getElementById('chatSend').click(); } });
+    }
+    document.querySelectorAll('#chatQuick button').forEach(function(b){ b.onclick = function(){ sendChatMessage(b.dataset.q); }; });
+  }
+  if(document.readyState === 'loading'){ document.addEventListener('DOMContentLoaded', attach); }
+  else { setTimeout(attach, 60); }
+})();
 
 // ============================================================
 // EVENT REMINDER
@@ -2072,6 +2139,15 @@ function startPolling(){
 }
 setTimeout(function(){ if(me && me.uid){ startPolling(); } }, 4000);
 auth.onAuthStateChanged(function(user){ if(user){ setTimeout(function(){ if(!pollInterval) startPolling(); }, 3000); } else { if(pollInterval) clearInterval(pollInterval); pollInterval = null; } });
+
+// ============================================================
+// DEBUG: CEK TOMBOL CHAT ADA
+// ============================================================
+setTimeout(function(){
+  var fab = document.getElementById('chatFab');
+  if(fab){ console.log('✅ chatFab ADA di DOM'); }
+  else { console.error('❌ chatFab TIDAK ADA di DOM!'); }
+}, 1000);
 </script>
 
 </body>
