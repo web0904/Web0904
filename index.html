@@ -755,43 +755,77 @@ async function sendChatMessage(text){
   $('chatInput').style.height = 'auto';
   showChatTyping();
 
-  var ctxPost = feed.slice(0, 8).map(function(p){
-    return { text: (p.text||'').slice(0, 80), category: p.category, authorName: p.authorName, eventDate: p.eventDate || 0 };
-  });
-  var ctxWarga = users.filter(function(u){ return u.role === 'admin'; }).slice(0, 10).map(function(u){
-    return { name: u.name, role: u.role, blok: u.blok };
-  });
+  // Ambil konteks ringkas (max 5 post + 5 admin) agar payload kecil
+var ctxPost = feed.slice(0, 8).map(function(p){
+  return { text: (p.text||'').slice(0, 80), category: p.category, authorName: p.authorName, eventDate: p.eventDate || 0 };
+});
+var ctxWarga = users.filter(function(u){ return u.role === 'admin'; }).slice(0, 10).map(function(u){
+  return { name: u.name, role: u.role, blok: u.blok };
+});
 
-  var clientId = (me && me.uid) ? me.uid.substring(0, 20) : 'anon';
-  var url = AI_WEBAPP_URL + '?action=chatbot' +
-    '&text=' + encodeURIComponent(q.slice(0, 300)) +
-    '&posts=' + encodeURIComponent(JSON.stringify(ctxPost)) +
-    '&warga=' + encodeURIComponent(JSON.stringify(ctxWarga)) +
-    '&clientId=' + encodeURIComponent(clientId);
+var clientId = (me && me.uid) ? me.uid.substring(0, 20) : 'anon';
 
-  try {
-    var ctrl = new AbortController();
-    var to = setTimeout(function(){ ctrl.abort(); }, 20000);
-    var res = await fetch(url, { method: 'GET', signal: ctrl.signal });
-    clearTimeout(to);
-    var data = await res.json();
+var payload = {
+  action: 'chatbot',
+  text: q.slice(0, 300),
+  posts: ctxPost,
+  warga: ctxWarga,
+  clientId: clientId
+};
+
+try {
+  var ctrl = new AbortController();
+  var to = setTimeout(function(){ ctrl.abort(); }, 25000);
+  console.log('[Chat] POST →', AI_WEBAPP_URL);
+  var res = await fetch(AI_WEBAPP_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify(payload),
+    redirect: 'follow',
+    signal: ctrl.signal
+  });
+  clearTimeout(to);
+  console.log('[Chat] HTTP', res.status);
+  if(!res.ok){
     hideChatTyping();
-    if(data && data.ok && data.data && data.data.jawaban){
-      var jawaban = data.data.jawaban;
-      chatHistory.push({ role: 'bot', text: jawaban, t: Date.now() });
-      try { localStorage.setItem(cacheKey, jawaban); } catch(e){}
-    } else {
-      chatHistory.push({ role: 'bot', text: 'Maaf, tidak bisa menjawab sekarang. Coba lagi 🙏', t: Date.now() });
-    }
-    saveChatHistory();
-    renderChat();
-  } catch(e){
+    chatHistory.push({ role: 'bot', text: 'Server error ' + res.status + '. Coba lagi.', t: Date.now() });
+    saveChatHistory(); renderChat();
+    _chatBusy = false;
+    return;
+  }
+  var rawText = await res.text();
+  console.log('[Chat] Raw:', rawText.substring(0, 200));
+  var cleanText = rawText.replace(/^\uFEFF/, '').replace(/^\)\]\}'\n/, '');
+  var data;
+  try { data = JSON.parse(cleanText); }
+  catch(pe){
+    console.error('[Chat] Bukan JSON:', cleanText.substring(0, 300));
     hideChatTyping();
-    chatHistory.push({ role: 'bot', text: 'Koneksi bermasalah. Coba lagi ya.', t: Date.now() });
-    saveChatHistory();
-    renderChat();
-  } finally { _chatBusy = false; }
-}
+    chatHistory.push({ role: 'bot', text: 'Response tidak valid. Cek Apps Script.', t: Date.now() });
+    saveChatHistory(); renderChat();
+    _chatBusy = false;
+    return;
+  }
+  hideChatTyping();
+  if(data && data.ok && data.data && data.data.jawaban){
+    var jawaban = data.data.jawaban;
+    chatHistory.push({ role: 'bot', text: jawaban, t: Date.now() });
+    try { localStorage.setItem(cacheKey, jawaban); } catch(e){}
+  } else if(data && data.error){
+    chatHistory.push({ role: 'bot', text: '⚠️ ' + data.error, t: Date.now() });
+  } else {
+    chatHistory.push({ role: 'bot', text: 'Maaf, tidak bisa menjawab sekarang. Coba lagi 🙏', t: Date.now() });
+  }
+  saveChatHistory(); renderChat();
+} catch(e){
+  console.error('[Chat] Error:', e);
+  hideChatTyping();
+  var msg = 'Koneksi bermasalah.';
+  if(e && e.name === 'AbortError') msg = 'Timeout. Server terlalu lama.';
+  chatHistory.push({ role: 'bot', text: msg + ' Coba lagi ya.', t: Date.now() });
+  saveChatHistory(); renderChat();
+} finally { _chatBusy = false; }
+
 
 $('chatFab').onclick = openChat;
 $('chatBack').onclick = closeChat;
@@ -849,14 +883,22 @@ async function extractEventDariTeks(pid, teks){
   } catch(e){}
 
   var clientId = (me && me.uid) ? me.uid.substring(0, 20) : 'anon';
-  var url = AI_WEBAPP_URL + '?action=event&text=' + encodeURIComponent(teks.slice(0, 300)) + '&clientId=' + encodeURIComponent(clientId);
+var payload = { action: 'event', text: teks.slice(0, 300), clientId: clientId };
 
-  try {
-    var ctrl = new AbortController();
-    var to = setTimeout(function(){ ctrl.abort(); }, 12000);
-    var res = await fetch(url, { method: 'GET', signal: ctrl.signal });
-    clearTimeout(to);
-    var data = await res.json();
+try {
+  var ctrl = new AbortController();
+  var to = setTimeout(function() { ctrl.abort(); }, 12000);
+  var res = await fetch(AI_WEBAPP_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify(payload),
+    redirect: 'follow',
+    signal: ctrl.signal
+  });
+  clearTimeout(to);
+  if (!res.ok) throw new Error('HTTP ' + res.status);
+  var rawText = await res.text();
+  var data = JSON.parse(rawText.replace(/^\uFEFF/, ''));
     if(data && data.ok && data.data && data.data.eventDate){
       await rtdb.ref('posts/' + pid).update({ eventDate: data.data.eventDate, eventLocation: data.data.eventLocation || '' });
       try { localStorage.setItem(cacheKey, JSON.stringify({ eventDate: data.data.eventDate, eventLocation: data.data.eventLocation || '' })); } catch(e){}
