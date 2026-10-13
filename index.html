@@ -317,7 +317,6 @@ body.dark .typing{background:#101a2e}
 .ai-badge .dot{width:7px;height:7px;border-radius:50%;background:#8b5cf6;animation:badgePulse 1.2s ease-in-out infinite}
 .ai-suggest{margin-top:10px;padding:10px 14px;background:linear-gradient(135deg,rgba(16,185,129,.1),rgba(5,150,105,.06));border:1px solid rgba(16,185,129,.3);border-radius:12px;font-size:12.5px;font-weight:700;color:#059669;display:flex;align-items:center;justify-content:space-between;gap:8px}
 .ai-suggest .btn-apply{padding:6px 12px;border-radius:9px;background:linear-gradient(135deg,#10b981,#059669);color:white;font-size:11.5px;font-weight:800;border:none;cursor:pointer;flex-shrink:0}
-.ai-search-note{color:#6366f1;font-weight:800;font-size:12px}
 </style>
 </head>
 <body>
@@ -575,7 +574,7 @@ body.dark .typing{background:#101a2e}
 
 <script>
 var FB = {apiKey:"AIzaSyCEttPAa6glm2qHUw3_QIcj2C8qqB9ZwOI",authDomain:"spark-61d51.firebaseapp.com",databaseURL:"https://spark-61d51-default-rtdb.asia-southeast1.firebasedatabase.app/",projectId:"spark-61d51",storageBucket:"spark-61d51.firebasestorage.app",messagingSenderId:"618121526268",appId:"1:618121526268:web:439521109a847c9ec25079"};
-var BOOTSTRAP_ADMIN_EMAIL = "ngudiartosinarutama@gmail.com";
+var BOOTSTRAP_ADMIN_EMAIL = "";
 var VAPID_KEY = "BCLp9zYnmE6YeGU8g_BOla0B0wvAPIUdXfKaFZ_1Vlak7AkUWQ_8m50UkGiiaLbnE2BjyKYymiBq5V_MzYWcEvE";
 var AI_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbymjnNKMeJG-c52-pg6HCncnoHP2N01kYcShpzsCITIkttF0i4rfl-Na33bQ0O4n0I/exec";
 
@@ -660,14 +659,22 @@ async function aiCall(action, text){
   var cached = _aiCache[cacheKey];
   if(cached && (Date.now() - cached.t) < 3600000) return cached.v;
   var clientId = (me && me.uid) ? me.uid.substring(0, 20) : 'anon';
-  var url = AI_WEBAPP_URL + '?action=' + encodeURIComponent(action) + '&text=' + encodeURIComponent(text.slice(0, 1500)) + '&clientId=' + encodeURIComponent(clientId);
+  var payload = { action: action, text: text.slice(0, 1500), clientId: clientId };
   try {
     var ctrl = new AbortController();
     var to = setTimeout(function(){ ctrl.abort(); }, 15000);
-    var res = await fetch(url, { method: 'GET', signal: ctrl.signal });
+    var res = await fetch(AI_WEBAPP_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(payload),
+      redirect: 'follow',
+      signal: ctrl.signal
+    });
     clearTimeout(to);
     if(!res.ok) throw new Error('HTTP ' + res.status);
-    var data = await res.json();
+    var rawText = await res.text();
+    var cleanText = rawText.replace(/^\uFEFF/, '').replace(/^\)\]\}'\n/, '');
+    var data = JSON.parse(cleanText);
     if(data && data.ok){ _aiCache[cacheKey] = { v: data.data, t: Date.now() }; return data.data; }
     return null;
   } catch(e){ console.warn('AI fail:', e && e.message); return null; }
@@ -720,6 +727,7 @@ function hideChatTyping(){ var t = $('chatTyping'); if(t) t.remove(); }
 function openChat(){ $('chatOv').classList.add('on'); loadChatHistory(); renderChat(); setTimeout(function(){ $('chatInput').focus(); }, 300); }
 function closeChat(){ $('chatOv').classList.remove('on'); }
 
+// ============ CHAT SEND — POST (FIX URL PANJANG) ============
 async function sendChatMessage(text){
   if(!text || !text.trim()) return;
   var q = text.trim();
@@ -755,77 +763,78 @@ async function sendChatMessage(text){
   $('chatInput').style.height = 'auto';
   showChatTyping();
 
-  // Ambil konteks ringkas (max 5 post + 5 admin) agar payload kecil
-var ctxPost = feed.slice(0, 8).map(function(p){
-  return { text: (p.text||'').slice(0, 80), category: p.category, authorName: p.authorName, eventDate: p.eventDate || 0 };
-});
-var ctxWarga = users.filter(function(u){ return u.role === 'admin'; }).slice(0, 10).map(function(u){
-  return { name: u.name, role: u.role, blok: u.blok };
-});
-
-var clientId = (me && me.uid) ? me.uid.substring(0, 20) : 'anon';
-
-var payload = {
-  action: 'chatbot',
-  text: q.slice(0, 300),
-  posts: ctxPost,
-  warga: ctxWarga,
-  clientId: clientId
-};
-
-try {
-  var ctrl = new AbortController();
-  var to = setTimeout(function(){ ctrl.abort(); }, 25000);
-  console.log('[Chat] POST →', AI_WEBAPP_URL);
-  var res = await fetch(AI_WEBAPP_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-    body: JSON.stringify(payload),
-    redirect: 'follow',
-    signal: ctrl.signal
+  // Siapkan konteks
+  var ctxPost = feed.slice(0, 8).map(function(p){
+    return { text: (p.text||'').slice(0, 80), category: p.category, authorName: p.authorName, eventDate: p.eventDate || 0 };
   });
-  clearTimeout(to);
-  console.log('[Chat] HTTP', res.status);
-  if(!res.ok){
-    hideChatTyping();
-    chatHistory.push({ role: 'bot', text: 'Server error ' + res.status + '. Coba lagi.', t: Date.now() });
-    saveChatHistory(); renderChat();
-    _chatBusy = false;
-    return;
-  }
-  var rawText = await res.text();
-  console.log('[Chat] Raw:', rawText.substring(0, 200));
-  var cleanText = rawText.replace(/^\uFEFF/, '').replace(/^\)\]\}'\n/, '');
-  var data;
-  try { data = JSON.parse(cleanText); }
-  catch(pe){
-    console.error('[Chat] Bukan JSON:', cleanText.substring(0, 300));
-    hideChatTyping();
-    chatHistory.push({ role: 'bot', text: 'Response tidak valid. Cek Apps Script.', t: Date.now() });
-    saveChatHistory(); renderChat();
-    _chatBusy = false;
-    return;
-  }
-  hideChatTyping();
-  if(data && data.ok && data.data && data.data.jawaban){
-    var jawaban = data.data.jawaban;
-    chatHistory.push({ role: 'bot', text: jawaban, t: Date.now() });
-    try { localStorage.setItem(cacheKey, jawaban); } catch(e){}
-  } else if(data && data.error){
-    chatHistory.push({ role: 'bot', text: '⚠️ ' + data.error, t: Date.now() });
-  } else {
-    chatHistory.push({ role: 'bot', text: 'Maaf, tidak bisa menjawab sekarang. Coba lagi 🙏', t: Date.now() });
-  }
-  saveChatHistory(); renderChat();
-} catch(e){
-  console.error('[Chat] Error:', e);
-  hideChatTyping();
-  var msg = 'Koneksi bermasalah.';
-  if(e && e.name === 'AbortError') msg = 'Timeout. Server terlalu lama.';
-  chatHistory.push({ role: 'bot', text: msg + ' Coba lagi ya.', t: Date.now() });
-  saveChatHistory(); renderChat();
-} finally { _chatBusy = false; }
+  var ctxWarga = users.filter(function(u){ return u.role === 'admin'; }).slice(0, 10).map(function(u){
+    return { name: u.name, role: u.role, blok: u.blok };
+  });
 
+  var clientId = (me && me.uid) ? me.uid.substring(0, 20) : 'anon';
+
+  // ✅ POST dengan body — tidak ada limit URL
+  var payload = {
+    action: 'chatbot',
+    text: q.slice(0, 300),
+    posts: ctxPost,
+    warga: ctxWarga,
+    clientId: clientId
+  };
+
+  try {
+    var ctrl = new AbortController();
+    var to = setTimeout(function(){ ctrl.abort(); }, 25000);
+    console.log('[Chat] POST →', AI_WEBAPP_URL);
+    var res = await fetch(AI_WEBAPP_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(payload),
+      redirect: 'follow',
+      signal: ctrl.signal
+    });
+    clearTimeout(to);
+    console.log('[Chat] HTTP', res.status);
+    if(!res.ok){
+      hideChatTyping();
+      chatHistory.push({ role: 'bot', text: 'Server error ' + res.status + '. Coba lagi.', t: Date.now() });
+      saveChatHistory(); renderChat();
+      _chatBusy = false;
+      return;
+    }
+    var rawText = await res.text();
+    console.log('[Chat] Raw:', rawText.substring(0, 200));
+    var cleanText = rawText.replace(/^\uFEFF/, '').replace(/^\)\]\}'\n/, '');
+    var data;
+    try { data = JSON.parse(cleanText); }
+    catch(pe){
+      console.error('[Chat] Bukan JSON:', cleanText.substring(0, 300));
+      hideChatTyping();
+      chatHistory.push({ role: 'bot', text: 'Response tidak valid. Cek Apps Script.', t: Date.now() });
+      saveChatHistory(); renderChat();
+      _chatBusy = false;
+      return;
+    }
+    hideChatTyping();
+    if(data && data.ok && data.data && data.data.jawaban){
+      var jawaban = data.data.jawaban;
+      chatHistory.push({ role: 'bot', text: jawaban, t: Date.now() });
+      try { localStorage.setItem(cacheKey, jawaban); } catch(e){}
+    } else if(data && data.error){
+      chatHistory.push({ role: 'bot', text: '⚠️ ' + data.error, t: Date.now() });
+    } else {
+      chatHistory.push({ role: 'bot', text: 'Maaf, tidak bisa menjawab sekarang. Coba lagi 🙏', t: Date.now() });
+    }
+    saveChatHistory(); renderChat();
+  } catch(e){
+    console.error('[Chat] Error:', e);
+    hideChatTyping();
+    var msg = 'Koneksi bermasalah.';
+    if(e && e.name === 'AbortError') msg = 'Timeout. Server terlalu lama.';
+    chatHistory.push({ role: 'bot', text: msg + ' Coba lagi ya.', t: Date.now() });
+    saveChatHistory(); renderChat();
+  } finally { _chatBusy = false; }
+}
 
 $('chatFab').onclick = openChat;
 $('chatBack').onclick = closeChat;
@@ -862,6 +871,7 @@ function checkEventReminders(){
   });
 }
 
+// ============ EXTRACT EVENT — POST (FIX) ============
 var _eventExtractQueue = {};
 async function extractEventDariTeks(pid, teks){
   if(!aiEnabled() || !teks || teks.length < 25) return;
@@ -883,22 +893,22 @@ async function extractEventDariTeks(pid, teks){
   } catch(e){}
 
   var clientId = (me && me.uid) ? me.uid.substring(0, 20) : 'anon';
-var payload = { action: 'event', text: teks.slice(0, 300), clientId: clientId };
+  var payload = { action: 'event', text: teks.slice(0, 300), clientId: clientId };
 
-try {
-  var ctrl = new AbortController();
-  var to = setTimeout(function() { ctrl.abort(); }, 12000);
-  var res = await fetch(AI_WEBAPP_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-    body: JSON.stringify(payload),
-    redirect: 'follow',
-    signal: ctrl.signal
-  });
-  clearTimeout(to);
-  if (!res.ok) throw new Error('HTTP ' + res.status);
-  var rawText = await res.text();
-  var data = JSON.parse(rawText.replace(/^\uFEFF/, ''));
+  try {
+    var ctrl = new AbortController();
+    var to = setTimeout(function(){ ctrl.abort(); }, 12000);
+    var res = await fetch(AI_WEBAPP_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(payload),
+      redirect: 'follow',
+      signal: ctrl.signal
+    });
+    clearTimeout(to);
+    if(!res.ok) throw new Error('HTTP ' + res.status);
+    var rawText = await res.text();
+    var data = JSON.parse(rawText.replace(/^\uFEFF/, ''));
     if(data && data.ok && data.data && data.data.eventDate){
       await rtdb.ref('posts/' + pid).update({ eventDate: data.data.eventDate, eventLocation: data.data.eventLocation || '' });
       try { localStorage.setItem(cacheKey, JSON.stringify({ eventDate: data.data.eventDate, eventLocation: data.data.eventLocation || '' })); } catch(e){}
@@ -1046,7 +1056,6 @@ $('catTileUmum').onclick = function(){ activeCat = 'umum'; setTab('category'); }
 $('catTileInformasi').onclick = function(){ activeCat = 'informasi'; setTab('category'); };
 $('catTileGaleri').onclick = function(){ activeCat = 'galeri'; setTab('category'); };
 
-// ============ RULES MODAL ============
 $('rulesBtn').onclick = function(){
   openModal('📖 Tata Tertib',
     '<div style="font-size:13.5px;line-height:1.8;color:#334155">'+
@@ -1915,7 +1924,6 @@ $('backupBtn').onclick = async function(){
 $('clearAiCacheBtn').onclick = function(){
   _aiCache = {};
   try {
-    // Hapus semua cache AI lokal
     var keys = Object.keys(localStorage);
     keys.forEach(function(k){
       if(k.indexOf('chatcache_') === 0 || k.indexOf('evtcache_') === 0){ localStorage.removeItem(k); }
