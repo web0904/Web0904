@@ -42,6 +42,7 @@ input,textarea,select{font-size:16px!important}
 @keyframes searchIn{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
 @keyframes badgePulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
 @keyframes bellShake{0%,100%{transform:rotate(0)}20%{transform:rotate(-12deg)}40%{transform:rotate(12deg)}60%{transform:rotate(-8deg)}80%{transform:rotate(8deg)}}
+@keyframes aiPulse{0%,100%{opacity:1}50%{opacity:.5}}
 .grad-anim{background:linear-gradient(90deg,#6366f1,#a855f7,#ec4899,#6366f1);background-size:200% 100%;animation:grad 2.4s linear infinite}
 .btn-p{background:linear-gradient(135deg,#6366f1 0%,#8b5cf6 50%,#ec4899 100%);color:white;font-weight:700;border:none;cursor:pointer;border-radius:14px;padding:13px 18px;font-size:15px;transition:transform .15s cubic-bezier(.34,1.56,.64,1),filter .2s;box-shadow:0 6px 20px -8px rgba(99,102,241,.65),inset 0 1px 0 rgba(255,255,255,.2);letter-spacing:.01em;position:relative;overflow:hidden}
 .btn-p::after{content:'';position:absolute;inset:0;background:linear-gradient(120deg,transparent 30%,rgba(255,255,255,.28) 50%,transparent 70%);background-size:200% 100%;animation:shine 3s linear infinite;pointer-events:none}
@@ -276,7 +277,7 @@ body.dark .report-opt .rt .rn{color:#e2e8f0}
 #loginLoading::after{content:'';position:absolute;bottom:-20%;right:-20%;width:60vw;height:60vw;border-radius:50%;background:radial-gradient(circle,rgba(236,72,153,.15),transparent 65%);animation:meshMove 10s ease-in-out infinite reverse}
 #loginLoading .ll-box{background:#fff;border-radius:22px;padding:32px 40px;box-shadow:0 20px 50px -14px rgba(15,23,42,.3);display:flex;flex-direction:column;align-items:center;gap:18px;position:relative;z-index:1}
 #loginLoading .ll-spinner{width:54px;height:54px;border:4px solid #e2e8f0;border-top-color:#6366f1;border-right-color:#a855f7;border-radius:50%;animation:spin .9s linear infinite}
-/* === NOTIF BELL === */
+/* NOTIF BELL */
 #bellBtn{position:relative;width:40px;height:40px;border-radius:50%;background:#fff;border:1px solid rgba(148,163,184,.18);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
 body.dark #bellBtn{background:#101a2e;border-color:rgba(255,255,255,.06)}
 #bellBtn.on{background:linear-gradient(135deg,#6366f1,#8b5cf6);border-color:transparent}
@@ -307,6 +308,12 @@ body.dark .notif-body .n-title b{color:#e2e8f0}
 .notif-body .n-snippet{font-size:12.5px;color:#64748b;margin-top:5px;line-height:1.45;padding:7px 10px;background:#f8fafc;border-radius:9px;border-left:3px solid #cbd5e1;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word}
 body.dark .notif-body .n-snippet{background:#1a2540;color:#94a3b8;border-left-color:#334155}
 .notif-body .n-time{font-size:11.5px;color:#94a3b8;margin-top:6px;font-weight:600}
+/* AI */
+.ai-badge{margin-top:10px;padding:9px 14px;background:linear-gradient(135deg,rgba(139,92,246,.12),rgba(236,72,153,.08));border:1px solid rgba(139,92,246,.3);border-radius:12px;font-size:12.5px;font-weight:700;color:#7c3aed;display:flex;align-items:center;gap:8px}
+.ai-badge .dot{width:7px;height:7px;border-radius:50%;background:#8b5cf6;animation:aiPulse 1.2s ease-in-out infinite}
+.ai-suggest{margin-top:10px;padding:10px 14px;background:linear-gradient(135deg,rgba(16,185,129,.1),rgba(5,150,105,.06));border:1px solid rgba(16,185,129,.3);border-radius:12px;font-size:12.5px;font-weight:700;color:#059669;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.ai-suggest .btn-apply{padding:6px 12px;border-radius:9px;background:linear-gradient(135deg,#10b981,#059669);color:white;font-size:11.5px;font-weight:800;border:none;cursor:pointer;flex-shrink:0}
+.ai-search-note{color:#6366f1;font-weight:800;font-size:12px}
 </style>
 </head>
 <body>
@@ -319,10 +326,7 @@ body.dark .notif-body .n-snippet{background:#1a2540;color:#94a3b8;border-left-co
 </div>
 
 <div id="toast" class="toast"></div>
-
-<div id="loader" class="loader">
-  <div class="box"><div class="spinner spin"></div><span id="loaderMsg" style="font-size:14px;font-weight:700">Memproses...</span></div>
-</div>
+<div id="loader" class="loader"><div class="box"><div class="spinner spin"></div><span id="loaderMsg" style="font-size:14px;font-weight:700">Memproses...</span></div></div>
 
 <div id="loginLoading">
   <div class="ll-box">
@@ -339,9 +343,7 @@ body.dark .notif-body .n-snippet{background:#1a2540;color:#94a3b8;border-left-co
       </div>
       <input id="searchInput" class="search-input" type="text" placeholder="Cari postingan, warga, topik..." autocomplete="off">
     </div>
-    <button id="searchClose" class="search-close" type="button">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
-    </button>
+    <button id="searchClose" class="search-close" type="button"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
   </div>
   <div class="search-tabs" id="searchTabs">
     <button class="search-tab on" data-scope="all" type="button">🔎 Semua</button>
@@ -350,9 +352,7 @@ body.dark .notif-body .n-snippet{background:#1a2540;color:#94a3b8;border-left-co
     <button class="search-tab" data-scope="galeri" type="button">📷 Galeri</button>
     <button class="search-tab" data-scope="warga" type="button">👥 Warga</button>
   </div>
-  <div class="scroll-y grow">
-    <div class="search-results" id="searchResults"></div>
-  </div>
+  <div class="scroll-y grow"><div class="search-results" id="searchResults"></div></div>
 </div>
 
 <div id="notifOv">
@@ -366,9 +366,7 @@ body.dark .notif-body .n-snippet{background:#1a2540;color:#94a3b8;border-left-co
     </div>
     <button id="notifMarkAll" type="button" style="padding:8px 12px;border-radius:10px;background:rgba(99,102,241,.12);color:#6366f1;font-size:12px;font-weight:800;border:none;cursor:pointer">✓ Baca Semua</button>
   </header>
-  <div class="scroll-y grow">
-    <div id="notifContent" style="padding:14px 16px 40px"></div>
-  </div>
+  <div class="scroll-y grow"><div id="notifContent" style="padding:14px 16px 40px"></div></div>
 </div>
 
 <div id="userProfileOv">
@@ -378,9 +376,7 @@ body.dark .notif-body .n-snippet{background:#1a2540;color:#94a3b8;border-left-co
     </button>
     <div style="flex:1;font-size:16.5px;font-weight:900;letter-spacing:-.02em">Profil Warga</div>
   </header>
-  <div class="scroll-y grow">
-    <div id="userProfileContent" style="padding:16px 16px 40px"></div>
-  </div>
+  <div class="scroll-y grow"><div id="userProfileContent" style="padding:16px 16px 40px"></div></div>
 </div>
 
 <div id="splash">
@@ -413,7 +409,7 @@ body.dark .notif-body .n-snippet{background:#1a2540;color:#94a3b8;border-left-co
     <div style="background:#fff;border-radius:28px;padding:28px 24px;box-shadow:0 20px 50px -20px rgba(15,23,42,.25);border:1px solid rgba(148,163,184,.1)">
       <div style="font-size:17.5px;font-weight:900;margin-bottom:6px;color:#0b1220;letter-spacing:-.01em">Selamat datang 👋</div>
       <div style="font-size:13.5px;color:#64748b;line-height:1.65;margin-bottom:22px">Masuk dengan akun Google Anda untuk bergabung. Cukup satu kali.</div>
-      <button id="googleBtn" type="button" style="width:100%;padding:15px 16px;border-radius:16px;border:1.5px solid #e2e8f0;background:#fff;color:#0b1220;font-weight:800;font-size:15px;display:flex;align-items:center;justify-content:center;gap:11px;cursor:pointer;transition:transform .15s,box-shadow .2s,border-color .2s">
+      <button id="googleBtn" type="button" style="width:100%;padding:15px 16px;border-radius:16px;border:1.5px solid #e2e8f0;background:#fff;color:#0b1220;font-weight:800;font-size:15px;display:flex;align-items:center;justify-content:center;gap:11px;cursor:pointer">
         <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.9 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.1 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.3-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 18.9 12 24 12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.1 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.3 26.7 36 24 36c-5.2 0-9.6-3.1-11.3-7.6l-6.5 5C9.6 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.1-4.1 5.5l6.2 5.2C40.9 35.5 44 30.2 44 24c0-1.3-.1-2.3-.4-3.5z"/></svg>
         Lanjutkan dengan Google
       </button>
@@ -440,10 +436,9 @@ body.dark .notif-body .n-snippet{background:#1a2540;color:#94a3b8;border-left-co
 </div>
 
 <div id="app" style="display:none;flex-direction:column;height:100dvh;max-width:560px;margin:0 auto">
-
   <header class="header safe-t">
     <div style="display:flex;align-items:center;gap:8px;padding:12px 14px 10px">
-      <button id="backBtn" type="button" class="hide" style="width:40px;height:40px;border-radius:50%;background:#fff;border:1px solid rgba(148,163,184,.18);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .15s">
+      <button id="backBtn" type="button" class="hide" style="width:40px;height:40px;border-radius:50%;background:#fff;border:1px solid rgba(148,163,184,.18);display:flex;align-items:center;justify-content:center;cursor:pointer">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>
       </button>
       <div style="flex:1;min-width:0">
@@ -466,7 +461,6 @@ body.dark .notif-body .n-snippet{background:#1a2540;color:#94a3b8;border-left-co
   </header>
 
   <main id="main" class="scroll-y grow">
-
     <section id="view-home" class="pb-nav">
       <div style="padding:20px 18px 12px">
         <h2 style="font-size:19.5px;font-weight:900;margin:0;letter-spacing:-.02em">Halo, selamat datang 👋</h2>
@@ -488,7 +482,6 @@ body.dark .notif-body .n-snippet{background:#1a2540;color:#94a3b8;border-left-co
           <div id="detailUmum" class="cat-detail hide"></div>
           <span id="badgeUmum" class="cat-badge">0</span>
         </div>
-
         <div id="catTileInformasi" class="cat-tile g-info fade" style="flex-direction:column;align-items:stretch;gap:12px;">
           <div style="display:flex;align-items:center;gap:15px;">
             <div class="icon">📢</div>
@@ -505,7 +498,6 @@ body.dark .notif-body .n-snippet{background:#1a2540;color:#94a3b8;border-left-co
           <div id="detailInformasi" class="cat-detail hide"></div>
           <span id="badgeInformasi" class="cat-badge">0</span>
         </div>
-
         <div id="catTileGaleri" class="cat-tile g-gal fade" style="flex-direction:column;align-items:stretch;gap:12px;">
           <div style="display:flex;align-items:center;gap:15px;">
             <div class="icon">📷</div>
@@ -522,7 +514,6 @@ body.dark .notif-body .n-snippet{background:#1a2540;color:#94a3b8;border-left-co
           <span id="badgeGaleri" class="cat-badge">0</span>
         </div>
       </div>
-
       <div id="pinnedSection" class="section hide">
         <div class="section-head">
           <div class="section-title"><span class="em">📌</span>Pengumuman Penting</div>
@@ -604,6 +595,34 @@ body.dark .notif-body .n-snippet{background:#1a2540;color:#94a3b8;border-left-co
             </div>
           </div>
           <button id="editProfileBtn" type="button" class="btn-p" style="width:100%;margin-top:16px;background:#f1f5f9;color:#0b1220;box-shadow:none">✏️ Edit Nama &amp; Foto</button>
+        </div>
+      </div>
+
+      <div style="font-size:12px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.12em;margin:0 4px 9px">🤖 Asisten AI</div>
+      <div class="card" style="padding:0;overflow:hidden;margin-bottom:18px;border-radius:18px">
+        <div class="setting-row" style="cursor:default">
+          <div class="setting-icon" style="background:linear-gradient(135deg,#8b5cf6,#ec4899);color:white">✨</div>
+          <div style="flex:1">
+            <div style="font-size:14.5px;font-weight:700">Asisten AI Gemini</div>
+            <div style="font-size:12.5px;color:#94a3b8;margin-top:2px;font-weight:500">Auto-kategori, moderasi &amp; search pintar · <b id="aiStatusLabel" style="color:#6366f1">Aktif</b></div>
+          </div>
+          <button id="aiToggle" type="button" style="width:48px;height:28px;border-radius:14px;border:none;position:relative;background:#cbd5e1;flex-shrink:0;cursor:pointer;transition:background .25s">
+            <span id="aiKnob" style="position:absolute;top:2px;left:2px;width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.2);transition:left .25s cubic-bezier(.34,1.56,.64,1)"></span>
+          </button>
+        </div>
+        <div class="setting-row" style="cursor:default">
+          <div class="setting-icon" style="background:rgba(99,102,241,.15);color:#6366f1">🧠</div>
+          <div style="flex:1">
+            <div style="font-size:14.5px;font-weight:700">Saran Kategori Otomatis</div>
+            <div style="font-size:12.5px;color:#94a3b8;margin-top:2px;font-weight:500">AI bantu pilih Umum/Info/Galeri saat posting</div>
+          </div>
+        </div>
+        <div class="setting-row" style="cursor:default">
+          <div class="setting-icon" style="background:rgba(16,185,129,.15);color:#059669">🛡️</div>
+          <div style="flex:1">
+            <div style="font-size:14.5px;font-weight:700">Moderasi Konten</div>
+            <div style="font-size:12.5px;color:#94a3b8;margin-top:2px;font-weight:500">Deteksi SARA, hoax, spam sebelum kirim</div>
+          </div>
         </div>
       </div>
 
@@ -754,6 +773,8 @@ body.dark .notif-body .n-snippet{background:#1a2540;color:#94a3b8;border-left-co
       <button type="button" data-c="galeri" class="cat-btn"><div style="font-size:26px">📷</div><div style="font-size:13px;font-weight:800;margin-top:2px">Galeri</div></button>
     </div>
     <div id="composeHint" class="hint h-umum"></div>
+    <div id="aiKatBadge" class="ai-badge hide"><span class="dot"></span><span>AI menganalisis konten...</span></div>
+    <div id="aiSuggest" class="ai-suggest hide"></div>
     <div id="topicWrap" class="hide" style="margin-top:14px">
       <div style="font-size:12px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.12em;margin-bottom:9px">Topik (opsional)</div>
       <div style="display:flex;gap:7px">
@@ -857,6 +878,7 @@ body.dark .notif-body .n-snippet{background:#1a2540;color:#94a3b8;border-left-co
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging-compat.js"></script>
 
 <script>
+// ================== CONFIG ==================
 var FB = {
   apiKey: "AIzaSyCEttPAa6glm2qHUw3_QIcj2C8qqB9ZwOI",
   authDomain: "spark-61d51.firebaseapp.com",
@@ -869,6 +891,11 @@ var FB = {
 var BOOTSTRAP_ADMIN_EMAIL = "ngudiartosinarutama@gmail.com";
 var VAPID_KEY = "BCLp9zYnmE6YeGU8g_BOla0B0wvAPIUdXfKaFZ_1Vlak7AkUWQ_8m50UkGiiaLbnE2BjyKYymiBq5V_MzYWcEvE";
 
+// ============ AI CONFIG ============
+var AI_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbymjnNKMeJG-c52-pg6HCncnoHP2N01kYcShpzsCITIkttF0i4rfl-Na33bQ0O4n0I/exec";
+var AI_TIMEOUT_MS = 12000;
+
+// ================== UTILS ==================
 function $(id){ return document.getElementById(id); }
 function show(id){ var e = $(id); if(e) e.classList.remove('hide'); }
 function hide(id){ var e = $(id); if(e) e.classList.add('hide'); }
@@ -880,40 +907,28 @@ function highlightText(text, q){
   var regex = new RegExp('(' + escReg(q) + ')', 'gi');
   return esc(text).replace(regex, '<span class="highlight">$1</span>');
 }
-
 var _deb = {};
 function debouncedRender(key, fn, delay){
   if(_deb[key]) clearTimeout(_deb[key]);
   _deb[key] = setTimeout(fn, delay || 120);
 }
-
 async function logActivity(type, data){
   if(!me || !me.uid) return;
   try {
     var ref = rtdb.ref('activity').push();
     await ref.set(Object.assign({ type: type, by: me.uid, byName: me.name, at: Date.now() }, data || {}));
-  } catch(e){ console.warn('activity log fail:', e); }
+  } catch(e){}
 }
-
 var connTimer = null;
 var wasOffline = false;
 function showConn(type, msg, dur){
-  var b = $('connBanner');
-  b.className = '';
-  b.textContent = msg;
-  b.classList.add(type, 'on');
+  var b = $('connBanner'); b.className = ''; b.textContent = msg; b.classList.add(type, 'on');
   if(connTimer) clearTimeout(connTimer);
   if(dur) connTimer = setTimeout(function(){ b.classList.remove('on'); }, dur);
 }
-window.addEventListener('online', function(){
-  if(wasOffline){ showConn('online', '✅ Kembali online', 2500); wasOffline = false; }
-});
-window.addEventListener('offline', function(){
-  showConn('offline', '📡 Tidak ada koneksi internet', 0);
-  wasOffline = true;
-});
+window.addEventListener('online', function(){ if(wasOffline){ showConn('online', '✅ Kembali online', 2500); wasOffline = false; } });
+window.addEventListener('offline', function(){ showConn('offline', '📡 Tidak ada koneksi internet', 0); wasOffline = true; });
 if(!navigator.onLine){ showConn('offline', '📡 Tidak ada koneksi internet', 0); wasOffline = true; }
-
 function toast(msg, err){
   var t = $('toast'); t.textContent = msg;
   t.style.background = err ? 'linear-gradient(135deg,#f43f5e,#e11d48)' : 'linear-gradient(135deg,#0b1220,#1e293b)';
@@ -1001,15 +1016,16 @@ function avatarHtml(user, size, fontSize, clickable){
   return '<div class="'+cls+'" style="width:'+size+'px;height:'+size+'px;font-size:'+fontSize+'px"'+dataAttr+'>'+esc(initial)+'</div>';
 }
 
+// ============ FIREBASE ============
 firebase.initializeApp(FB);
 var auth = firebase.auth();
 var rtdb = firebase.database();
 var TS = firebase.database.ServerValue.TIMESTAMP;
 auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(function(){});
-
 var messaging = null;
 try { messaging = firebase.messaging(); } catch(e){ console.warn('FCM not supported:', e); }
 
+// ============ STATE ============
 var me = null;
 var tab = 'home';
 var activeCat = 'umum';
@@ -1037,43 +1053,108 @@ var POST_NOTIF_MAX_AGE_MS = 24 * 60 * 60 * 1000;
 var notifications = [];
 var lastNotifCount = 0;
 
+// ============ AI STATE ============
+var _aiKatTimer = null;
+var _aiSearchTimer = null;
+var _aiLastSuggested = '';
+var searchQueryAi = '';
+var _aiCache = {};
+
 function isAdmin(){ return me && me.role === 'admin'; }
-function getPreferred(){ return localStorage.getItem('spark_pref_email'); }
-function setPreferred(e){ if(e) localStorage.setItem('spark_pref_email', e); }
-function clearPreferred(){ localStorage.removeItem('spark_pref_email'); }
 function getBasePath(){ return location.pathname.substring(0, location.pathname.lastIndexOf('/') + 1); }
 
 function getSeenPosts(){
   if(!me || !me.uid) return {};
-  try { return JSON.parse(localStorage.getItem('spark_seen_posts_'+me.uid) || '{}'); }
-  catch(e){ return {}; }
+  try { return JSON.parse(localStorage.getItem('spark_seen_posts_'+me.uid) || '{}'); } catch(e){ return {}; }
 }
 function markPostSeen(pid){
   if(!me || !me.uid || !pid) return;
-  var seen = getSeenPosts();
-  seen[pid] = Date.now();
+  var seen = getSeenPosts(); seen[pid] = Date.now();
   var keys = Object.keys(seen);
   if(keys.length > 500){
     keys.sort(function(a,b){ return seen[b] - seen[a]; });
-    var ns = {};
-    for(var i = 0; i < 300; i++) ns[keys[i]] = seen[keys[i]];
+    var ns = {}; for(var i = 0; i < 300; i++) ns[keys[i]] = seen[keys[i]];
     seen = ns;
   }
   try { localStorage.setItem('spark_seen_posts_'+me.uid, JSON.stringify(seen)); } catch(e){}
 }
 function markCatSeen(cat){
   if(!me || !me.uid) return;
-  var seen = getSeenPosts();
-  var changed = false;
-  feed.forEach(function(p){
-    if((p.category||'umum') === cat && p.authorId !== me.uid && !seen[p.id]){
-      seen[p.id] = Date.now(); changed = true;
-    }
-  });
+  var seen = getSeenPosts(); var changed = false;
+  feed.forEach(function(p){ if((p.category||'umum') === cat && p.authorId !== me.uid && !seen[p.id]){ seen[p.id] = Date.now(); changed = true; } });
   if(changed){ try { localStorage.setItem('spark_seen_posts_'+me.uid, JSON.stringify(seen)); } catch(e){} }
 }
 
-// ============ NOTIFIKASI TERPUSAT ============
+// ================== AI CORE ==================
+function aiEnabled(){
+  if(localStorage.getItem('spark_ai') === 'off') return false;
+  if(!AI_WEBAPP_URL || AI_WEBAPP_URL.length < 30) return false;
+  return true;
+}
+
+function _aiHash(prefix, text){
+  var s = prefix + '|' + String(text).slice(0, 300);
+  var h = 0;
+  for(var i = 0; i < s.length; i++){ h = ((h << 5) - h) + s.charCodeAt(i); h |= 0; }
+  return prefix + '_' + h;
+}
+
+async function aiCall(action, text){
+  if(!aiEnabled()) return null;
+  if(!text || !text.trim()) return null;
+  var cacheKey = _aiHash(action, text);
+  var cached = _aiCache[cacheKey];
+  if(cached && (Date.now() - cached.t) < 3600000) return cached.v;
+
+  var clientId = (me && me.uid) ? me.uid.substring(0, 20) : 'anon';
+  var url = AI_WEBAPP_URL + '?action=' + encodeURIComponent(action) +
+    '&text=' + encodeURIComponent(text.slice(0, 1500)) +
+    '&clientId=' + encodeURIComponent(clientId);
+  try {
+    var ctrl = new AbortController();
+    var to = setTimeout(function(){ ctrl.abort(); }, AI_TIMEOUT_MS);
+    var res = await fetch(url, { method: 'GET', signal: ctrl.signal });
+    clearTimeout(to);
+    if(!res.ok) throw new Error('HTTP ' + res.status);
+    var data = await res.json();
+    if(data && data.ok){
+      _aiCache[cacheKey] = { v: data.data, t: Date.now() };
+      return data.data;
+    }
+    return null;
+  } catch(e){
+    console.warn('AI call fail:', e && e.message);
+    return null;
+  }
+}
+
+async function aiModerasi(text){
+  var result = await aiCall('moderasi', text);
+  if(!result) return { aman: true, aiDown: true };
+  return result;
+}
+
+async function aiKategorisasi(text){
+  var result = await aiCall('kategorisasi', text);
+  if(!result || !result.kategori) return null;
+  return result.kategori;
+}
+
+async function aiExpandSearch(query){
+  var result = await aiCall('search', query);
+  if(!result || !result.query) return query;
+  return result.query;
+}
+
+function refreshAiToggle(){
+  var on = aiEnabled();
+  var el = $('aiToggle');
+  if(el){ el.style.background = on ? 'linear-gradient(135deg,#6366f1,#8b5cf6)' : '#cbd5e1'; }
+  var knob = $('aiKnob'); if(knob) knob.style.left = on ? '23px' : '2px';
+  var label = $('aiStatusLabel'); if(label) label.textContent = on ? 'Aktif' : 'Nonaktif';
+}
+
+// ================== NOTIF TERPUSAT ==================
 function subscribeNotifications(){
   if(!me || !me.uid) return;
   if(unsubNotifs){ try { unsubNotifs(); } catch(e){} }
@@ -1093,41 +1174,28 @@ function subscribeNotifications(){
 }
 function renderBellBadge(){
   var unread = notifications.filter(function(n){ return !n.read; }).length;
-  var badge = $('bellBadge');
-  if(!badge) return;
+  var badge = $('bellBadge'); if(!badge) return;
   if(unread > 0){
     badge.textContent = unread > 99 ? '99+' : unread;
     badge.classList.add('on');
     var bell = $('bellBtn');
-    if(bell){
-      bell.classList.add('on');
-      bell.classList.remove('shake');
-      void bell.offsetWidth;
-      bell.classList.add('shake');
-      setTimeout(function(){ bell.classList.remove('shake'); }, 700);
-    }
+    if(bell){ bell.classList.add('on'); bell.classList.remove('shake'); void bell.offsetWidth; bell.classList.add('shake'); setTimeout(function(){ bell.classList.remove('shake'); }, 700); }
   } else {
     badge.classList.remove('on');
-    var bell2 = $('bellBtn');
-    if(bell2) bell2.classList.remove('on');
+    var bell2 = $('bellBtn'); if(bell2) bell2.classList.remove('on');
   }
 }
 async function pushNotification(targetUid, type, data){
   if(!targetUid || targetUid === (me && me.uid)) return;
   try {
     await rtdb.ref('notifications/' + targetUid).push(Object.assign({
-      type: type,
-      actorId: me.uid,
-      actorName: me.name,
-      actorAvatar: me.avatarBase64 || null,
-      createdAt: TS,
-      read: false
+      type: type, actorId: me.uid, actorName: me.name,
+      actorAvatar: me.avatarBase64 || null, createdAt: TS, read: false
     }, data || {}));
   } catch(e){ console.warn('push notif fail:', e); }
 }
 function renderNotifPanel(){
-  var el = $('notifContent');
-  if(!el) return;
+  var el = $('notifContent'); if(!el) return;
   var unread = notifications.filter(function(n){ return !n.read; }).length;
   $('notifSubtitle').textContent = unread > 0 ? unread + ' belum dibaca' : 'Semua sudah dibaca';
   if(!notifications.length){
@@ -1144,11 +1212,9 @@ function renderNotifPanel(){
     else if(n.type === 'reply') title = '<b>'+esc(n.actorName||'Warga')+'</b> juga berkomentar di postingan yang Anda ikuti';
     else if(n.type === 'pin') title = '<b>'+esc(n.actorName||'Pengurus')+'</b> menyematkan pengumuman penting';
     else title = '<b>'+esc(n.actorName||'Warga')+'</b> membuat postingan baru';
-
     var snippet = '';
     if(n.text) snippet = '💬 ' + n.text;
     else if(n.postSnippet) snippet = n.postSnippet;
-
     html += '<div class="notif-item'+(n.read?'':' unread')+'" data-nid="'+esc(n.id)+'" data-pid="'+esc(n.postId||'')+'">';
     html += '<div class="notif-icon '+iconCls+'">'+iconEmo+'</div>';
     html += '<div class="notif-body">';
@@ -1160,16 +1226,10 @@ function renderNotifPanel(){
   el.innerHTML = html;
   el.querySelectorAll('[data-nid]').forEach(function(item){
     item.onclick = async function(){
-      var nid = item.dataset.nid;
-      var pid = item.dataset.pid;
+      var nid = item.dataset.nid, pid = item.dataset.pid;
       var n = notifications.filter(function(x){ return x.id === nid; })[0];
-      if(n && !n.read){
-        try { await rtdb.ref('notifications/' + me.uid + '/' + nid + '/read').set(true); } catch(e){}
-      }
-      if(pid){
-        $('notifOv').classList.remove('on');
-        setTimeout(function(){ openPostDetail(pid); }, 250);
-      }
+      if(n && !n.read){ try { await rtdb.ref('notifications/' + me.uid + '/' + nid + '/read').set(true); } catch(e){} }
+      if(pid){ $('notifOv').classList.remove('on'); setTimeout(function(){ openPostDetail(pid); }, 250); }
     };
   });
 }
@@ -1181,14 +1241,13 @@ async function markAllNotifsRead(){
     var updates = {};
     unread.forEach(function(n){ updates['notifications/' + me.uid + '/' + n.id + '/read'] = true; });
     await rtdb.ref().update(updates);
-    loader(false);
-    toast('✓ Semua ditandai dibaca');
+    loader(false); toast('✓ Semua ditandai dibaca');
   } catch(e){ loader(false); toast('Gagal', true); }
 }
 function openNotifPanel(){ $('notifOv').classList.add('on'); renderNotifPanel(); }
 function closeNotifPanel(){ $('notifOv').classList.remove('on'); }
 
-// ============ LEGACY NOTIF STATE (untuk badge 24 jam di grid) ============
+// ============ LEGACY 24H BADGE ============
 function loadNotifState(){
   if(!me || !me.uid) return;
   try {
@@ -1202,10 +1261,7 @@ function saveNotifState(){
   try {
     localStorage.setItem('spark_likers_' + me.uid, JSON.stringify(seenLikers));
     localStorage.setItem('spark_comments_' + me.uid, JSON.stringify(seenComments));
-    if(!notifInitDone){
-      localStorage.setItem('spark_notif_init_' + me.uid, '1');
-      notifInitDone = true;
-    }
+    if(!notifInitDone){ localStorage.setItem('spark_notif_init_' + me.uid, '1'); notifInitDone = true; }
   } catch(e){}
 }
 function notifyPostActivity(title, body, postId){
@@ -1226,13 +1282,9 @@ function getUnseenCount(p){
   var likedBy = p.likedBy || {};
   var seenL = seenLikers[p.id] || {};
   var unseenLikes = 0;
-  Object.keys(likedBy).forEach(function(uid){
-    if(uid === me.uid) return;
-    if(!seenL[uid]) unseenLikes++;
-  });
+  Object.keys(likedBy).forEach(function(uid){ if(uid === me.uid) return; if(!seenL[uid]) unseenLikes++; });
   var seenC = Object.keys(seenComments[p.id] || {}).length;
-  var totalC = p.commentCount || 0;
-  var unseenComments = Math.max(0, totalC - seenC);
+  var unseenComments = Math.max(0, (p.commentCount || 0) - seenC);
   return unseenLikes + unseenComments;
 }
 function markPostActivitySeen(p){
@@ -1258,26 +1310,13 @@ function checkLikeNotifications(silent){
       if(seenLikers[p.id][uid]) return;
       seenLikers[p.id][uid] = Date.now();
       changed = true;
-      if(!silent){
-        var u = users.filter(function(x){ return x.uid === uid; })[0];
-        var name = u ? (u.name || 'Warga') : 'Warga';
-        notifyPostActivity('❤️ Suka Baru', name + ' menyukai postingan Anda', p.id);
-      }
     });
   });
-  if(changed){
-    saveNotifState();
-    debouncedRender('grid-refresh', function(){
-      if(tab === 'category') renderCategory();
-      if(tab === 'home') renderHome();
-    }, 250);
-  }
+  if(changed){ saveNotifState(); debouncedRender('grid-refresh', function(){ if(tab === 'category') renderCategory(); if(tab === 'home') renderHome(); }, 250); }
 }
 async function checkCommentNotifications(silent){
   if(!me || !me.uid) return;
-  var myPosts = feed.filter(function(p){
-    return p.authorId === me.uid && (Date.now() - (p.createdAt || 0)) < POST_NOTIF_MAX_AGE_MS;
-  }).slice(0, 5);
+  var myPosts = feed.filter(function(p){ return p.authorId === me.uid && (Date.now() - (p.createdAt || 0)) < POST_NOTIF_MAX_AGE_MS; }).slice(0, 5);
   var changed = false;
   for(var i = 0; i < myPosts.length; i++){
     var p = myPosts[i];
@@ -1285,32 +1324,22 @@ async function checkCommentNotifications(silent){
       var snap = await rtdb.ref('comments/' + p.id).orderByChild('createdAt').limitToLast(30).once('value');
       if(!seenComments[p.id]) seenComments[p.id] = {};
       snap.forEach(function(c){
-        var cid = c.key;
-        var data = c.val() || {};
+        var cid = c.key, data = c.val() || {};
         if(data.authorId === me.uid) return;
         if(seenComments[p.id][cid]) return;
-        seenComments[p.id][cid] = Date.now();
-        changed = true;
+        seenComments[p.id][cid] = Date.now(); changed = true;
       });
     } catch(e){}
   }
-  if(changed){
-    saveNotifState();
-    debouncedRender('grid-refresh', function(){
-      if(tab === 'category') renderCategory();
-      if(tab === 'home') renderHome();
-    }, 250);
-  }
+  if(changed){ saveNotifState(); debouncedRender('grid-refresh', function(){ if(tab === 'category') renderCategory(); if(tab === 'home') renderHome(); }, 250); }
 }
 function startCommentNotifPolling(){
   if(commentNotifTimer) clearInterval(commentNotifTimer);
   setTimeout(function(){ if(feed.length) checkCommentNotifications(true); }, 6000);
-  commentNotifTimer = setInterval(function(){
-    if(document.hidden) return;
-    if(feed.length) checkCommentNotifications(true);
-  }, 30000);
+  commentNotifTimer = setInterval(function(){ if(document.hidden) return; if(feed.length) checkCommentNotifications(true); }, 30000);
 }
 
+// ============ THEME, SOUND, FCM ============
 function applyTheme(t){
   document.documentElement.classList.toggle('dark', t==='dark');
   document.body.classList.toggle('dark', t==='dark');
@@ -1319,14 +1348,12 @@ function applyTheme(t){
   var meta = document.querySelector('meta[name=theme-color]');
   if(meta) meta.content = t==='dark' ? '#070b14' : '#f5f7fb';
 }
-var savedTheme = localStorage.getItem('spark_theme') || 'light';
-applyTheme(savedTheme);
+applyTheme(localStorage.getItem('spark_theme') || 'light');
 $('themeBtn').onclick = function(){
   var cur = localStorage.getItem('spark_theme') || 'light';
   var nxt = cur === 'light' ? 'dark' : 'light';
   localStorage.setItem('spark_theme', nxt); applyTheme(nxt);
 };
-
 function refreshSound(){
   var on = localStorage.getItem('spark_sound') !== 'off';
   $('soundToggle').style.background = on ? 'linear-gradient(135deg,#6366f1,#8b5cf6)' : '#cbd5e1';
@@ -1351,43 +1378,28 @@ function playChime(){
       o.start(start); o.stop(start + dur + 0.02);
     }
     var t = ctx.currentTime;
-    tone(1046.5, t, 0.18, 0.14);
-    tone(880, t + 0.10, 0.20, 0.13);
-    tone(659.25, t + 0.22, 0.35, 0.12);
+    tone(1046.5, t, 0.18, 0.14); tone(880, t + 0.10, 0.20, 0.13); tone(659.25, t + 0.22, 0.35, 0.12);
   } catch(e){}
 }
-
 function showLoginLoading(){ $('loginLoading').classList.add('on'); }
 function hideLoginLoading(){ $('loginLoading').classList.remove('on'); }
-
 function initFCM(){
   if(!messaging) return toast('Browser tidak mendukung FCM', true);
   if(!('Notification' in window)) return toast('Browser tidak mendukung notifikasi', true);
   if(!('serviceWorker' in navigator)) return toast('Browser tidak mendukung Service Worker', true);
   return Notification.requestPermission().then(function(permission){
     if(permission !== 'granted'){ toast('Izin notifikasi ditolak', true); return; }
-    var basePath = getBasePath();
-    var swUrl = basePath + 'firebase-messaging-sw.js';
-    return navigator.serviceWorker.register(swUrl, { scope: basePath }).then(function(){
-      return navigator.serviceWorker.ready;
-    }).then(function(reg){
-      return messaging.getToken({ vapidKey: VAPID_KEY, serviceWorkerRegistration: reg });
-    }).then(function(token){
-      if(!token){ toast('Gagal dapat token FCM', true); return; }
-      me.fcmToken = token;
-      return rtdb.ref('users/' + me.uid).update({ fcmToken: token, fcmUpdatedAt: Date.now() }).then(function(){
-        toast('Notifikasi Push aktif! 🎉');
+    var basePath = getBasePath(); var swUrl = basePath + 'firebase-messaging-sw.js';
+    return navigator.serviceWorker.register(swUrl, { scope: basePath }).then(function(){ return navigator.serviceWorker.ready; })
+      .then(function(reg){ return messaging.getToken({ vapidKey: VAPID_KEY, serviceWorkerRegistration: reg }); })
+      .then(function(token){
+        if(!token){ toast('Gagal dapat token FCM', true); return; }
+        me.fcmToken = token;
+        return rtdb.ref('users/' + me.uid).update({ fcmToken: token, fcmUpdatedAt: Date.now() }).then(function(){ toast('Notifikasi Push aktif! 🎉'); });
       });
-    });
-  }).catch(function(e){
-    var msg = (e && e.message) ? e.message.slice(0, 60) : 'Unknown error';
-    toast('Gagal: ' + msg, true);
-  });
+  }).catch(function(e){ toast('Gagal: ' + ((e && e.message) || 'Unknown').slice(0, 60), true); });
 }
-$('notifBtn').onclick = function(){
-  if(!me || !me.uid) return toast('Login dulu', true);
-  initFCM();
-};
+$('notifBtn').onclick = function(){ if(!me || !me.uid) return toast('Login dulu', true); initFCM(); };
 if(messaging){
   messaging.onMessage(function(payload){
     var title = (payload.notification && payload.notification.title) || 'RT09 RW04';
@@ -1398,27 +1410,22 @@ if(messaging){
   });
 }
 
+// ============ TABS ============
 function setTab(t){
   tab = t;
   ['home','category','post','warga','voting','profile'].forEach(function(x){
-    var el = $('view-'+x);
-    if(!el) return;
+    var el = $('view-'+x); if(!el) return;
     if(x === 'post'){ el.classList.toggle('on', x === t); el.classList.toggle('hide', x !== t); }
     else el.classList.toggle('hide', x !== t);
   });
   $('main').style.overflow = (t === 'post') ? 'hidden' : '';
   $('backBtn').classList.toggle('hide', t !== 'category' && t !== 'post');
   $('fab').classList.toggle('hide', t === 'warga' || t === 'voting' || t === 'profile' || t === 'post');
-  document.querySelectorAll('.nav-btn').forEach(function(b){
-    b.classList.toggle('on', b.dataset.tab === t);
-  });
+  document.querySelectorAll('.nav-btn').forEach(function(b){ b.classList.toggle('on', b.dataset.tab === t); });
   var titles = {
-    home:['RT09RW04','Candisari Wonotingal'],
-    category:['','Semua postingan'],
-    post:['Postingan','Detail & komentar'],
-    warga:['Warga','Daftar warga terverifikasi'],
-    voting:['Voting','Suara warga RT'],
-    profile:['Akun Saya','Status & pengaturan']
+    home:['RT09RW04','Candisari Wonotingal'], category:['','Semua postingan'],
+    post:['Postingan','Detail & komentar'], warga:['Warga','Daftar warga terverifikasi'],
+    voting:['Voting','Suara warga RT'], profile:['Akun Saya','Status & pengaturan']
   };
   if(t === 'category'){ titles.category[0] = ({umum:'Umum',informasi:'Informasi',galeri:'Galeri'})[activeCat]; }
   $('topTitle').textContent = titles[t] ? titles[t][0] : 'RT09RW04';
@@ -1433,11 +1440,11 @@ function setTab(t){
 document.querySelectorAll('.nav-btn').forEach(function(b){ b.onclick = function(){ setTab(b.dataset.tab); }; });
 $('backBtn').onclick = function(){ setTab('home'); };
 $('headerAvatarBtn').onclick = function(){ setTab('profile'); };
-
 $('catTileUmum').onclick = function(){ activeCat = 'umum'; setTab('category'); };
 $('catTileInformasi').onclick = function(){ activeCat = 'informasi'; setTab('category'); };
 $('catTileGaleri').onclick = function(){ activeCat = 'galeri'; setTab('category'); };
 
+// ============ RULES MODAL ============
 function openRules(){ $('rulesModal').classList.add('on'); }
 function closeRules(){ $('rulesModal').classList.remove('on'); }
 $('rulesClose').onclick = closeRules;
@@ -1448,16 +1455,28 @@ function maybeShowRulesFirstTime(){
   setTimeout(function(){ openRules(); localStorage.setItem('spark_rules_seen', '1'); }, 1500);
 }
 
-// ================== SEARCH ==================
+// ============ SEARCH ============
 var searchScope = 'all';
 var searchQuery = '';
 function openSearch(){ $('searchOv').classList.add('on'); setTimeout(function(){ $('searchInput').focus(); }, 200); }
-function closeSearch(){ $('searchOv').classList.remove('on'); $('searchInput').value = ''; searchQuery = ''; renderSearchResults(); }
+function closeSearch(){ $('searchOv').classList.remove('on'); $('searchInput').value = ''; searchQuery = ''; searchQueryAi = ''; renderSearchResults(); }
 $('searchBtn').onclick = openSearch;
 $('searchClose').onclick = closeSearch;
+
 $('searchInput').addEventListener('input', function(e){
   searchQuery = e.target.value.trim().toLowerCase();
+  searchQueryAi = '';
   debouncedRender('search', renderSearchResults, 150);
+  if(aiEnabled() && searchQuery.length > 4){
+    clearTimeout(_aiSearchTimer);
+    _aiSearchTimer = setTimeout(async function(){
+      var expanded = await aiExpandSearch(searchQuery);
+      if(expanded && expanded !== searchQuery && expanded.length > 2){
+        searchQueryAi = expanded;
+        renderSearchResults();
+      }
+    }, 1200);
+  }
 });
 document.querySelectorAll('#searchTabs .search-tab').forEach(function(b){
   b.onclick = function(){
@@ -1466,6 +1485,7 @@ document.querySelectorAll('#searchTabs .search-tab').forEach(function(b){
     renderSearchResults();
   };
 });
+
 function renderSearchResults(){
   var el = $('searchResults');
   var q = searchQuery;
@@ -1473,26 +1493,32 @@ function renderSearchResults(){
     el.innerHTML = '<div class="empty-state" style="padding-top:40px"><div class="em">🔍</div><div class="title">Cari sesuatu</div><div class="sub">Cari postingan, warga, atau topik di komunitas RT</div></div>';
     return;
   }
+  var keywords = q.split(/\s+/).filter(function(k){ return k.length > 1; });
+  if(searchQueryAi){
+    var extra = searchQueryAi.split(/\s+/).filter(function(k){ return k.length > 1; });
+    extra.forEach(function(k){ if(keywords.indexOf(k) === -1) keywords.push(k); });
+  }
   var results = [];
   if(searchScope === 'all' || searchScope === 'umum' || searchScope === 'informasi' || searchScope === 'galeri'){
     feed.forEach(function(p){
       if(searchScope !== 'all' && (p.category||'umum') !== searchScope) return;
       var hay = ((p.text||'') + ' ' + (p.authorName||'') + ' ' + (p.eventLocation||'')).toLowerCase();
-      if(hay.indexOf(q) > -1) results.push({ type: 'post', item: p });
+      if(keywords.some(function(k){ return hay.indexOf(k) > -1; })) results.push({ type: 'post', item: p });
     });
   }
   if(searchScope === 'all' || searchScope === 'warga'){
     users.forEach(function(u){
       if(!(u.verified || u.role === 'admin')) return;
       var hay = ((u.name||'') + ' ' + (u.blok||'') + ' ' + (u.email||'')).toLowerCase();
-      if(hay.indexOf(q) > -1) results.push({ type: 'user', item: u });
+      if(keywords.some(function(k){ return hay.indexOf(k) > -1; })) results.push({ type: 'user', item: u });
     });
   }
   if(!results.length){
     el.innerHTML = '<div class="empty-state" style="padding-top:40px"><div class="em">🤷</div><div class="title">Tidak ditemukan</div><div class="sub">Coba kata kunci lain atau ubah filter kategori</div></div>';
     return;
   }
-  var html = '<div class="search-count">📊 '+results.length+' hasil ditemukan untuk "'+esc(q)+'"</div>';
+  var aiNote = (searchQueryAi && searchQueryAi !== q) ? ' <span class="ai-search-note">🤖 "' + esc(searchQueryAi) + '"</span>' : '';
+  var html = '<div class="search-count">📊 '+results.length+' hasil untuk "'+esc(q)+'"'+aiNote+'</div>';
   var userRes = results.filter(function(r){ return r.type === 'user'; });
   var postRes = results.filter(function(r){ return r.type === 'post'; });
   if(userRes.length){
@@ -1505,18 +1531,14 @@ function renderSearchResults(){
     });
   }
   if(postRes.length){
-    html += '<div style="font-size:12px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.12em;margin:16px 2px 10px">📝 Postingan ('+postRes.length+')</div>';
-    html += '<div class="grid2">';
+    html += '<div style="font-size:12px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.12em;margin:16px 2px 10px">📝 Postingan ('+postRes.length+')</div><div class="grid2">';
     postRes.forEach(function(r){ html += renderSearchPostCard(r.item, q); });
     html += '</div>';
   }
   el.innerHTML = html;
   el.querySelectorAll('[data-open-uid]').forEach(function(e){ e.onclick = function(){ viewUserProfile(e.dataset.openUid); }; });
   el.querySelectorAll('[data-search-pid]').forEach(function(e){
-    e.onclick = function(){
-      closeSearch();
-      setTimeout(function(){ openPostDetail(e.dataset.searchPid); }, 200);
-    };
+    e.onclick = function(){ closeSearch(); setTimeout(function(){ openPostDetail(e.dataset.searchPid); }, 200); };
   });
 }
 function renderSearchPostCard(p, q){
@@ -1525,17 +1547,13 @@ function renderSearchPostCard(p, q){
   var firstImg = (p.images && p.images.length) ? p.images[0] : null;
   var hasText = p.text && p.text.trim().length > 0;
   var preview = hasText ? p.text.replace(/\s+/g,' ').trim() : (firstImg ? 'Foto tanpa keterangan' : 'Postingan');
-  var html = '<div class="post-card" data-search-pid="'+p.id+'">';
-  html += '<div class="strip '+stripCls+'"></div>';
-  if(firstImg) html += '<div class="thumb"><img src="data:image/jpeg;base64,'+firstImg+'" loading="lazy" decoding="async"/></div>';
-  html += '<div class="body">';
-  html += '<div class="title">'+highlightText(preview, q)+'</div>';
-  html += '<div class="meta"><span>'+({umum:'💬',informasi:'📢',galeri:'📷'})[cat]+' '+esc(p.authorName||'')+'</span><span style="margin-left:auto">'+timeAgo(p.createdAt)+'</span></div>';
-  html += '</div></div>';
-  return html;
+  return '<div class="post-card" data-search-pid="'+p.id+'"><div class="strip '+stripCls+'"></div>'+
+    (firstImg ? '<div class="thumb"><img src="data:image/jpeg;base64,'+firstImg+'" loading="lazy" decoding="async"/></div>' : '')+
+    '<div class="body"><div class="title">'+highlightText(preview, q)+'</div>'+
+    '<div class="meta"><span>'+({umum:'💬',informasi:'📢',galeri:'📷'})[cat]+' '+esc(p.authorName||'')+'</span><span style="margin-left:auto">'+timeAgo(p.createdAt)+'</span></div></div></div>';
 }
 
-// ================== USER PROFILE ==================
+// ============ USER PROFILE VIEW ============
 function viewUserProfile(uid){
   if(!uid) return;
   var u = users.filter(function(x){ return x.uid === uid || x.id === uid; })[0];
@@ -1546,10 +1564,8 @@ function viewUserProfile(uid){
   }
   var userPosts = feed.filter(function(p){ return p.authorId === uid; }).sort(function(a,b){ return b.createdAt - a.createdAt; });
   var isMe2 = uid === (me && me.uid);
-  var html = '';
-  html += '<div style="text-align:center;margin-bottom:22px">';
-  html += avatarHtml(u, 100, 38);
-  html += '<div style="font-size:19px;font-weight:900;margin-top:14px;letter-spacing:-.02em;word-break:break-word">'+esc(u.name||'Warga')+'</div>';
+  var html = '<div style="text-align:center;margin-bottom:22px">'+avatarHtml(u, 100, 38)+
+    '<div style="font-size:19px;font-weight:900;margin-top:14px;letter-spacing:-.02em;word-break:break-word">'+esc(u.name||'Warga')+'</div>';
   if(u.blok) html += '<div style="font-size:13px;color:#64748b;margin-top:5px;font-weight:600">🏠 Blok '+esc(u.blok)+'</div>';
   html += '<div style="display:flex;gap:6px;justify-content:center;margin-top:10px">';
   html += (u.role === 'admin') ? '<span class="badge-pill pill-blue">🛡️ Pengurus</span>' : '<span class="badge-pill pill-gray">Warga</span>';
@@ -1560,28 +1576,19 @@ function viewUserProfile(uid){
   html += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-bottom:22px">';
   html += '<div class="card" style="text-align:center;padding:13px 4px"><div style="font-size:20px;font-weight:900;letter-spacing:-.02em">'+userPosts.length+'</div><div style="font-size:11.5px;color:#94a3b8;margin-top:3px;font-weight:700">Postingan</div></div>';
   html += '<div class="card" style="text-align:center;padding:13px 4px"><div style="font-size:20px;font-weight:900;letter-spacing:-.02em">'+totalLikes+'</div><div style="font-size:11.5px;color:#94a3b8;margin-top:3px;font-weight:700">Suka</div></div>';
-  html += '<div class="card" style="text-align:center;padding:13px 4px"><div style="font-size:20px;font-weight:900;letter-spacing:-.02em">'+totalComments+'</div><div style="font-size:11.5px;color:#94a3b8;margin-top:3px;font-weight:700">Komentar</div></div>';
-  html += '</div>';
+  html += '<div class="card" style="text-align:center;padding:13px 4px"><div style="font-size:20px;font-weight:900;letter-spacing:-.02em">'+totalComments+'</div><div style="font-size:11.5px;color:#94a3b8;margin-top:3px;font-weight:700">Komentar</div></div></div>';
   html += '<div style="font-size:12px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.12em;margin:0 2px 11px">📝 Postingan '+(isMe2?'Saya':'')+'</div>';
-  if(!userPosts.length){
-    html += '<div class="empty-state" style="padding:30px 20px"><div class="em">📭</div><div class="title">Belum ada postingan</div></div>';
-  } else {
-    html += '<div class="grid2">';
-    userPosts.forEach(function(p){ html += renderPostCard(p); });
-    html += '</div>';
-  }
+  if(!userPosts.length){ html += '<div class="empty-state" style="padding:30px 20px"><div class="em">📭</div><div class="title">Belum ada postingan</div></div>'; }
+  else { html += '<div class="grid2">'; userPosts.forEach(function(p){ html += renderPostCard(p); }); html += '</div>'; }
   $('userProfileContent').innerHTML = html;
   $('userProfileOv').classList.add('on');
   $('userProfileContent').querySelectorAll('[data-pid]').forEach(function(el){
-    el.onclick = function(){
-      $('userProfileOv').classList.remove('on');
-      setTimeout(function(){ openPostDetail(el.dataset.pid); }, 200);
-    };
+    el.onclick = function(){ $('userProfileOv').classList.remove('on'); setTimeout(function(){ openPostDetail(el.dataset.pid); }, 200); };
   });
 }
 $('upBack').onclick = function(){ $('userProfileOv').classList.remove('on'); };
 
-// ================== SHARE ==================
+// ============ SHARE ============
 function sharePost(p){
   var baseUrl = location.origin + location.pathname;
   var postUrl = baseUrl + '#post=' + p.id;
@@ -1593,12 +1600,10 @@ function sharePost(p){
   var message = catEmoji + ' *' + catName + ' RT09/RW04*\n\n' + snippet + '\n\n👤 ' + (p.authorName || 'Warga') + '\n🔗 ' + postUrl;
   if(navigator.share){
     navigator.share({ title: catEmoji + ' ' + catName + ' RT09/RW04', text: message, url: postUrl }).catch(function(){});
-  } else {
-    window.open('https://wa.me/?text=' + encodeURIComponent(message), '_blank');
-  }
+  } else { window.open('https://wa.me/?text=' + encodeURIComponent(message), '_blank'); }
 }
 
-// ================== REPORT ==================
+// ============ REPORT ============
 var reportReasons = [
   { id: 'spam', icon: '🚫', name: 'Spam / Iklan', desc: 'Promosi berulang, bukan konten warga' },
   { id: 'sara', icon: '⚠️', name: 'SARA / Ujaran Kebencian', desc: 'Menyerang suku, agama, ras, atau golongan' },
@@ -1620,10 +1625,8 @@ function openReportModal(p){
     el.onclick = function(){
       selectedReason = el.dataset.reason;
       document.querySelectorAll('#modalBody .report-opt').forEach(function(x){ x.classList.toggle('sel', x === el); });
-      $('reportSubmit').disabled = false;
-      $('reportSubmit').style.opacity = '1';
-      if(selectedReason === 'other') $('reportNoteWrap').classList.remove('hide');
-      else $('reportNoteWrap').classList.add('hide');
+      $('reportSubmit').disabled = false; $('reportSubmit').style.opacity = '1';
+      if(selectedReason === 'other') $('reportNoteWrap').classList.remove('hide'); else $('reportNoteWrap').classList.add('hide');
     };
   });
   $('reportSubmit').onclick = async function(){
@@ -1650,9 +1653,7 @@ function subscribeReports(){
     reports = [];
     snap.forEach(function(child){
       var pid = child.key;
-      child.forEach(function(c){
-        reports.push(Object.assign({ id: c.key, postId: pid }, c.val() || {}));
-      });
+      child.forEach(function(c){ reports.push(Object.assign({ id: c.key, postId: pid }, c.val() || {})); });
     });
     var pending = reports.filter(function(r){ return r.status === 'pending'; }).length;
     var badge = $('reportCountBadge');
@@ -1661,10 +1662,9 @@ function subscribeReports(){
   unsubReports = function(){ ref.off('value', listener); };
 }
 
-// ================== BADGE / HOME ==================
+// ============ BADGE/HOME ============
 function computeCatStats(cat){
-  var seen = getSeenPosts();
-  var newPosts = 0;
+  var seen = getSeenPosts(); var newPosts = 0;
   feed.forEach(function(p){
     if((p.category||'umum') !== cat) return;
     if(p.authorId === me.uid) return;
@@ -1677,20 +1677,10 @@ function updateAllBadges(){
   if(!me) return;
   var totalAll = 0;
   ['umum','informasi','galeri'].forEach(function(cat){
-    var s = computeCatStats(cat);
-    totalAll += s.newPosts;
-    var badge = $('badge'+cap(cat));
-    var detail = $('detail'+cap(cat));
-    if(badge){
-      if(s.newPosts > 0){ badge.textContent = s.newPosts > 99 ? '99+' : s.newPosts; badge.classList.add('on'); }
-      else badge.classList.remove('on');
-    }
-    if(detail){
-      if(s.newPosts > 0){
-        detail.innerHTML = '<span class="chip">✨ '+s.newPosts+' baru</span>';
-        detail.classList.remove('hide');
-      } else { detail.innerHTML = ''; detail.classList.add('hide'); }
-    }
+    var s = computeCatStats(cat); totalAll += s.newPosts;
+    var badge = $('badge'+cap(cat)), detail = $('detail'+cap(cat));
+    if(badge){ if(s.newPosts > 0){ badge.textContent = s.newPosts > 99 ? '99+' : s.newPosts; badge.classList.add('on'); } else badge.classList.remove('on'); }
+    if(detail){ if(s.newPosts > 0){ detail.innerHTML = '<span class="chip">✨ '+s.newPosts+' baru</span>'; detail.classList.remove('hide'); } else { detail.innerHTML = ''; detail.classList.add('hide'); } }
   });
   var hb = $('navBadgeHome');
   if(hb){ if(totalAll > 0){ hb.textContent = totalAll > 99 ? '99+' : totalAll; hb.classList.add('on'); } else hb.classList.remove('on'); }
@@ -1715,10 +1705,7 @@ function renderHome(){
     cdTile.classList.remove('hide');
     cdTile.dataset.cd = nextEvent.eventDate;
     cdTile.dataset.eventName = (nextEvent.text || 'Kegiatan').replace(/\s+/g, ' ').trim().slice(0, 60);
-  } else {
-    cdTile.classList.add('hide');
-    cdTile.innerHTML = ''; cdTile.dataset.cd = ''; cdTile.dataset.eventName = '';
-  }
+  } else { cdTile.classList.add('hide'); cdTile.innerHTML = ''; cdTile.dataset.cd = ''; cdTile.dataset.eventName = ''; }
   startMiniCountdowns();
   var pinned = feed.filter(function(p){ return p.pinned; }).sort(function(a,b){ return b.createdAt - a.createdAt; });
   var pinSec = $('pinnedSection');
@@ -1726,12 +1713,9 @@ function renderHome(){
     pinSec.classList.remove('hide');
     $('pinnedCount').textContent = pinned.length + ' item';
     $('pinnedList').innerHTML = pinned.slice(0, 5).map(function(p){
-      var html = '<div class="pin-card" data-pid="'+p.id+'">';
-      html += '<div class="pin-badge">📌 PENTING</div>';
-      html += '<div class="pin-title">'+esc(p.text || '[Foto]')+'</div>';
-      html += '<div class="pin-meta">'+avatarHtml({name:p.authorName, photoURL:p.authorPhoto, avatarBase64:p.authorAvatarBase64, uid: p.authorId}, 20, 9, false)+'<span style="font-weight:800">'+esc(p.authorName)+'</span><span>·</span><span>'+timeAgo(p.createdAt)+'</span></div>';
-      html += '</div>';
-      return html;
+      return '<div class="pin-card" data-pid="'+p.id+'"><div class="pin-badge">📌 PENTING</div>'+
+        '<div class="pin-title">'+esc(p.text || '[Foto]')+'</div>'+
+        '<div class="pin-meta">'+avatarHtml({name:p.authorName, photoURL:p.authorPhoto, avatarBase64:p.authorAvatarBase64, uid: p.authorId}, 20, 9, false)+'<span style="font-weight:800">'+esc(p.authorName)+'</span><span>·</span><span>'+timeAgo(p.createdAt)+'</span></div></div>';
     }).join('');
     $('pinnedList').querySelectorAll('[data-pid]').forEach(function(c){ c.onclick = function(){ openPostDetail(c.dataset.pid); }; });
   } else pinSec.classList.add('hide');
@@ -1749,17 +1733,14 @@ function renderPostCard(p){
   var seen = getSeenPosts();
   var showNew = !isMine && !seen[p.id] && !p.pinned;
   var likeCount = toCount(p.likedBy);
-
-  var html = '<div class="post-card" data-pid="'+p.id+'">';
-  html += '<div class="strip '+stripCls+'"></div>';
+  var html = '<div class="post-card" data-pid="'+p.id+'"><div class="strip '+stripCls+'"></div>';
   if(showNew) html += '<div class="post-new-dot" title="Baru"></div>';
   if(p.pinned) html += '<div class="pin-tag">📌 PIN</div>';
   var unseen = getUnseenCount(p);
   if(unseen > 0) html += '<div class="notif-badge on">' + (unseen > 99 ? '99+' : unseen) + '</div>';
   if(hasEvent) html += '<span style="position:absolute;top:8px;right:8px;background:#10b981;color:white;font-size:10px;font-weight:800;padding:4px 9px;border-radius:7px;z-index:2;box-shadow:0 2px 6px -1px rgba(16,185,129,.5);letter-spacing:.03em">📅 Kegiatan</span>';
   if(firstImg) html += '<div class="thumb"><img src="data:image/jpeg;base64,'+firstImg+'" loading="lazy" decoding="async"/></div>';
-  html += '<div class="body">';
-  html += '<div class="title">'+esc(preview)+'</div>';
+  html += '<div class="body"><div class="title">'+esc(preview)+'</div>';
   if(hasEvent){
     var diff = p.eventDate - Date.now();
     if(diff <= 0){ html += '<div class="cd-mini"><div class="cd-mini-done">Kegiatan sudah dimulai</div></div>'; }
@@ -1772,10 +1753,8 @@ function renderPostCard(p){
   html += (p.commentCount ? '<span>💬 '+p.commentCount+'</span>' : '');
   html += (likeCount ? '<span>❤️ '+likeCount+'</span>' : '');
   html += (totalImgs ? '<span>📷 '+totalImgs+'</span>' : '');
-  html += '<span style="margin-left:auto">'+timeAgo(p.createdAt)+'</span>';
-  html += '</div></div>';
-  html += '<div class="foot">'+avatarHtml({name:p.authorName, photoURL:p.authorPhoto, avatarBase64:p.authorAvatarBase64, uid: p.authorId}, 20, 9, false)+'<span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(p.authorName)+'</span></div>';
-  html += '</div>';
+  html += '<span style="margin-left:auto">'+timeAgo(p.createdAt)+'</span></div></div>';
+  html += '<div class="foot">'+avatarHtml({name:p.authorName, photoURL:p.authorPhoto, avatarBase64:p.authorAvatarBase64, uid: p.authorId}, 20, 9, false)+'<span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(p.authorName)+'</span></div></div>';
   return html;
 }
 function startMiniCountdowns(){
@@ -1783,8 +1762,7 @@ function startMiniCountdowns(){
   function tick(){
     if(document.hidden) return;
     document.querySelectorAll('[data-cd]').forEach(function(el){
-      var ts = parseInt(el.dataset.cd, 10);
-      if(!ts) return;
+      var ts = parseInt(el.dataset.cd, 10); if(!ts) return;
       var diff = ts - Date.now();
       var isHomeWidget = (el.id === 'homeInfoCountdown');
       if(diff <= 0){
@@ -1796,9 +1774,8 @@ function startMiniCountdowns(){
       var dd = (d<10?'0':'')+d, hh = (h<10?'0':'')+h, mm = (m<10?'0':'')+m, ss = (s<10?'0':'')+s;
       if(isHomeWidget){
         var evName = el.dataset.eventName || 'Kegiatan';
-        var html = '<div style="display:flex;align-items:center;gap:6px;margin-bottom:9px;font-size:12px;font-weight:800;color:rgba(255,255,255,.96)"><span>📅</span><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0">'+esc(evName)+'</span></div>';
-        html += '<div class="cd-glass" style="display:flex;gap:5px"><div class="cd-box"><div class="n">'+dd+'</div><div class="l">Hari</div></div><div class="cd-box"><div class="n">'+hh+'</div><div class="l">Jam</div></div><div class="cd-box"><div class="n">'+mm+'</div><div class="l">Mnt</div></div><div class="cd-box"><div class="n">'+ss+'</div><div class="l">Dtk</div></div></div>';
-        el.innerHTML = html;
+        el.innerHTML = '<div style="display:flex;align-items:center;gap:6px;margin-bottom:9px;font-size:12px;font-weight:800;color:rgba(255,255,255,.96)"><span>📅</span><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0">'+esc(evName)+'</span></div>'+
+        '<div class="cd-glass" style="display:flex;gap:5px"><div class="cd-box"><div class="n">'+dd+'</div><div class="l">Hari</div></div><div class="cd-box"><div class="n">'+hh+'</div><div class="l">Jam</div></div><div class="cd-box"><div class="n">'+mm+'</div><div class="l">Mnt</div></div><div class="cd-box"><div class="n">'+ss+'</div><div class="l">Dtk</div></div></div>';
       } else {
         el.innerHTML = '<div class="cd-m-box"><div class="n">'+d+'</div><div class="l">Hari</div></div><div class="cd-m-box"><div class="n">'+h+'</div><div class="l">Jam</div></div><div class="cd-m-box"><div class="n">'+m+'</div><div class="l">Mnt</div></div><div class="cd-m-box"><div class="n">'+s+'</div><div class="l">Dtk</div></div>';
       }
@@ -1807,7 +1784,7 @@ function startMiniCountdowns(){
   tick(); miniCountdownTimer = setInterval(tick, 1000);
 }
 
-// ================== AUTH ==================
+// ============ AUTH ============
 auth.onAuthStateChanged(function(user){
   if(user){
     me = {
@@ -1815,12 +1792,8 @@ auth.onAuthStateChanged(function(user){
       name: user.displayName || (user.email||'').split('@')[0] || 'Warga',
       email: user.email || '',
       photoURL: user.photoURL || null,
-      avatarBase64: null,
-      role: 'warga',
-      verified: false,
-      fcmToken: null
+      avatarBase64: null, role: 'warga', verified: false, fcmToken: null
     };
-    setPreferred(me.email);
     showLoginLoading();
     rtdb.ref('users/' + user.uid).once('value').then(function(snap){
       var d = snap.val() || {};
@@ -1830,10 +1803,7 @@ auth.onAuthStateChanged(function(user){
       if(d.role) me.role = d.role;
       if(d.verified) me.verified = true;
       if(d.fcmToken) me.fcmToken = d.fcmToken;
-      if(isBootstrapAdmin && me.role !== 'admin'){
-        me.role = 'admin'; me.verified = true;
-        rtdb.ref('users/' + user.uid).update({ role: 'admin', verified: true });
-      }
+      if(isBootstrapAdmin && me.role !== 'admin'){ me.role = 'admin'; me.verified = true; rtdb.ref('users/' + user.uid).update({ role: 'admin', verified: true }); }
       syncUser().then(function(){
         loadNotifState();
         subscribeConfig(); subscribeFeed();
@@ -1850,10 +1820,7 @@ auth.onAuthStateChanged(function(user){
         }, 2500);
         if(messaging && typeof Notification !== 'undefined' && Notification.permission === 'granted' && VAPID_KEY){
           messaging.getToken({ vapidKey: VAPID_KEY }).then(function(token){
-            if(token){
-              me.fcmToken = token;
-              rtdb.ref('users/' + me.uid).update({ fcmToken: token, fcmUpdatedAt: Date.now() });
-            }
+            if(token){ me.fcmToken = token; rtdb.ref('users/' + me.uid).update({ fcmToken: token, fcmUpdatedAt: Date.now() }); }
           }).catch(function(){});
         }
         setTimeout(function(){
@@ -1862,8 +1829,7 @@ auth.onAuthStateChanged(function(user){
           hide('welcomeOv');
           if(!me.verified && me.role !== 'admin'){
             $('inviteOv').style.display = 'flex';
-            $('app').style.display = 'none';
-            $('app').classList.add('hide');
+            $('app').style.display = 'none'; $('app').classList.add('hide');
           } else {
             $('app').classList.remove('hide');
             $('app').style.display = 'flex';
@@ -1872,12 +1838,10 @@ auth.onAuthStateChanged(function(user){
             maybeShowRulesFirstTime();
           }
           handleDeepLink();
+          refreshAiToggle();
         }, 300);
       });
-    }).catch(function(){
-      hideLoginLoading();
-      syncUser().then(function(){ location.reload(); });
-    });
+    }).catch(function(){ hideLoginLoading(); syncUser().then(function(){ location.reload(); }); });
   } else {
     setTimeout(function(){
       hideLoginLoading();
@@ -1893,30 +1857,21 @@ function handleDeepLink(){
     var pid = m[1];
     setTimeout(function(){
       var p = feed.filter(function(x){ return x.id === pid; })[0];
-      if(p){ openPostDetail(pid); }
-      else { toast('Postingan tidak ditemukan', true); }
+      if(p){ openPostDetail(pid); } else { toast('Postingan tidak ditemukan', true); }
     }, 800);
     setTimeout(function(){ history.replaceState(null,'',location.pathname); }, 1500);
   }
 }
 function syncUser(){
   if(!me) return Promise.resolve();
-  var data = {
-    uid: me.uid, name: me.name,
-    email: me.email || null, photoURL: me.photoURL || null,
-    avatarBase64: me.avatarBase64 || null,
-    role: me.role || 'warga',
-    verified: !!me.verified,
-    lastSeen: TS
-  };
+  var data = { uid: me.uid, name: me.name, email: me.email || null, photoURL: me.photoURL || null, avatarBase64: me.avatarBase64 || null, role: me.role || 'warga', verified: !!me.verified, lastSeen: TS };
   if(me.fcmToken) data.fcmToken = me.fcmToken;
   return rtdb.ref('users/' + me.uid).update(data).catch(function(e){ console.warn(e); });
 }
 $('googleBtn').onclick = async function(){
   var p = new firebase.auth.GoogleAuthProvider();
   p.setCustomParameters({ prompt: 'select_account' });
-  $('googleBtn').disabled = true;
-  showLoginLoading();
+  $('googleBtn').disabled = true; showLoginLoading();
   try { await auth.signInWithPopup(p); }
   catch(e){
     if(['auth/popup-blocked','auth/popup-closed-by-user','auth/cancelled-popup-request','auth/operation-not-supported-in-this-environment'].indexOf(e.code) > -1 || /mobile/i.test(navigator.userAgent)){
@@ -1934,29 +1889,23 @@ $('inviteSubmit').onclick = async function(){
   try {
     var snap = await rtdb.ref('config/inviteCode').once('value');
     var stored = (snap.val() || '').toUpperCase();
-    if(!stored) { loader(false); return toast('Kode undangan belum diatur admin', true); }
+    if(!stored){ loader(false); return toast('Kode undangan belum diatur admin', true); }
     if(code === stored){
       me.verified = true;
       await rtdb.ref('users/' + me.uid).update({ verified: true });
       loader(false); toast('Verifikasi berhasil!');
       $('inviteOv').style.display = 'none';
-      $('app').classList.remove('hide');
-      $('app').style.display = 'flex';
+      $('app').classList.remove('hide'); $('app').style.display = 'flex';
       $('headerAvatarBtn').innerHTML = avatarHtml(me, 32, 13);
-      setTab('home');
-      maybeShowRulesFirstTime();
+      setTab('home'); maybeShowRulesFirstTime(); refreshAiToggle();
     } else { loader(false); toast('Kode salah. Hubungi pengurus RT.', true); }
   } catch(e){ loader(false); toast('Gagal: ' + (e.message||'').slice(0,40), true); }
 };
 $('inviteLogout').onclick = async function(){ await auth.signOut(); location.reload(); };
-
 function subscribeConfig(){
   if(unsubConfig){ try { unsubConfig(); } catch(e){} }
   var ref = rtdb.ref('config');
-  var listener = ref.on('value', function(snap){
-    appConfig = snap.val() || { inviteCode: '' };
-    if(tab === 'profile') renderProfile();
-  }, function(e){ console.warn('config', e); });
+  var listener = ref.on('value', function(snap){ appConfig = snap.val() || { inviteCode: '' }; if(tab === 'profile') renderProfile(); }, function(e){});
   unsubConfig = function(){ ref.off('value', listener); };
 }
 function subscribeFeed(){
@@ -1966,11 +1915,7 @@ function subscribeFeed(){
     var newList = [];
     snap.forEach(function(child){
       var x = child.val() || {};
-      newList.push(Object.assign({ id: child.key }, x, {
-        createdAt: x.createdAt || Date.now(),
-        eventDate: x.eventDate || 0,
-        images: toArr(x.images)
-      }));
+      newList.push(Object.assign({ id: child.key }, x, { createdAt: x.createdAt || Date.now(), eventDate: x.eventDate || 0, images: toArr(x.images) }));
     });
     newList.reverse();
     if(initializedNotif && me){
@@ -1979,10 +1924,7 @@ function subscribeFeed(){
         var isFromOther = p.authorId !== me.uid;
         var isVeryRecent = (Date.now() - p.createdAt) < 15000;
         if(isNewlyCreated && isFromOther && isVeryRecent){
-          if(document.visibilityState === 'visible'){
-            playChime();
-            toast((p.pinned ? '📌 ' : '📢 ') + 'Post baru dari ' + (p.authorName||'warga'), false);
-          }
+          if(document.visibilityState === 'visible'){ playChime(); toast((p.pinned ? '📌 ' : '📢 ') + 'Post baru dari ' + (p.authorName||'warga'), false); }
         }
       });
     }
@@ -2001,8 +1943,7 @@ function subscribeFeed(){
           if(likeBtn){
             var liked = p.likedBy && p.likedBy[me.uid];
             var likeCount = toCount(p.likedBy);
-            var svg = likeBtn.querySelector('svg');
-            var span = likeBtn.querySelector('span');
+            var svg = likeBtn.querySelector('svg'); var span = likeBtn.querySelector('span');
             likeBtn.style.color = liked ? '#f43f5e' : '#64748b';
             if(svg) svg.setAttribute('fill', liked ? 'currentColor' : 'none');
             if(span) span.textContent = likeCount + ' Suka';
@@ -2033,21 +1974,17 @@ function renderCategory(){
       widget.classList.remove('hide');
       var diff = nextEvent.eventDate - now;
       var d = Math.floor(diff/86400000), h = Math.floor((diff%86400000)/3600000), m = Math.floor((diff%3600000)/60000), s = Math.floor((diff%60000)/1000);
-      var html = '<div class="post-card" style="cursor:pointer;grid-column:1/-1" data-pid="'+nextEvent.id+'">';
-      html += '<div class="strip s-info"></div>';
-      html += '<div class="body" style="padding:13px">';
+      var html = '<div class="post-card" style="cursor:pointer;grid-column:1/-1" data-pid="'+nextEvent.id+'"><div class="strip s-info"></div><div class="body" style="padding:13px">';
       html += '<div style="font-size:14px;font-weight:800;margin-bottom:7px;color:#1e40af">'+esc(nextEvent.text)+'</div>';
       if(nextEvent.eventLocation) html += '<div style="font-size:12.5px;color:#64748b;margin-bottom:9px;font-weight:600">📍 '+esc(nextEvent.eventLocation)+'</div>';
-      html += '<div class="cd-mini" data-cd="'+nextEvent.eventDate+'"><div class="cd-m-box"><div class="n">'+d+'</div><div class="l">Hari</div></div><div class="cd-m-box"><div class="n">'+h+'</div><div class="l">Jam</div></div><div class="cd-m-box"><div class="n">'+m+'</div><div class="l">Mnt</div></div><div class="cd-m-box"><div class="n">'+s+'</div><div class="l">Dtk</div></div></div>';
-      html += '</div></div>';
+      html += '<div class="cd-mini" data-cd="'+nextEvent.eventDate+'"><div class="cd-m-box"><div class="n">'+d+'</div><div class="l">Hari</div></div><div class="cd-m-box"><div class="n">'+h+'</div><div class="l">Jam</div></div><div class="cd-m-box"><div class="n">'+m+'</div><div class="l">Mnt</div></div><div class="cd-m-box"><div class="n">'+s+'</div><div class="l">Dtk</div></div></div></div></div>';
       $('infoEventContent').innerHTML = html;
       $('infoEventContent').querySelector('[data-pid]').onclick = function(){ openPostDetail(nextEvent.id); };
       startMiniCountdowns();
     } else widget.classList.add('hide');
   } else widget.classList.add('hide');
   if(!list.length){
-    grid.innerHTML = '';
-    show('catEmpty');
+    grid.innerHTML = ''; show('catEmpty');
     $('catEmptyEmoji').textContent = activeCat === 'informasi' ? '📢' : activeCat === 'galeri' ? '📷' : '💬';
     return;
   }
@@ -2060,8 +1997,7 @@ function openPostDetail(postId){
   var p = feed.filter(function(x){ return x.id === postId; })[0];
   if(!p){ toast('Postingan tidak ditemukan', true); return; }
   activePostId = postId; activePost = p;
-  markPostSeen(postId);
-  markPostActivitySeen(p);
+  markPostSeen(postId); markPostActivitySeen(p);
   updateAllBadges();
   setTab('post'); renderPostDetail(p); loadComments(postId);
   setTimeout(function(){ if(p.eventDate && p.eventDate > 0) startCountdown(); }, 150);
@@ -2074,35 +2010,18 @@ function renderPostDetail(p){
   var hasEvent = p.eventDate && p.eventDate > 0;
   var likeCount = toCount(p.likedBy);
   var canManage = isMine || isAdmin();
-
   var html = '';
-  if(p.pinned) html += '<div style="background:#f59e0b;color:white;border-radius:14px;padding:12px 16px;margin-bottom:14px;font-size:13px;font-weight:800;display:flex;align-items:center;gap:7px;box-shadow:0 4px 14px -6px rgba(245,158,11,.5)">📌 PENGUMUMAN PENTING</div>';
+  if(p.pinned) html += '<div style="background:#f59e0b;color:white;border-radius:14px;padding:12px 16px;margin-bottom:14px;font-size:13px;font-weight:800;display:flex;align-items:center;gap:7px">📌 PENGUMUMAN PENTING</div>';
   html += '<div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">';
   html += '<div data-open-author="'+esc(p.authorId)+'" style="cursor:pointer;display:flex;align-items:center;gap:12px;flex:1;min-width:0">';
   html += avatarHtml({name:p.authorName, photoURL:p.authorPhoto, avatarBase64:p.authorAvatarBase64, uid:p.authorId}, 44, 17);
-  html += '<div style="flex:1;min-width:0">';
-  html += '<div style="font-size:15px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(p.authorName)+'</div>';
-  html += '<div style="font-size:12px;color:#94a3b8;margin-top:2px;font-weight:600">'+({umum:'Umum',informasi:'Informasi',galeri:'Galeri'})[cat]+' · '+timeAgo(p.createdAt)+(p.editedAt?' · ✏️ diedit':'')+'</div>';
-  html += '</div></div>';
-  html += '<button type="button" id="shareBtn" title="Bagikan" style="width:38px;height:38px;border-radius:50%;background:rgba(37,99,235,.12);color:#2563eb;display:flex;align-items:center;justify-content:center;border:none;cursor:pointer;margin-right:6px">';
-  html += '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.59 13.51l6.83 3.98M15.41 6.51l-6.82 3.98"/></svg>';
-  html += '</button>';
-  if(canManage) html += '<button type="button" id="pinBtn" title="Pin" style="width:38px;height:38px;border-radius:50%;background:rgba(245,158,11,.12);color:#f59e0b;display:flex;align-items:center;justify-content:center;border:none;cursor:pointer;margin-right:6px;font-size:16px">'+(p.pinned?'📌':'📍')+'</button>';
-  if(isMine){
-    html += '<button type="button" id="editPostBtn" title="Edit" style="width:38px;height:38px;border-radius:50%;background:rgba(99,102,241,.12);color:#6366f1;display:flex;align-items:center;justify-content:center;border:none;cursor:pointer;margin-right:6px">';
-    html += '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 20h9M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4z"/></svg>';
-    html += '</button>';
-  }
-  if(canManage){
-    html += '<button type="button" id="delPostBtn" title="Hapus" style="width:38px;height:38px;border-radius:50%;background:rgba(244,63,94,.12);color:#f43f5e;display:flex;align-items:center;justify-content:center;border:none;cursor:pointer">';
-    html += '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6"/></svg>';
-    html += '</button>';
-  }
-  if(!canManage){
-    html += '<button type="button" id="reportBtn" title="Lapor" style="width:38px;height:38px;border-radius:50%;background:rgba(244,63,94,.12);color:#f43f5e;display:flex;align-items:center;justify-content:center;border:none;cursor:pointer">';
-    html += '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>';
-    html += '</button>';
-  }
+  html += '<div style="flex:1;min-width:0"><div style="font-size:15px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(p.authorName)+'</div>';
+  html += '<div style="font-size:12px;color:#94a3b8;margin-top:2px;font-weight:600">'+({umum:'Umum',informasi:'Informasi',galeri:'Galeri'})[cat]+' · '+timeAgo(p.createdAt)+(p.editedAt?' · ✏️ diedit':'')+'</div></div></div>';
+  html += '<button type="button" id="shareBtn" style="width:38px;height:38px;border-radius:50%;background:rgba(37,99,235,.12);color:#2563eb;display:flex;align-items:center;justify-content:center;border:none;cursor:pointer;margin-right:6px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.59 13.51l6.83 3.98M15.41 6.51l-6.82 3.98"/></svg></button>';
+  if(canManage) html += '<button type="button" id="pinBtn" style="width:38px;height:38px;border-radius:50%;background:rgba(245,158,11,.12);color:#f59e0b;display:flex;align-items:center;justify-content:center;border:none;cursor:pointer;margin-right:6px;font-size:16px">'+(p.pinned?'📌':'📍')+'</button>';
+  if(isMine) html += '<button type="button" id="editPostBtn" style="width:38px;height:38px;border-radius:50%;background:rgba(99,102,241,.12);color:#6366f1;display:flex;align-items:center;justify-content:center;border:none;cursor:pointer;margin-right:6px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 20h9M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4z"/></svg></button>';
+  if(canManage) html += '<button type="button" id="delPostBtn" style="width:38px;height:38px;border-radius:50%;background:rgba(244,63,94,.12);color:#f43f5e;display:flex;align-items:center;justify-content:center;border:none;cursor:pointer"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6"/></svg></button>';
+  if(!canManage) html += '<button type="button" id="reportBtn" style="width:38px;height:38px;border-radius:50%;background:rgba(244,63,94,.12);color:#f43f5e;display:flex;align-items:center;justify-content:center;border:none;cursor:pointer"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg></button>';
   html += '</div>';
   if(hasEvent){
     html += '<div style="background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.22);border-radius:16px;padding:14px;margin-bottom:14px">';
@@ -2116,8 +2035,7 @@ function renderPostDetail(p){
   html += '<button type="button" id="likeBtn" style="background:transparent;border:none;display:flex;align-items:center;gap:7px;font-weight:800;font-size:14px;color:'+(liked?'#f43f5e':'#64748b')+';cursor:pointer;padding:0">';
   html += '<svg width="20" height="20" viewBox="0 0 24 24" fill="'+(liked?'currentColor':'none')+'" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>';
   html += '<span>'+likeCount+' Suka</span></button>';
-  html += '<div style="display:flex;align-items:center;gap:7px;color:#64748b;font-weight:800;font-size:14px">';
-  html += '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>';
+  html += '<div style="display:flex;align-items:center;gap:7px;color:#64748b;font-weight:800;font-size:14px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>';
   html += '<span id="postCommentCount">'+(p.commentCount||0)+' Komentar</span></div></div>';
   html += '<div style="font-size:13px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.12em;margin-bottom:14px">💬 Komentar</div>';
   html += '<div id="commentsList" style="display:flex;flex-direction:column;gap:12px"></div>';
@@ -2131,12 +2049,10 @@ function renderPostDetail(p){
     var was = p.likedBy && p.likedBy[me.uid];
     p.likedBy = p.likedBy || {};
     if(was) delete p.likedBy[me.uid]; else p.likedBy[me.uid] = true;
-    var liked2 = p.likedBy[me.uid];
-    var likeCount2 = toCount(p.likedBy);
+    var liked2 = p.likedBy[me.uid]; var likeCount2 = toCount(p.likedBy);
     var btn = $('likeBtn');
     if(btn){
-      var svg = btn.querySelector('svg');
-      var span = btn.querySelector('span');
+      var svg = btn.querySelector('svg'); var span = btn.querySelector('span');
       btn.style.color = liked2 ? '#f43f5e' : '#64748b';
       if(svg) svg.setAttribute('fill', liked2 ? 'currentColor' : 'none');
       if(span) span.textContent = likeCount2 + ' Suka';
@@ -2153,19 +2069,14 @@ function renderPostDetail(p){
         } catch(e){}
       } else {
         await rtdb.ref('posts/' + p.id + '/likedBy/' + me.uid).set(true);
-        await pushNotification(p.authorId, 'like', {
-          postId: p.id,
-          postSnippet: (p.text || '[Foto]').replace(/\s+/g,' ').trim().slice(0, 100)
-        });
+        await pushNotification(p.authorId, 'like', { postId: p.id, postSnippet: (p.text || '[Foto]').replace(/\s+/g,' ').trim().slice(0, 100) });
       }
     } catch(e){
       toast('Gagal like', true);
       if(was){ p.likedBy[me.uid] = true; } else { delete p.likedBy[me.uid]; }
-      var liked3 = p.likedBy[me.uid];
-      var likeCount3 = toCount(p.likedBy);
+      var liked3 = p.likedBy[me.uid]; var likeCount3 = toCount(p.likedBy);
       if(btn){
-        var svg2 = btn.querySelector('svg');
-        var span2 = btn.querySelector('span');
+        var svg2 = btn.querySelector('svg'); var span2 = btn.querySelector('span');
         btn.style.color = liked3 ? '#f43f5e' : '#64748b';
         if(svg2) svg2.setAttribute('fill', liked3 ? 'currentColor' : 'none');
         if(span2) span2.textContent = likeCount3 + ' Suka';
@@ -2188,7 +2099,7 @@ function renderPostDetail(p){
     loader(true, 'Menghapus...');
     try {
       await rtdb.ref('posts/' + p.id).remove();
-      try { await rtdb.ref('comments/' + p.id).remove(); } catch(err){ console.warn('cleanup skipped:', err); }
+      try { await rtdb.ref('comments/' + p.id).remove(); } catch(err){}
       logActivity('delete_post', { postId: p.id });
       loader(false); toast('Postingan terhapus ✓'); setTab('home');
     } catch(e){ loader(false); toast('Gagal hapus: ' + (e.message||e.code||'Error').slice(0, 60), true); }
@@ -2202,8 +2113,7 @@ function openEditPost(p){
   composeCat = p.category || 'umum';
   composeTopic = p.topic || 'obrolan';
   $('composeText').value = p.text || '';
-  $('eventDate').value = '';
-  $('eventLocation').value = p.eventLocation || '';
+  $('eventDate').value = ''; $('eventLocation').value = p.eventLocation || '';
   $('pinCheck').checked = !!p.pinned;
   if(p.eventDate && p.eventDate > 0){
     var d = new Date(p.eventDate);
@@ -2225,9 +2135,7 @@ function renderPhotoGrid(p){
   var items = [];
   (p.images || []).forEach(function(b64){ items.push({ b64: b64 }); });
   var addTile = '<button type="button" id="addPhotoBtn" class="photo-add"><span class="plus">+</span><span class="txt">Foto</span></button>';
-  if(!items.length){
-    return '<button type="button" id="addPhotoBtn" style="width:100%;padding:20px;border-radius:14px;border:1.5px dashed #cbd5e1;background:#f8fafc;color:#64748b;font-size:14px;font-weight:700;cursor:pointer;text-align:center;margin-bottom:14px">📷 Tambah Foto</button>';
-  }
+  if(!items.length) return '<button type="button" id="addPhotoBtn" style="width:100%;padding:20px;border-radius:14px;border:1.5px dashed #cbd5e1;background:#f8fafc;color:#64748b;font-size:14px;font-weight:700;cursor:pointer;text-align:center;margin-bottom:14px">📷 Tambah Foto</button>';
   if(items.length === 1){
     var it = items[0];
     return '<div class="photo-grid single" style="margin-bottom:14px"><div class="pg-item"><img src="data:image/jpeg;base64,'+it.b64+'" data-pimg="1" loading="lazy" decoding="async"/></div><button type="button" id="addPhotoBtn" style="width:100%;padding:11px;border-radius:11px;border:1.5px dashed #cbd5e1;background:#f8fafc;color:#64748b;font-size:12.5px;font-weight:700;cursor:pointer;margin-top:7px">📷 Tambah Foto Warga</button></div>';
@@ -2238,25 +2146,19 @@ function renderPhotoGrid(p){
   return grid;
 }
 function wirePhotoGrid(p){
-  var root = $('postScroll');
-  if(!root) return;
+  var root = $('postScroll'); if(!root) return;
   root.querySelectorAll('[data-pimg]').forEach(function(img){ img.onclick = function(){ openLightbox(img.src); }; });
-  var add = $('addPhotoBtn');
-  if(add) add.onclick = function(){ $('collabInput').click(); };
+  var add = $('addPhotoBtn'); if(add) add.onclick = function(){ $('collabInput').click(); };
 }
 function openLightbox(src){ $('lightboxImg').src = src; $('lightbox').classList.add('on'); }
 
 async function loadComments(pid){
-  var el = $('commentsList');
-  if(!el) return;
+  var el = $('commentsList'); if(!el) return;
   el.innerHTML = '<div style="text-align:center;color:#94a3b8;font-size:13.5px;padding:18px 0;font-weight:600">Memuat komentar...</div>';
   try {
     var snap = await rtdb.ref('comments/' + pid).orderByChild('createdAt').limitToLast(50).once('value');
     var list = [];
-    snap.forEach(function(child){
-      var x = child.val() || {};
-      list.push(Object.assign({ id: child.key }, x, { createdAt: x.createdAt || Date.now() }));
-    });
+    snap.forEach(function(child){ var x = child.val() || {}; list.push(Object.assign({ id: child.key }, x, { createdAt: x.createdAt || Date.now() })); });
     renderComments(list);
     if(activePost && activePost.authorId === me.uid){
       if(!seenComments[pid]) seenComments[pid] = {};
@@ -2265,19 +2167,12 @@ async function loadComments(pid){
         if(c.authorId === me.uid) return;
         if(!seenComments[pid][c.id]){ seenComments[pid][c.id] = Date.now(); changed = true; }
       });
-      if(changed){
-        saveNotifState();
-        debouncedRender('grid-refresh', function(){
-          if(tab === 'category') renderCategory();
-          if(tab === 'home') renderHome();
-        }, 250);
-      }
+      if(changed){ saveNotifState(); debouncedRender('grid-refresh', function(){ if(tab === 'category') renderCategory(); if(tab === 'home') renderHome(); }, 250); }
     }
   } catch(e){ if(el) el.innerHTML = '<div style="color:#f43f5e;font-size:13px;text-align:center;padding:10px;font-weight:600">Gagal memuat komentar</div>'; }
 }
 function renderComments(list){
-  var el = $('commentsList');
-  if(!el) return;
+  var el = $('commentsList'); if(!el) return;
   if(!list.length){ el.innerHTML = '<div style="text-align:center;color:#94a3b8;font-size:13.5px;padding:20px 0;font-weight:600">Belum ada komentar. Jadilah yang pertama!</div>'; return; }
   var postOwnerId = activePost ? activePost.authorId : null;
   var meAdmin = isAdmin();
@@ -2301,31 +2196,18 @@ function renderComments(list){
     }
     var editedLabel = '';
     if(c.editedAt){ editedLabel = '<span class="comment-edit-label" title="'+new Date(c.editedAt).toLocaleString('id-ID')+'">· ✏️ diedit</span>'; }
-    return '<div class="comment-item" data-cid="'+esc(c.id)+'">'+
-      avatarHtml({name:c.authorName, photoURL:c.authorPhoto, avatarBase64:c.authorAvatarBase64, uid:c.authorId}, 34, 13, false)+
-      '<div class="body">'+
-        '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:6px">'+
-          '<div class="txt" style="flex:1;min-width:0">'+body+'</div>'+
-          actionsHtml+
-        '</div>'+imgsHtml+
-        '<div class="time">'+timeAgo(c.createdAt)+editedLabel+'</div>'+
-      '</div></div>';
+    return '<div class="comment-item" data-cid="'+esc(c.id)+'">'+avatarHtml({name:c.authorName, photoURL:c.authorPhoto, avatarBase64:c.authorAvatarBase64, uid:c.authorId}, 34, 13, false)+
+      '<div class="body"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:6px">'+
+      '<div class="txt" style="flex:1;min-width:0">'+body+'</div>'+actionsHtml+'</div>'+imgsHtml+
+      '<div class="time">'+timeAgo(c.createdAt)+editedLabel+'</div></div></div>';
   }).join('');
   el.querySelectorAll('[data-gif]').forEach(function(img){ img.onclick = function(){ openLightbox(img.src); }; });
   el.querySelectorAll('[data-c-uid]').forEach(function(span){ span.onclick = function(){ viewUserProfile(span.dataset.cUid); }; });
   el.querySelectorAll('[data-edit-cid]').forEach(function(b){
-    b.onclick = function(){
-      var cid = b.dataset.editCid;
-      var c = list.filter(function(x){ return x.id === cid; })[0];
-      if(c) openEditComment(cid, c.text || '');
-    };
+    b.onclick = function(){ var cid = b.dataset.editCid; var c = list.filter(function(x){ return x.id === cid; })[0]; if(c) openEditComment(cid, c.text || ''); };
   });
   el.querySelectorAll('[data-del-cid]').forEach(function(b){
-    b.onclick = function(){
-      var cid = b.dataset.delCid;
-      var c = list.filter(function(x){ return x.id === cid; })[0];
-      if(c) confirmDeleteComment(cid, c.text || '');
-    };
+    b.onclick = function(){ var cid = b.dataset.delCid; var c = list.filter(function(x){ return x.id === cid; })[0]; if(c) confirmDeleteComment(cid, c.text || ''); };
   });
 }
 function openEditComment(cid, currentText){
@@ -2344,8 +2226,7 @@ function openEditComment(cid, currentText){
     try {
       await rtdb.ref('comments/' + activePostId + '/' + cid).update({ text: newText, editedAt: TS, editedBy: me.uid });
       logActivity('edit_comment', { postId: activePostId, commentId: cid });
-      loader(false); closeModal(); toast('Komentar diperbarui ✓');
-      loadComments(activePostId);
+      loader(false); closeModal(); toast('Komentar diperbarui ✓'); loadComments(activePostId);
     } catch(e){ loader(false); toast('Gagal: ' + (e.message||e.code||'').slice(0,50), true); }
   };
 }
@@ -2365,8 +2246,7 @@ function confirmDeleteComment(cid, text){
       await rtdb.ref('comments/' + activePostId + '/' + cid).remove();
       try { await rtdb.ref('posts/' + activePostId + '/commentCount').transaction(function(c){ return Math.max(0, (c || 0) - 1); }); } catch(e){}
       logActivity('delete_comment', { postId: activePostId, commentId: cid });
-      loader(false); closeModal(); toast('Komentar dihapus ✓');
-      loadComments(activePostId);
+      loader(false); closeModal(); toast('Komentar dihapus ✓'); loadComments(activePostId);
     } catch(e){ loader(false); toast('Gagal: ' + (e.message||e.code||'').slice(0,50), true); }
   };
 }
@@ -2401,7 +2281,7 @@ $('commentSend').onclick = async function(){
         seen[c.authorId] = true;
         pushNotification(c.authorId, 'reply', { postId: activePostId, postSnippet: postSnippet, text: t.slice(0, 120) });
       });
-    } catch(e){ console.warn('reply notif fail:', e); }
+    } catch(e){}
     await loadComments(activePostId);
     toast('Komentar terkirim');
     setTimeout(function(){ $('postScroll').scrollTop = $('postScroll').scrollHeight; }, 200);
@@ -2428,9 +2308,7 @@ $('collabInput').onchange = async function(e){
       arr.push(await compressImage(files[i], 1080, 0.72));
     }
     await rtdb.ref('posts/' + p.id + '/images').set(arr);
-    p.images = arr;
-    renderPostDetail(p);
-    loadComments(p.id);
+    p.images = arr; renderPostDetail(p); loadComments(p.id);
     loader(false); toast(files.length + ' foto ditambahkan');
   } catch(e){ loader(false); toast('Gagal: ' + (e.message||'').slice(0,40), true); }
 };
@@ -2438,8 +2316,7 @@ function startCountdown(){
   if(countdownTimer) clearInterval(countdownTimer);
   function tick(){
     if(document.hidden) return;
-    var el = $('countdownBox');
-    if(!el) return;
+    var el = $('countdownBox'); if(!el) return;
     if(!activePost || !activePost.eventDate) return;
     var diff = activePost.eventDate - Date.now();
     if(diff <= 0){ el.innerHTML = '<div style="padding:12px;background:#f1f5f9;border-radius:11px;font-size:13px;font-weight:700;color:#64748b;text-align:center;width:100%">Kegiatan sudah dimulai / selesai</div>'; return; }
@@ -2451,12 +2328,16 @@ function startCountdown(){
   }
   tick(); countdownTimer = setInterval(tick, 1000);
 }
+
+// ============ COMPOSE ============
 $('fab').onclick = function(){ openCompose(activeCat); };
 $('catEmptyBtn').onclick = function(){ openCompose(activeCat); };
 function openCompose(cat){
   editingPostId = null;
   $('composeText').value = ''; composeImgs = [];
   composeCat = cat || 'umum'; composeTopic = 'obrolan';
+  _aiLastSuggested = '';
+  hide('aiSuggest'); hide('aiKatBadge');
   renderAttach();
   $('composeAvatar').innerHTML = avatarHtml(me, 40, 15);
   $('composeName').textContent = me.name;
@@ -2494,14 +2375,44 @@ function updateComposeUI(){
   $('topicWrap').classList.toggle('hide', composeCat !== 'umum');
   $('eventWrap').classList.toggle('hide', composeCat !== 'informasi');
   $('pinWrap').classList.toggle('hide', !isAdmin());
-  if(!editingPostId){
-    $('composeTitle').textContent = composeCat === 'informasi' ? '📢 Info Kegiatan' : composeCat === 'galeri' ? '📷 Galeri Foto' : 'Tulis Postingan';
-  }
+  if(!editingPostId){ $('composeTitle').textContent = composeCat === 'informasi' ? '📢 Info Kegiatan' : composeCat === 'galeri' ? '📷 Galeri Foto' : 'Tulis Postingan'; }
   checkReady();
 }
-document.querySelectorAll('#composeCats .cat-btn').forEach(function(b){ b.onclick = function(){ composeCat = b.dataset.c; updateComposeUI(); }; });
+document.querySelectorAll('#composeCats .cat-btn').forEach(function(b){ b.onclick = function(){ composeCat = b.dataset.c; updateComposeUI(); hide('aiSuggest'); }; });
 document.querySelectorAll('#topicWrap .topic-chip').forEach(function(b){ b.onclick = function(){ composeTopic = b.dataset.t; document.querySelectorAll('#topicWrap .topic-chip').forEach(function(x){ x.classList.toggle('on', x === b); }); }; });
-$('composeText').addEventListener('input', checkReady);
+
+// ============ AI AUTO-KATEGORISASI ============
+$('composeText').addEventListener('input', function(){
+  checkReady();
+  if(!aiEnabled() || editingPostId) return;
+  clearTimeout(_aiKatTimer);
+  _aiKatTimer = setTimeout(async function(){
+    var teks = $('composeText').value.trim();
+    if(teks.length < 20) return;
+    if(teks === _aiLastSuggested) return;
+    show('aiKatBadge');
+    var hasil = await aiKategorisasi(teks);
+    hide('aiKatBadge');
+    if(hasil && hasil !== composeCat){
+      _aiLastSuggested = teks;
+      var badge = $('aiSuggest');
+      var label = { umum: '💬 Umum', informasi: '📢 Informasi', galeri: '📷 Galeri' }[hasil];
+      badge.innerHTML = '<span>🤖 AI sarankan: <b>' + label + '</b></span><button type="button" class="btn-apply" data-apply-cat="' + hasil + '">Terapkan</button>';
+      badge.classList.remove('hide');
+      var applyBtn = badge.querySelector('[data-apply-cat]');
+      if(applyBtn){
+        applyBtn.onclick = function(){
+          composeCat = hasil;
+          updateComposeUI();
+          hide('aiSuggest');
+          toast('✓ Kategori diubah ke ' + label);
+        };
+      }
+    }
+  }, 2000);
+});
+
+// ============ COMPOSE SUBMIT + AI MODERASI ============
 $('imgInput').onchange = async function(e){
   var files = Array.from(e.target.files || []); e.target.value = '';
   if(!files.length || uploading) return;
@@ -2512,17 +2423,45 @@ $('imgInput').onchange = async function(e){
   }
   uploading = false; loader(false); renderAttach(); checkReady();
 };
+
 $('composePost').onclick = async function(){
   if(uploading) return toast('Tunggu proses', true);
   var text = $('composeText').value.trim();
   if(composeCat === 'galeri' && !composeImgs.length) return toast('Galeri wajib ada foto', true);
   if(!text && !composeImgs.length) return;
+
+  // ============ AI AUTO-MODERASI ============
+  if(aiEnabled() && text.length >= 5 && !editingPostId){
+    loader(true, '🤖 AI memeriksa konten...');
+    try {
+      var mod = await aiModerasi(text);
+      loader(false);
+      if(mod && mod.aman === false){
+        var alasan = mod.alasan || 'Konten mungkin melanggar aturan komunitas.';
+        var kat = mod.kategori ? ' (' + mod.kategori + ')' : '';
+        var lanjut = confirm(
+          '⚠️ AI mendeteksi potensi pelanggaran' + kat + ':\n\n' +
+          '   "' + alasan + '"\n\n' +
+          'Kirim tetap?\n\n' +
+          '• Klik OK = kirim (masuk review admin)\n' +
+          '• Klik Cancel = edit dulu'
+        );
+        if(!lanjut){
+          setTimeout(function(){ $('composeText').focus(); }, 200);
+          return;
+        }
+      }
+    } catch(e){
+      loader(false);
+      console.warn('moderasi error:', e);
+    }
+  }
+
   if(editingPostId){
     $('composePost').disabled = true; $('composeBtnText').textContent = '...';
     try {
       var upd = { text: text, images: composeImgs.slice(), category: composeCat, editedAt: TS };
-      if(composeCat === 'umum') upd.topic = composeTopic;
-      else upd.topic = null;
+      if(composeCat === 'umum') upd.topic = composeTopic; else upd.topic = null;
       if(composeCat === 'informasi' && $('eventDate').value){
         upd.eventDate = new Date($('eventDate').value).getTime();
         upd.eventLocation = $('eventLocation').value.trim();
@@ -2554,25 +2493,24 @@ $('composePost').onclick = async function(){
     if(ref && ref.key) markPostSeen(ref.key);
     logActivity('create_post', { postId: ref.key, category: composeCat });
     $('composeSheet').style.display = 'none';
+    hide('aiSuggest'); hide('aiKatBadge');
     if(activeCat !== composeCat) activeCat = composeCat;
     setTab('home'); toast('Postingan terkirim');
   } catch(e){ toast('Gagal: ' + (e.message||'').slice(0,50), true); $('composePost').disabled = false; }
   finally { $('composeBtnText').textContent = 'Kirim'; }
 };
 
-// ================== WARGA ==================
+// ============ WARGA ============
 function subscribeUsers(){
   if(unsubUsers){ try { unsubUsers(); } catch(e){} }
   var ref = rtdb.ref('users').orderByChild('lastSeen').limitToLast(200);
   var listener = ref.on('value', function(snap){
     users = [];
-    snap.forEach(function(child){
-      users.push(Object.assign({ uid: child.key, id: child.key }, child.val() || {}));
-    });
+    snap.forEach(function(child){ users.push(Object.assign({ uid: child.key, id: child.key }, child.val() || {})); });
     users.reverse();
     if(tab === 'warga') renderWargaList();
     if($('searchOv').classList.contains('on') && searchQuery) renderSearchResults();
-  }, function(e){ console.warn('users', e); });
+  }, function(e){});
   unsubUsers = function(){ ref.off('value', listener); };
 }
 function renderWargaList(){
@@ -2593,7 +2531,7 @@ function renderWargaList(){
   el.querySelectorAll('[data-uid]').forEach(function(row){ row.onclick = function(){ viewUserProfile(row.dataset.uid); }; });
 }
 
-// ================== VOTING ==================
+// ============ VOTING ============
 function subscribePolls(){
   if(unsubPolls){ try { unsubPolls(); } catch(e){} }
   var ref = rtdb.ref('polls').orderByChild('createdAt').limitToLast(50);
@@ -2606,7 +2544,7 @@ function subscribePolls(){
     polls.reverse();
     if(tab === 'voting') renderVoting();
     updateAllBadges();
-  }, function(e){ console.warn('polls', e); });
+  }, function(e){});
   unsubPolls = function(){ ref.off('value', listener); };
 }
 function renderVoting(){
@@ -2624,8 +2562,7 @@ function renderVoting(){
     var expired = p.deadline > 0 && p.deadline < now;
     var totalVotes = toCount(p.votes);
     var myVote = (p.votes||{})[me.uid];
-    html += '<div class="poll-card">';
-    html += '<div style="display:flex;justify-content:space-between;align-items:start;gap:9px;margin-bottom:7px">';
+    html += '<div class="poll-card"><div style="display:flex;justify-content:space-between;align-items:start;gap:9px;margin-bottom:7px">';
     html += '<div style="font-size:15.5px;font-weight:900;line-height:1.35;flex:1;letter-spacing:-.01em">'+esc(p.title)+'</div>';
     html += '<span class="badge-pill '+(expired?'pill-gray':'pill-green')+'">'+(expired?'Selesai':'Aktif')+'</span></div>';
     if(p.description) html += '<div style="font-size:13px;color:#64748b;line-height:1.6;margin-bottom:9px">'+esc(p.description)+'</div>';
@@ -2698,7 +2635,7 @@ function openNewPoll(){
   };
 }
 
-// ================== PROFILE ==================
+// ============ PROFILE ============
 function renderProfile(){
   $('profileAvatar').innerHTML = avatarHtml(me, 70, 26);
   $('profileName').textContent = me.name;
@@ -2714,9 +2651,9 @@ function renderProfile(){
   $('adminPanel').classList.toggle('hide', !isAdmin());
   if(isAdmin()){
     var pending = reports.filter(function(r){ return r.status === 'pending'; }).length;
-    var b = $('reportCountBadge');
-    if(b) b.textContent = pending > 0 ? '(' + pending + ')' : '';
+    var b = $('reportCountBadge'); if(b) b.textContent = pending > 0 ? '(' + pending + ')' : '';
   }
+  refreshAiToggle();
 }
 $('editProfileBtn').onclick = function(){
   openModal('Edit Profil',
@@ -2758,8 +2695,7 @@ $('editProfileBtn').onclick = function(){
     $('headerAvatarBtn').innerHTML = avatarHtml(me, 32, 13); renderProfile(); toast('Foto direset');
   };
   $('saveProfBtn').onclick = async function(){
-    var n = $('editName').value.trim();
-    var b = $('editBlok').value.trim();
+    var n = $('editName').value.trim(); var b = $('editBlok').value.trim();
     if(n) me.name = n;
     me.blok = b;
     closeModal(); loader(true, 'Menyimpan...');
@@ -2809,9 +2745,7 @@ $('adminVerifyBtn').onclick = function(){
           '<select data-uid="'+u.uid+'" style="background:#f1f5f9;border:none;border-radius:9px;padding:7px 9px;font-size:12.5px;font-weight:700">'+
           '<option value="warga"'+(role==='warga'?' selected':'')+'>Warga</option>'+
           '<option value="admin"'+(role==='admin'?' selected':'')+'>Admin</option>'+
-          '<option value="blocked"'+(role==='blocked'?' selected':'')+'>Blockir</option>'+
-          '</select>')+
-      '</div>';
+          '<option value="blocked"'+(role==='blocked'?' selected':'')+'>Blockir</option></select>')+'</div>';
     }).join('');
     el.querySelectorAll('select[data-uid]').forEach(function(sel){
       sel.onchange = async function(){
@@ -2830,52 +2764,33 @@ $('adminReportsBtn').onclick = function(){
     var sorted = reports.slice().sort(function(a,b){ return (b.createdAt||0) - (a.createdAt||0); });
     var pending = sorted.filter(function(r){ return r.status === 'pending'; });
     var resolved = sorted.filter(function(r){ return r.status !== 'pending'; });
-    if(pending.length){
-      html += '<div style="font-size:12px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.12em;margin:0 0 10px">⏳ Menunggu ('+pending.length+')</div>';
-      pending.forEach(function(r){ html += renderReportItem(r, true); });
-    }
-    if(resolved.length){
-      html += '<div style="font-size:12px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.12em;margin:18px 0 10px">✅ Selesai ('+resolved.length+')</div>';
-      resolved.slice(0,10).forEach(function(r){ html += renderReportItem(r, false); });
-    }
+    if(pending.length){ html += '<div style="font-size:12px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.12em;margin:0 0 10px">⏳ Menunggu ('+pending.length+')</div>'; pending.forEach(function(r){ html += renderReportItem(r, true); }); }
+    if(resolved.length){ html += '<div style="font-size:12px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.12em;margin:18px 0 10px">✅ Selesai ('+resolved.length+')</div>'; resolved.slice(0,10).forEach(function(r){ html += renderReportItem(r, false); }); }
   }
   openModal('🚨 Laporan Warga', html);
-  document.querySelectorAll('#modalBody [data-view-post]').forEach(function(b){
-    b.onclick = function(){ closeModal(); setTimeout(function(){ openPostDetail(b.dataset.viewPost); }, 250); };
-  });
+  document.querySelectorAll('#modalBody [data-view-post]').forEach(function(b){ b.onclick = function(){ closeModal(); setTimeout(function(){ openPostDetail(b.dataset.viewPost); }, 250); }; });
   document.querySelectorAll('#modalBody [data-resolve]').forEach(function(b){
     b.onclick = async function(){
-      try {
-        await rtdb.ref('reports/' + b.dataset.pid + '/' + b.dataset.resolve).update({ status: 'resolved', resolvedAt: Date.now(), resolvedBy: me.uid });
-        logActivity('resolve_report', { reportId: b.dataset.resolve, postId: b.dataset.pid });
-        toast('Laporan diselesaikan'); closeModal();
-        setTimeout(function(){ $('adminReportsBtn').click(); }, 200);
-      } catch(e){ toast('Gagal', true); }
+      try { await rtdb.ref('reports/' + b.dataset.pid + '/' + b.dataset.resolve).update({ status: 'resolved', resolvedAt: Date.now(), resolvedBy: me.uid }); logActivity('resolve_report', { reportId: b.dataset.resolve, postId: b.dataset.pid }); toast('Laporan diselesaikan'); closeModal(); setTimeout(function(){ $('adminReportsBtn').click(); }, 200); }
+      catch(e){ toast('Gagal', true); }
     };
   });
   document.querySelectorAll('#modalBody [data-delete-post]').forEach(function(b){
     b.onclick = async function(){
       if(!confirm('Hapus postingan yang dilaporkan?')) return;
-      try {
-        await rtdb.ref('posts/' + b.dataset.deletePost).remove();
-        try { await rtdb.ref('comments/' + b.dataset.deletePost).remove(); } catch(e){}
-        logActivity('delete_post_by_report', { postId: b.dataset.deletePost });
-        toast('Postingan dihapus'); closeModal();
-      } catch(e){ toast('Gagal', true); }
+      try { await rtdb.ref('posts/' + b.dataset.deletePost).remove(); try { await rtdb.ref('comments/' + b.dataset.deletePost).remove(); } catch(e){} logActivity('delete_post_by_report', { postId: b.dataset.deletePost }); toast('Postingan dihapus'); closeModal(); }
+      catch(e){ toast('Gagal', true); }
     };
   });
 };
 function renderReportItem(r, isPending){
   var reasonName = { spam: '🚫 Spam', sara: '⚠️ SARA', bully: '😡 Menghina', napak: '🔞 Tidak Pantas', hoax: '📰 Hoaks', other: '❓ Lainnya' }[r.reason] || r.reason;
   var html = '<div style="background:#fff;border:1.5px solid '+(isPending?'rgba(244,63,94,.3)':'rgba(148,163,184,.2)')+';border-radius:14px;padding:14px;margin-bottom:10px">';
-  html += '<div style="display:flex;justify-content:space-between;align-items:start;gap:8px;margin-bottom:8px">';
-  html += '<span class="badge-pill '+(isPending?'pill-red':'pill-gray')+'">'+reasonName+'</span>';
-  html += '<span style="font-size:11.5px;color:#94a3b8;font-weight:700">'+timeAgo(r.createdAt)+'</span></div>';
+  html += '<div style="display:flex;justify-content:space-between;align-items:start;gap:8px;margin-bottom:8px"><span class="badge-pill '+(isPending?'pill-red':'pill-gray')+'">'+reasonName+'</span><span style="font-size:11.5px;color:#94a3b8;font-weight:700">'+timeAgo(r.createdAt)+'</span></div>';
   html += '<div style="font-size:13px;color:#0b1220;font-weight:700;margin-bottom:6px;line-height:1.5">📝 '+esc((r.postText||'').slice(0, 120))+'</div>';
   if(r.note) html += '<div style="font-size:12.5px;color:#475569;background:#f8fafc;padding:8px 10px;border-radius:9px;margin-bottom:8px;line-height:1.5">💬 '+esc(r.note)+'</div>';
   html += '<div style="font-size:11.5px;color:#94a3b8;margin-bottom:10px;font-weight:600">Post oleh: <b style="color:#0b1220">'+esc(r.postAuthor||'?')+'</b> · Dilaporkan oleh: <b style="color:#0b1220">'+esc(r.reporterName||'?')+'</b></div>';
-  html += '<div style="display:flex;gap:6px;flex-wrap:wrap">';
-  html += '<button data-view-post="'+r.postId+'" style="padding:8px 12px;border-radius:9px;background:#f1f5f9;color:#0b1220;font-size:12.5px;font-weight:700;border:none;cursor:pointer">👁️ Lihat Post</button>';
+  html += '<div style="display:flex;gap:6px;flex-wrap:wrap"><button data-view-post="'+r.postId+'" style="padding:8px 12px;border-radius:9px;background:#f1f5f9;color:#0b1220;font-size:12.5px;font-weight:700;border:none;cursor:pointer">👁️ Lihat Post</button>';
   if(isPending) html += '<button data-delete-post="'+r.postId+'" style="padding:8px 12px;border-radius:9px;background:rgba(244,63,94,.15);color:#f43f5e;font-size:12.5px;font-weight:700;border:none;cursor:pointer">🗑️ Hapus Post</button>';
   if(isPending) html += '<button data-resolve="'+r.id+'" data-pid="'+r.postId+'" style="padding:8px 12px;border-radius:9px;background:rgba(16,185,129,.15);color:#059669;font-size:12.5px;font-weight:700;border:none;cursor:pointer">✅ Selesai</button>';
   html += '</div></div>';
@@ -2885,9 +2800,7 @@ $('myCodeBtn').onclick = function(){
   var code = me.uid.toUpperCase();
   openModal('Kode Akun',
     '<p style="font-size:13.5px;color:#64748b;line-height:1.65;margin:0 0 16px;font-weight:500">Simpan kode ini untuk backup akun Anda.</p>'+
-    '<div style="background:#f8fafc;border-radius:16px;padding:18px;text-align:center;margin-bottom:14px;border:1px solid rgba(99,102,241,.15)">'+
-    '<div style="font-size:11.5px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.12em;margin-bottom:7px">Kode Akun</div>'+
-    '<div style="font-family:ui-monospace,monospace;font-size:20px;font-weight:900;letter-spacing:.18em;color:#6366f1;word-break:break-all">'+esc(code)+'</div></div>'+
+    '<div style="background:#f8fafc;border-radius:16px;padding:18px;text-align:center;margin-bottom:14px;border:1px solid rgba(99,102,241,.15)"><div style="font-size:11.5px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.12em;margin-bottom:7px">Kode Akun</div><div style="font-family:ui-monospace,monospace;font-size:20px;font-weight:900;letter-spacing:.18em;color:#6366f1;word-break:break-all">'+esc(code)+'</div></div>'+
     '<button type="button" id="copyCode" class="btn-p" style="width:100%">📋 Salin Kode</button>'
   );
   $('copyCode').onclick = async function(){ try { await navigator.clipboard.writeText(code); toast('Tersalin'); } catch(e){ toast('Gagal', true); } };
@@ -2895,11 +2808,10 @@ $('myCodeBtn').onclick = function(){
 $('switchAccBtn').onclick = function(){
   openModal('Ganti Akun',
     '<div style="padding:15px;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.32);border-radius:16px;margin-bottom:16px">'+
-    '<div style="font-size:13.5px;font-weight:800;color:#92400e;margin-bottom:6px">⚠️ Perhatian</div>'+
-    '<div style="font-size:13px;color:#78350f;line-height:1.65;font-weight:500">Login dengan akun berbeda akan jadi warga baru (perlu verifikasi ulang).</div></div>'+
+    '<div style="font-size:13.5px;font-weight:800;color:#92400e;margin-bottom:6px">⚠️ Perhatian</div><div style="font-size:13px;color:#78350f;line-height:1.65;font-weight:500">Login dengan akun berbeda akan jadi warga baru (perlu verifikasi ulang).</div></div>'+
     '<button type="button" id="switchYes" style="width:100%;padding:14px;border-radius:13px;background:#f59e0b;color:white;font-size:14px;font-weight:800;border:none;cursor:pointer">Ya, Ganti Akun</button>'
   );
-  $('switchYes').onclick = async function(){ clearPreferred(); cleanSubs(); await auth.signOut(); location.reload(); };
+  $('switchYes').onclick = async function(){ try { localStorage.removeItem('spark_pref_email'); } catch(e){} cleanSubs(); await auth.signOut(); location.reload(); };
 };
 $('backupBtn').onclick = async function(){
   loader(true, 'Menyiapkan backup...');
@@ -2973,10 +2885,19 @@ $('modal').addEventListener('click', function(e){ if(e.target.id === 'modal') cl
 $('lbClose').onclick = function(){ $('lightbox').classList.remove('on'); };
 $('lightbox').onclick = function(e){ if(e.target.id === 'lightbox') this.classList.remove('on'); };
 
-// ================== NOTIF PANEL WIRE ==================
+// ============ NOTIF WIRE ============
 $('bellBtn').onclick = openNotifPanel;
 $('notifBack').onclick = closeNotifPanel;
 $('notifMarkAll').onclick = markAllNotifsRead;
+
+// ============ AI TOGGLE WIRE ============
+$('aiToggle').onclick = function(){
+  var cur = localStorage.getItem('spark_ai') !== 'off';
+  localStorage.setItem('spark_ai', cur ? 'off' : 'on');
+  refreshAiToggle();
+  toast(cur ? '🤖 AI dimatikan' : '🤖 AI diaktifkan');
+};
+refreshAiToggle();
 
 function cleanSubs(){
   try { unsubFeed && unsubFeed(); } catch(e){}
@@ -2988,7 +2909,6 @@ function cleanSubs(){
   if(countdownTimer) clearInterval(countdownTimer);
   if(miniCountdownTimer) clearInterval(miniCountdownTimer);
   if(commentNotifTimer) clearInterval(commentNotifTimer);
-  commentNotifTimer = null;
   unsubFeed = unsubUsers = unsubPolls = unsubConfig = unsubReports = unsubNotifs = null;
 }
 
@@ -3002,9 +2922,7 @@ if('serviceWorker' in navigator){
         if(url.indexOf('firebase-messaging-sw.js') === -1) reg.unregister();
       });
     });
-    navigator.serviceWorker.register(swUrl, { scope: basePath })
-      .then(function(reg){ console.log('✅ FCM SW registered:', reg.scope); })
-      .catch(function(err){ console.error('❌ FCM SW failed:', err); });
+    navigator.serviceWorker.register(swUrl, { scope: basePath }).then(function(reg){ console.log('✅ FCM SW:', reg.scope); }).catch(function(err){ console.error('❌ FCM SW:', err); });
   });
   navigator.serviceWorker.addEventListener('message', function(e){
     if(e.data && e.data.type === 'OPEN_POST' && e.data.postId){
@@ -3013,6 +2931,7 @@ if('serviceWorker' in navigator){
   });
 }
 
+// ============ POLLING FALLBACK ============
 var lastPollTime = parseInt(localStorage.getItem('spark_last_poll') || '0', 10);
 var pollInterval = null;
 function startPolling(){
@@ -3047,7 +2966,7 @@ function startPolling(){
       }
       lastPollTime = newestTime;
       if(newestTime > 0) localStorage.setItem('spark_last_poll', newestTime.toString());
-    }).catch(function(e){ console.warn('poll error', e); });
+    }).catch(function(e){});
   }
   checkNewPosts();
   pollInterval = setInterval(function(){ if(document.hidden) return; checkNewPosts(); }, 15000);
