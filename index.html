@@ -784,7 +784,7 @@ async function sendChatMessage(text){
 
   try {
     var ctrl = new AbortController();
-    var to = setTimeout(function(){ ctrl.abort(); }, 25000);
+    var to = setTimeout(function(){ ctrl.abort(); }, 45000);
     console.log('[Chat] POST →', AI_WEBAPP_URL);
     var res = await fetch(AI_WEBAPP_URL, {
       method: 'POST',
