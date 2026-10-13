@@ -573,11 +573,29 @@ body.dark .typing{background:#101a2e}
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging-compat.js"></script>
 
 <script>
-var FB = {apiKey:"AIzaSyCEttPAa6glm2qHUw3_QIcj2C8qqB9ZwOI",authDomain:"spark-61d51.firebaseapp.com",databaseURL:"https://spark-61d51-default-rtdb.asia-southeast1.firebasedatabase.app/",projectId:"spark-61d51",storageBucket:"spark-61d51.firebasestorage.app",messagingSenderId:"618121526268",appId:"1:618121526268:web:439521109a847c9ec25079"};
+// ============================================================
+// KONFIGURASI — Firebase
+// ============================================================
+var FB = {
+  apiKey: "AIzaSyCEttPAa6glm2qHUw3_QIcj2C8qqB9ZwOI",
+  authDomain: "spark-61d51.firebaseapp.com",
+  databaseURL: "https://spark-61d51-default-rtdb.asia-southeast1.firebasedatabase.app/",
+  projectId: "spark-61d51",
+  storageBucket: "spark-61d51.firebasestorage.app",
+  messagingSenderId: "618121526268",
+  appId: "1:618121526268:web:439521109a847c9ec25079"
+};
 var BOOTSTRAP_ADMIN_EMAIL = "ngudiartosinarutama@gmail.com";
 var VAPID_KEY = "BCLp9zYnmE6YeGU8g_BOla0B0wvAPIUdXfKaFZ_1Vlak7AkUWQ_8m50UkGiiaLbnE2BjyKYymiBq5V_MzYWcEvE";
-var AI_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbymjnNKMeJG-c52-pg6HCncnoHP2N01kYcShpzsCITIkttF0i4rfl-Na33bQ0O4n0I/exec";
 
+// ============================================================
+// KONFIGURASI — Google Apps Script Web App URL
+// ============================================================
+var AI_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbzOt9em2BGunSzateKt1O3Fi-1a64pk2t2v3W-e6EbR22Q7da_z4-SqCiQmQI1u2Pnf/exec";
+
+// ============================================================
+// UTILITAS
+// ============================================================
 function $(id){ return document.getElementById(id); }
 function show(id){ var e = $(id); if(e) e.classList.remove('hide'); }
 function hide(id){ var e = $(id); if(e) e.classList.add('hide'); }
@@ -615,6 +633,9 @@ function avatarHtml(user, size, fontSize, clickable){
   return '<div class="'+cls+'" style="width:'+size+'px;height:'+size+'px;font-size:'+fontSize+'px"'+dataAttr+'>'+esc(initial)+'</div>';
 }
 
+// ============================================================
+// INISIALISASI FIREBASE
+// ============================================================
 firebase.initializeApp(FB);
 var auth = firebase.auth();
 var rtdb = firebase.database();
@@ -623,6 +644,9 @@ auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(function(){});
 var messaging = null;
 try { messaging = firebase.messaging(); } catch(e){}
 
+// ============================================================
+// STATE GLOBAL
+// ============================================================
 var me = null, tab = 'home', activeCat = 'umum';
 var feed = [], users = [], polls = [], reports = [];
 var appConfig = { inviteCode: '' };
@@ -644,7 +668,9 @@ function getSeenPosts(){ if(!me || !me.uid) return {}; try { return JSON.parse(l
 function markPostSeen(pid){ if(!me || !me.uid || !pid) return; var seen = getSeenPosts(); seen[pid] = Date.now(); var keys = Object.keys(seen); if(keys.length > 500){ keys.sort(function(a,b){ return seen[b] - seen[a]; }); var ns = {}; for(var i = 0; i < 300; i++) ns[keys[i]] = seen[keys[i]]; seen = ns; } try { localStorage.setItem('spark_seen_posts_'+me.uid, JSON.stringify(seen)); } catch(e){} }
 function markCatSeen(cat){ if(!me || !me.uid) return; var seen = getSeenPosts(); var changed = false; feed.forEach(function(p){ if((p.category||'umum') === cat && p.authorId !== me.uid && !seen[p.id]){ seen[p.id] = Date.now(); changed = true; } }); if(changed){ try { localStorage.setItem('spark_seen_posts_'+me.uid, JSON.stringify(seen)); } catch(e){} } }
 
-// ============ AI CORE ============
+// ============================================================
+// AI CORE
+// ============================================================
 function aiEnabled(){
   if(localStorage.getItem('spark_ai') === 'off') return false;
   if(!AI_WEBAPP_URL || AI_WEBAPP_URL.length < 30) return false;
@@ -662,7 +688,7 @@ async function aiCall(action, text){
   var payload = { action: action, text: text.slice(0, 1500), clientId: clientId };
   try {
     var ctrl = new AbortController();
-    var to = setTimeout(function(){ ctrl.abort(); }, 15000);
+    var to = setTimeout(function(){ ctrl.abort(); }, 45000);
     var res = await fetch(AI_WEBAPP_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
@@ -686,7 +712,9 @@ async function aiKategorisasi(text){
   return result.kategori;
 }
 
-// ============ FITUR #2 — CHATBOT ============
+// ============================================================
+// CHATBOT
+// ============================================================
 var chatHistory = [];
 var _chatBusy = false;
 var _chatLastSent = 0;
@@ -727,7 +755,6 @@ function hideChatTyping(){ var t = $('chatTyping'); if(t) t.remove(); }
 function openChat(){ $('chatOv').classList.add('on'); loadChatHistory(); renderChat(); setTimeout(function(){ $('chatInput').focus(); }, 300); }
 function closeChat(){ $('chatOv').classList.remove('on'); }
 
-// ============ CHAT SEND — POST (FIX URL PANJANG) ============
 async function sendChatMessage(text){
   if(!text || !text.trim()) return;
   var q = text.trim();
@@ -763,7 +790,6 @@ async function sendChatMessage(text){
   $('chatInput').style.height = 'auto';
   showChatTyping();
 
-  // Siapkan konteks
   var ctxPost = feed.slice(0, 8).map(function(p){
     return { text: (p.text||'').slice(0, 80), category: p.category, authorName: p.authorName, eventDate: p.eventDate || 0 };
   });
@@ -773,7 +799,6 @@ async function sendChatMessage(text){
 
   var clientId = (me && me.uid) ? me.uid.substring(0, 20) : 'anon';
 
-  // ✅ POST dengan body — tidak ada limit URL
   var payload = {
     action: 'chatbot',
     text: q.slice(0, 300),
@@ -831,26 +856,15 @@ async function sendChatMessage(text){
     hideChatTyping();
     var msg = 'Koneksi bermasalah.';
     if(e && e.name === 'AbortError') msg = 'Timeout. Server terlalu lama.';
+    msg += ' (' + (e.message || e.name || 'Unknown') + ')';
     chatHistory.push({ role: 'bot', text: msg + ' Coba lagi ya.', t: Date.now() });
     saveChatHistory(); renderChat();
   } finally { _chatBusy = false; }
 }
 
-$('chatFab').onclick = openChat;
-$('chatBack').onclick = closeChat;
-$('chatClear').onclick = function(){
-  if(!confirm('Reset riwayat chat?')) return;
-  chatHistory = [];
-  var uid = (me && me.uid) || 'anon';
-  try { localStorage.removeItem('spark_chat_' + uid); } catch(e){}
-  loadChatHistory(); renderChat();
-};
-$('chatSend').onclick = function(){ sendChatMessage($('chatInput').value); };
-$('chatInput').addEventListener('input', function(e){ e.target.style.height = 'auto'; e.target.style.height = Math.min(e.target.scrollHeight, 80) + 'px'; });
-$('chatInput').addEventListener('keydown', function(e){ if(e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); $('chatSend').click(); } });
-document.querySelectorAll('#chatQuick button').forEach(function(b){ b.onclick = function(){ sendChatMessage(b.dataset.q); }; });
-
-// ============ FITUR #5 — REMINDER EVENT ============
+// ============================================================
+// EVENT REMINDER
+// ============================================================
 function checkEventReminders(){
   if(!me || !me.uid || !feed.length) return;
   var now = Date.now();
@@ -871,7 +885,9 @@ function checkEventReminders(){
   });
 }
 
-// ============ EXTRACT EVENT — POST (FIX) ============
+// ============================================================
+// EXTRACT EVENT
+// ============================================================
 var _eventExtractQueue = {};
 async function extractEventDariTeks(pid, teks){
   if(!aiEnabled() || !teks || teks.length < 25) return;
@@ -920,7 +936,9 @@ async function extractEventDariTeks(pid, teks){
   _eventExtractQueue[pid] = false;
 }
 
-// ============ NOTIF ============
+// ============================================================
+// NOTIFIKASI
+// ============================================================
 function subscribeNotifications(){
   if(!me || !me.uid) return;
   if(unsubNotifs){ try { unsubNotifs(); } catch(e){} }
@@ -995,7 +1013,9 @@ function checkLikeNotifications(silent){ if(!me || !me.uid) return; var changed 
 async function checkCommentNotifications(silent){ if(!me || !me.uid) return; var myPosts = feed.filter(function(p){ return p.authorId === me.uid && (Date.now() - (p.createdAt || 0)) < POST_NOTIF_MAX_AGE_MS; }).slice(0, 5); var changed = false; for(var i = 0; i < myPosts.length; i++){ var p = myPosts[i]; try { var snap = await rtdb.ref('comments/' + p.id).orderByChild('createdAt').limitToLast(30).once('value'); if(!seenComments[p.id]) seenComments[p.id] = {}; snap.forEach(function(c){ var cid = c.key, data = c.val() || {}; if(data.authorId === me.uid) return; if(seenComments[p.id][cid]) return; seenComments[p.id][cid] = Date.now(); changed = true; }); } catch(e){} } if(changed){ saveNotifState(); debouncedRender('grid-refresh', function(){ if(tab === 'category') renderCategory(); if(tab === 'home') renderHome(); }, 250); } }
 function startCommentNotifPolling(){ if(commentNotifTimer) clearInterval(commentNotifTimer); setTimeout(function(){ if(feed.length) checkCommentNotifications(true); }, 6000); commentNotifTimer = setInterval(function(){ if(document.hidden) return; if(feed.length) checkCommentNotifications(true); }, 30000); }
 
-// ============ THEME, SOUND, FCM ============
+// ============================================================
+// THEME, SOUND, FCM
+// ============================================================
 function applyTheme(t){ document.documentElement.classList.toggle('dark', t==='dark'); document.body.classList.toggle('dark', t==='dark'); if($('themeIconDark')) $('themeIconDark').style.display = t==='dark' ? 'none' : 'block'; if($('themeIconLight')) $('themeIconLight').style.display = t==='dark' ? 'block' : 'none'; var meta = document.querySelector('meta[name=theme-color]'); if(meta) meta.content = t==='dark' ? '#070b14' : '#f5f7fb'; }
 applyTheme(localStorage.getItem('spark_theme') || 'light');
 $('themeBtn').onclick = function(){ var cur = localStorage.getItem('spark_theme') || 'light'; var nxt = cur === 'light' ? 'dark' : 'light'; localStorage.setItem('spark_theme', nxt); applyTheme(nxt); };
@@ -1029,7 +1049,9 @@ function initFCM(){
 $('notifBtn').onclick = function(){ if(!me || !me.uid) return toast('Login dulu', true); initFCM(); };
 if(messaging){ messaging.onMessage(function(payload){ var title = (payload.notification && payload.notification.title) || 'RT09 RW04'; var body = (payload.notification && payload.notification.body) || 'Ada aktivitas baru'; toast(title + ' — ' + body, false); playChime(); if(navigator.vibrate) try { navigator.vibrate([400, 200, 200, 400]); } catch(e){} }); }
 
-// ============ TABS ============
+// ============================================================
+// NAVIGASI TAB
+// ============================================================
 function setTab(t){
   tab = t;
   ['home','category','post','warga','voting','profile'].forEach(function(x){ var el = $('view-'+x); if(!el) return; if(x === 'post'){ el.classList.toggle('on', x === t); el.classList.toggle('hide', x !== t); } else el.classList.toggle('hide', x !== t); });
@@ -1069,7 +1091,9 @@ $('rulesBtn').onclick = function(){
 };
 function maybeShowRulesFirstTime(){ if(localStorage.getItem('spark_rules_seen') === '1') return; setTimeout(function(){ $('rulesBtn').click(); localStorage.setItem('spark_rules_seen', '1'); }, 1500); }
 
-// ============ SEARCH ============
+// ============================================================
+// SEARCH
+// ============================================================
 var searchScope = 'all', searchQuery = '';
 function openSearch(){ $('searchOv').classList.add('on'); setTimeout(function(){ $('searchInput').focus(); }, 200); }
 function closeSearch(){ $('searchOv').classList.remove('on'); $('searchInput').value = ''; searchQuery = ''; renderSearchResults(); }
@@ -1106,7 +1130,9 @@ function renderSearchPostCard(p, q){
   return '<div class="post-card" data-search-pid="'+p.id+'"><div class="strip '+stripCls+'"></div>'+(firstImg ? '<div class="thumb"><img src="data:image/jpeg;base64,'+firstImg+'" loading="lazy"/></div>' : '')+'<div class="body"><div class="title">'+highlightText(preview, q)+'</div><div class="meta"><span>'+({umum:'💬',informasi:'📢',galeri:'📷'})[cat]+' '+esc(p.authorName||'')+'</span><span style="margin-left:auto">'+timeAgo(p.createdAt)+'</span></div></div></div>';
 }
 
-// ============ USER PROFILE ============
+// ============================================================
+// PROFIL WARGA
+// ============================================================
 function viewUserProfile(uid){
   if(!uid) return;
   var u = users.filter(function(x){ return x.uid === uid || x.id === uid; })[0];
@@ -1137,7 +1163,9 @@ function sharePost(p){
   else { window.open('https://wa.me/?text=' + encodeURIComponent(message), '_blank'); }
 }
 
-// ============ BADGE/HOME ============
+// ============================================================
+// BADGE & HOME
+// ============================================================
 function computeCatStats(cat){ var seen = getSeenPosts(); var newPosts = 0; feed.forEach(function(p){ if((p.category||'umum') !== cat) return; if(p.authorId === me.uid) return; if(seen[p.id]) return; newPosts++; }); return { newPosts: newPosts }; }
 function updateAllBadges(){
   if(!me) return;
@@ -1214,7 +1242,9 @@ function startMiniCountdowns(){
   tick(); miniCountdownTimer = setInterval(tick, 1000);
 }
 
-// ============ AUTH ============
+// ============================================================
+// AUTH
+// ============================================================
 auth.onAuthStateChanged(function(user){
   if(user){
     me = { uid: user.uid, name: user.displayName || (user.email||'').split('@')[0] || 'Warga', email: user.email || '', photoURL: user.photoURL || null, avatarBase64: null, role: 'warga', verified: false, fcmToken: null };
@@ -1562,7 +1592,9 @@ function startCountdown(){
   tick(); countdownTimer = setInterval(tick, 1000);
 }
 
-// ============ COMPOSE ============
+// ============================================================
+// COMPOSE
+// ============================================================
 $('fab').onclick = function(){ openCompose(activeCat); };
 $('catEmptyBtn').onclick = function(){ openCompose(activeCat); };
 function openCompose(cat){
@@ -1612,7 +1644,9 @@ function updateComposeUI(){
 document.querySelectorAll('#composeCats .cat-btn').forEach(function(b){ b.onclick = function(){ composeCat = b.dataset.c; updateComposeUI(); hide('aiSuggest'); }; });
 document.querySelectorAll('#topicWrap .topic-chip').forEach(function(b){ b.onclick = function(){ composeTopic = b.dataset.t; document.querySelectorAll('#topicWrap .topic-chip').forEach(function(x){ x.classList.toggle('on', x === b); }); }; });
 
-// ============ AI AUTO-KATEGORISASI ============
+// ============================================================
+// AI AUTO-KATEGORISASI
+// ============================================================
 $('composeText').addEventListener('input', function(){
   checkReady();
   if(!aiEnabled() || editingPostId) return;
@@ -1636,7 +1670,9 @@ $('composeText').addEventListener('input', function(){
   }, 2000);
 });
 
-// ============ COMPOSE SUBMIT ============
+// ============================================================
+// COMPOSE SUBMIT
+// ============================================================
 $('imgInput').onchange = async function(e){
   var files = Array.from(e.target.files || []); e.target.value = '';
   if(!files.length || uploading) return;
@@ -1674,7 +1710,6 @@ $('composePost').onclick = async function(){
     if(ref && ref.key) markPostSeen(ref.key);
     logActivity('create_post', { postId: ref.key, category: composeCat });
 
-    // Auto-extract event dari teks (background)
     if(ref && ref.key && text.length >= 25){ extractEventDariTeks(ref.key, text); }
 
     $('composeSheet').style.display = 'none'; hide('aiSuggest'); hide('aiKatBadge');
@@ -1684,7 +1719,9 @@ $('composePost').onclick = async function(){
   finally { $('composeBtnText').textContent = 'Kirim'; }
 };
 
-// ============ WARGA ============
+// ============================================================
+// WARGA
+// ============================================================
 function subscribeUsers(){
   if(unsubUsers){ try { unsubUsers(); } catch(e){} }
   var ref = rtdb.ref('users').orderByChild('lastSeen').limitToLast(200);
@@ -1708,7 +1745,9 @@ function renderWargaList(){
   el.querySelectorAll('[data-uid]').forEach(function(row){ row.onclick = function(){ viewUserProfile(row.dataset.uid); }; });
 }
 
-// ============ VOTING ============
+// ============================================================
+// VOTING
+// ============================================================
 function subscribePolls(){
   if(unsubPolls){ try { unsubPolls(); } catch(e){} }
   var ref = rtdb.ref('polls').orderByChild('createdAt').limitToLast(50);
@@ -1781,7 +1820,9 @@ function openNewPoll(){
   };
 }
 
-// ============ PROFILE ============
+// ============================================================
+// PROFILE
+// ============================================================
 function renderProfile(){
   $('profileAvatar').innerHTML = avatarHtml(me, 70, 26);
   $('profileName').textContent = me.name;
@@ -1985,6 +2026,9 @@ function cleanSubs(){
   unsubFeed = unsubUsers = unsubPolls = unsubConfig = unsubReports = unsubNotifs = null;
 }
 
+// ============================================================
+// SERVICE WORKER
+// ============================================================
 if('serviceWorker' in navigator){
   window.addEventListener('load', function(){
     var basePath = getBasePath(); var swUrl = basePath + 'firebase-messaging-sw.js';
@@ -1994,6 +2038,9 @@ if('serviceWorker' in navigator){
   navigator.serviceWorker.addEventListener('message', function(e){ if(e.data && e.data.type === 'OPEN_POST' && e.data.postId){ setTimeout(function(){ if(typeof openPostDetail === 'function') openPostDetail(e.data.postId); }, 800); } });
 }
 
+// ============================================================
+// POLLING NOTIFIKASI
+// ============================================================
 var lastPollTime = parseInt(localStorage.getItem('spark_last_poll') || '0', 10);
 var pollInterval = null;
 function startPolling(){
