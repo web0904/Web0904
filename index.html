@@ -809,54 +809,59 @@ async function sendChatMessage(text){
   };
 
   try {
-    var ctrl = new AbortController();
-    var to = setTimeout(function(){ ctrl.abort(); }, 45000);
-    var res = await fetch(AI_WEBAPP_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify(payload),
-      redirect: 'follow',
-      signal: ctrl.signal
-    });
-    clearTimeout(to);
-    if(!res.ok){
-      hideChatTyping();
-      chatHistory.push({ role: 'bot', text: 'Server error ' + res.status + '. Coba lagi.', t: Date.now() });
-      saveChatHistory(); renderChat();
-      _chatBusy = false;
-      return;
-    }
-    var rawText = await res.text();
-    var cleanText = rawText.replace(/^\uFEFF/, '').replace(/^\)\]\}'\n/, '');
-    var data;
-    try { data = JSON.parse(cleanText); }
-    catch(pe){
-      hideChatTyping();
-      chatHistory.push({ role: 'bot', text: 'Response tidak valid. Cek Apps Script.', t: Date.now() });
-      saveChatHistory(); renderChat();
-      _chatBusy = false;
-      return;
-    }
+  var ctrl = new AbortController();
+  // ★ Timeout 90 detik (dari 45 detik)
+  var to = setTimeout(function(){ ctrl.abort(); }, 90000);
+  console.log('[Chat] POST →', AI_WEBAPP_URL);
+  var res = await fetch(AI_WEBAPP_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify(payload),
+    redirect: 'follow',
+    signal: ctrl.signal
+  });
+  clearTimeout(to);
+  console.log('[Chat] HTTP', res.status);
+  if(!res.ok){
     hideChatTyping();
-    if(data && data.ok && data.data && data.data.jawaban){
-      var jawaban = data.data.jawaban;
-      chatHistory.push({ role: 'bot', text: jawaban, t: Date.now() });
-      try { localStorage.setItem(cacheKey, jawaban); } catch(e){}
-    } else if(data && data.error){
-      chatHistory.push({ role: 'bot', text: '⚠️ ' + data.error, t: Date.now() });
-    } else {
-      chatHistory.push({ role: 'bot', text: 'Maaf, tidak bisa menjawab sekarang. Coba lagi 🙏', t: Date.now() });
-    }
+    chatHistory.push({ role: 'bot', text: 'Server error ' + res.status + '. Coba lagi.', t: Date.now() });
     saveChatHistory(); renderChat();
-  } catch(e){
+    _chatBusy = false;
+    return;
+  }
+  var rawText = await res.text();
+  console.log('[Chat] Raw:', rawText.substring(0, 200));
+  var cleanText = rawText.replace(/^\uFEFF/, '').replace(/^\)\]\}'\n/, '');
+  var data;
+  try { data = JSON.parse(cleanText); }
+  catch(pe){
+    console.error('[Chat] Bukan JSON:', cleanText.substring(0, 300));
     hideChatTyping();
-    var msg = 'Koneksi bermasalah.';
-    if(e && e.name === 'AbortError') msg = 'Timeout. Server terlalu lama.';
-    msg += ' (' + (e.message || e.name || 'Unknown') + ')';
-    chatHistory.push({ role: 'bot', text: msg + ' Coba lagi ya.', t: Date.now() });
+    chatHistory.push({ role: 'bot', text: 'Response tidak valid. Cek Apps Script.', t: Date.now() });
     saveChatHistory(); renderChat();
-  } finally { _chatBusy = false; }
-}
+    _chatBusy = false;
+    return;
+  }
+  hideChatTyping();
+  if(data && data.ok && data.data && data.data.jawaban){
+    var jawaban = data.data.jawaban;
+    chatHistory.push({ role: 'bot', text: jawaban, t: Date.now() });
+    try { localStorage.setItem(cacheKey, jawaban); } catch(e){}
+  } else if(data && data.error){
+    chatHistory.push({ role: 'bot', text: '⚠️ ' + data.error, t: Date.now() });
+  } else {
+    chatHistory.push({ role: 'bot', text: 'Maaf, tidak bisa menjawab sekarang. Coba lagi 🙏', t: Date.now() });
+  }
+  saveChatHistory(); renderChat();
+} catch(e){
+  console.error('[Chat] Error:', e);
+  hideChatTyping();
+  var msg = 'Koneksi bermasalah.';
+  if(e && e.name === 'AbortError') msg = 'Server RT sedang sibuk. Tunggu sebentar lalu coba lagi ya.';
+  chatHistory.push({ role: 'bot', text: msg, t: Date.now() });
+  saveChatHistory(); renderChat();
+} finally { _chatBusy = false; }
+
 
 // Binding tombol chat
 (function bindChatFab(){
