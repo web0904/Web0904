@@ -571,14 +571,27 @@ body.dark .typing{background:#101a2e}
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging-compat.js"></script>
 
 <script>
+// ============================================================
+// GLOBAL ERROR HANDLER
+// ============================================================
 window.addEventListener('error', function(e){ console.error('❌ Global error:', e.message, 'at line', e.lineno); });
 window.addEventListener('unhandledrejection', function(e){ console.error('❌ Promise error:', e.reason); });
 
+// ============================================================
+// KONFIGURASI FIREBASE
+// ============================================================
 var FB = {apiKey:"AIzaSyCEttPAa6glm2qHUw3_QIcj2C8qqB9ZwOI",authDomain:"spark-61d51.firebaseapp.com",databaseURL:"https://spark-61d51-default-rtdb.asia-southeast1.firebasedatabase.app/",projectId:"spark-61d51",storageBucket:"spark-61d51.firebasestorage.app",messagingSenderId:"618121526268",appId:"1:618121526268:web:439521109a847c9ec25079"};
 var BOOTSTRAP_ADMIN_EMAIL = "ngudiartosinarutama@gmail.com";
 var VAPID_KEY = "BCLp9zYnmE6YeGU8g_BOla0B0wvAPIUdXfKaFZ_1Vlak7AkUWQ_8m50UkGiiaLbnE2BjyKYymiBq5V_MzYWcEvE";
+
+// ============================================================
+// URL WEB APP GOOGLE APPS SCRIPT
+// ============================================================
 var AI_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbzOt9em2BGunSzateKt1O3Fi-1a64pk2t2v3W-e6EbR22Q7da_z4-SqCiQmQI1u2Pnf/exec";
 
+// ============================================================
+// UTILITAS
+// ============================================================
 function $(id){ return document.getElementById(id); }
 function show(id){ var e = $(id); if(e) e.classList.remove('hide'); }
 function hide(id){ var e = $(id); if(e) e.classList.add('hide'); }
@@ -616,6 +629,9 @@ function avatarHtml(user, size, fontSize, clickable){
   return '<div class="'+cls+'" style="width:'+size+'px;height:'+size+'px;font-size:'+fontSize+'px"'+dataAttr+'>'+esc(initial)+'</div>';
 }
 
+// ============================================================
+// INIT FIREBASE
+// ============================================================
 firebase.initializeApp(FB);
 var auth = firebase.auth();
 var rtdb = firebase.database();
@@ -624,6 +640,9 @@ auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(function(){});
 var messaging = null;
 try { messaging = firebase.messaging(); } catch(e){}
 
+// ============================================================
+// STATE
+// ============================================================
 var me = null, tab = 'home', activeCat = 'umum';
 var feed = [], users = [], polls = [], reports = [];
 var appConfig = { inviteCode: '' };
@@ -655,7 +674,6 @@ function aiEnabled(){
 }
 function _aiHash(prefix, text){ var s = prefix + '|' + String(text).slice(0, 300); var h = 0; for(var i = 0; i < s.length; i++){ h = ((h << 5) - h) + s.charCodeAt(i); h |= 0; } return prefix + '_' + h; }
 
-// ★★★ FUNGSI BARU: Bersihkan cache chat (dipanggil setelah post baru) ★★★
 function clearChatCache(){
   try {
     Object.keys(localStorage).forEach(function(k){
@@ -676,7 +694,7 @@ async function aiCall(action, text){
   var payload = { action: action, text: text.slice(0, 1500), clientId: clientId };
   try {
     var ctrl = new AbortController();
-    var to = setTimeout(function(){ ctrl.abort(); }, 45000);
+    var to = setTimeout(function(){ ctrl.abort(); }, 60000);
     var res = await fetch(AI_WEBAPP_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
@@ -749,11 +767,11 @@ function openChat(){
     loadChatHistory();
     renderChat();
     setTimeout(function(){ try { document.getElementById('chatInput').focus(); } catch(e){} }, 300);
+    console.log('✅ Chat terbuka');
   } catch(err){ console.error('openChat error:', err); }
 }
 function closeChat(){ var ov = document.getElementById('chatOv'); if(ov){ ov.classList.remove('on'); ov.style.display = ''; } }
 
-// ★★★ FUNGSI sendChatMessage dengan cache version-aware ★★★
 async function sendChatMessage(text){
   if(!text || !text.trim()) return;
   var q = text.trim();
@@ -769,7 +787,7 @@ async function sendChatMessage(text){
   _chatBusy = true;
   _chatLastSent = Date.now();
 
-  // ★★★ CACHE VERSION-AWARE: cache invalid otomatis kalau feed berubah ★★★
+  // Cache version-aware
   var feedVersion = feed.length > 0 ? ((feed[0].id || '') + '_' + feed.length) : 'empty';
   var cacheKey = 'chatcache_' + _aiHash('c', q + '|' + feedVersion);
   try {
@@ -799,7 +817,6 @@ async function sendChatMessage(text){
   });
 
   var clientId = (me && me.uid) ? me.uid.substring(0, 20) : 'anon';
-
   var payload = {
     action: 'chatbot',
     text: q.slice(0, 300),
@@ -809,61 +826,61 @@ async function sendChatMessage(text){
   };
 
   try {
-  var ctrl = new AbortController();
-  // ★ Timeout 90 detik (dari 45 detik)
-  var to = setTimeout(function(){ ctrl.abort(); }, 90000);
-  console.log('[Chat] POST →', AI_WEBAPP_URL);
-  var res = await fetch(AI_WEBAPP_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-    body: JSON.stringify(payload),
-    redirect: 'follow',
-    signal: ctrl.signal
-  });
-  clearTimeout(to);
-  console.log('[Chat] HTTP', res.status);
-  if(!res.ok){
+    var ctrl = new AbortController();
+    // ★ TIMEOUT 90 DETIK (naik dari 45 detik)
+    var to = setTimeout(function(){ ctrl.abort(); }, 90000);
+    console.log('[Chat] POST →', AI_WEBAPP_URL);
+    var res = await fetch(AI_WEBAPP_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(payload),
+      redirect: 'follow',
+      signal: ctrl.signal
+    });
+    clearTimeout(to);
+    console.log('[Chat] HTTP', res.status);
+    if(!res.ok){
+      hideChatTyping();
+      chatHistory.push({ role: 'bot', text: 'Server sedang sibuk. Coba lagi ya 🙏', t: Date.now() });
+      saveChatHistory(); renderChat();
+      _chatBusy = false;
+      return;
+    }
+    var rawText = await res.text();
+    console.log('[Chat] Raw:', rawText.substring(0, 200));
+    var cleanText = rawText.replace(/^\uFEFF/, '').replace(/^\)\]\}'\n/, '');
+    var data;
+    try { data = JSON.parse(cleanText); }
+    catch(pe){
+      console.error('[Chat] Bukan JSON:', cleanText.substring(0, 300));
+      hideChatTyping();
+      chatHistory.push({ role: 'bot', text: 'Maaf, server mengirim response tidak valid. Coba lagi 🙏', t: Date.now() });
+      saveChatHistory(); renderChat();
+      _chatBusy = false;
+      return;
+    }
     hideChatTyping();
-    chatHistory.push({ role: 'bot', text: 'Server error ' + res.status + '. Coba lagi.', t: Date.now() });
+    if(data && data.ok && data.data && data.data.jawaban){
+      var jawaban = data.data.jawaban;
+      chatHistory.push({ role: 'bot', text: jawaban, t: Date.now() });
+      try { localStorage.setItem(cacheKey, jawaban); } catch(e){}
+    } else if(data && data.error){
+      chatHistory.push({ role: 'bot', text: '⚠️ ' + data.error, t: Date.now() });
+    } else {
+      chatHistory.push({ role: 'bot', text: 'Maaf, tidak bisa menjawab sekarang. Coba lagi 🙏', t: Date.now() });
+    }
     saveChatHistory(); renderChat();
-    _chatBusy = false;
-    return;
-  }
-  var rawText = await res.text();
-  console.log('[Chat] Raw:', rawText.substring(0, 200));
-  var cleanText = rawText.replace(/^\uFEFF/, '').replace(/^\)\]\}'\n/, '');
-  var data;
-  try { data = JSON.parse(cleanText); }
-  catch(pe){
-    console.error('[Chat] Bukan JSON:', cleanText.substring(0, 300));
+  } catch(e){
+    console.error('[Chat] Error:', e);
     hideChatTyping();
-    chatHistory.push({ role: 'bot', text: 'Response tidak valid. Cek Apps Script.', t: Date.now() });
+    var msg = 'Koneksi bermasalah. Coba lagi ya 🙏';
+    if(e && e.name === 'AbortError') msg = 'Server RT sedang sibuk. Tunggu sebentar lalu coba lagi ya 🙏';
+    chatHistory.push({ role: 'bot', text: msg, t: Date.now() });
     saveChatHistory(); renderChat();
-    _chatBusy = false;
-    return;
-  }
-  hideChatTyping();
-  if(data && data.ok && data.data && data.data.jawaban){
-    var jawaban = data.data.jawaban;
-    chatHistory.push({ role: 'bot', text: jawaban, t: Date.now() });
-    try { localStorage.setItem(cacheKey, jawaban); } catch(e){}
-  } else if(data && data.error){
-    chatHistory.push({ role: 'bot', text: '⚠️ ' + data.error, t: Date.now() });
-  } else {
-    chatHistory.push({ role: 'bot', text: 'Maaf, tidak bisa menjawab sekarang. Coba lagi 🙏', t: Date.now() });
-  }
-  saveChatHistory(); renderChat();
-} catch(e){
-  console.error('[Chat] Error:', e);
-  hideChatTyping();
-  var msg = 'Koneksi bermasalah.';
-  if(e && e.name === 'AbortError') msg = 'Server RT sedang sibuk. Tunggu sebentar lalu coba lagi ya.';
-  chatHistory.push({ role: 'bot', text: msg, t: Date.now() });
-  saveChatHistory(); renderChat();
-} finally { _chatBusy = false; }
+  } finally { _chatBusy = false; }
+}
 
-
-// Binding tombol chat
+// Binding tombol chat (KUAT)
 (function bindChatFab(){
   function attach(){
     var fab = document.getElementById('chatFab');
@@ -871,6 +888,7 @@ async function sendChatMessage(text){
     fab.onclick = null;
     fab.addEventListener('click', function(ev){ if(ev){ ev.preventDefault(); ev.stopPropagation(); } openChat(); }, false);
     fab.addEventListener('touchend', function(ev){ if(ev){ ev.preventDefault(); ev.stopPropagation(); } openChat(); }, { passive: false });
+    console.log('✅ Tombol chat berhasil dipasang');
   }
   if(document.readyState === 'loading'){ document.addEventListener('DOMContentLoaded', attach); }
   else { setTimeout(attach, 50); }
@@ -948,7 +966,7 @@ async function extractEventDariTeks(pid, teks){
   var payload = { action: 'event', text: teks.slice(0, 300), clientId: clientId };
   try {
     var ctrl = new AbortController();
-    var to = setTimeout(function(){ ctrl.abort(); }, 12000);
+    var to = setTimeout(function(){ ctrl.abort(); }, 30000);
     var res = await fetch(AI_WEBAPP_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload), redirect: 'follow', signal: ctrl.signal });
     clearTimeout(to);
     if(!res.ok) throw new Error('HTTP ' + res.status);
@@ -1694,7 +1712,7 @@ $('composeText').addEventListener('input', function(){
 });
 
 // ============================================================
-// COMPOSE SUBMIT ★★★ AUTO-CLEAR CACHE CHAT SETELAH POSTING ★★★
+// COMPOSE SUBMIT — auto-clear cache chat setelah posting
 // ============================================================
 $('imgInput').onchange = async function(e){
   var files = Array.from(e.target.files || []); e.target.value = '';
@@ -1718,7 +1736,6 @@ $('composePost').onclick = async function(){
       if(isAdmin()) upd.pinned = $('pinCheck').checked;
       await rtdb.ref('posts/' + editingPostId).update(upd);
       logActivity('edit_post', { postId: editingPostId });
-      // ★ Bersihkan cache chat karena post berubah
       clearChatCache();
       $('composeSheet').style.display = 'none'; toast('Postingan diperbarui ✓'); editingPostId = null;
     } catch(e){ toast('Gagal', true); $('composePost').disabled = false; }
@@ -1737,7 +1754,7 @@ $('composePost').onclick = async function(){
 
     if(ref && ref.key && text.length >= 25){ extractEventDariTeks(ref.key, text); }
 
-    // ★★★ BERSIHKAN CACHE CHAT agar AI melihat post baru ★★★
+    // Bersihkan cache chat agar AI melihat post baru
     clearChatCache();
 
     $('composeSheet').style.display = 'none'; hide('aiSuggest'); hide('aiKatBadge');
@@ -2100,6 +2117,15 @@ function startPolling(){
 }
 setTimeout(function(){ if(me && me.uid){ startPolling(); } }, 4000);
 auth.onAuthStateChanged(function(user){ if(user){ setTimeout(function(){ if(!pollInterval) startPolling(); }, 3000); } else { if(pollInterval) clearInterval(pollInterval); pollInterval = null; } });
+
+// ============================================================
+// DEBUG
+// ============================================================
+setTimeout(function(){
+  var fab = document.getElementById('chatFab');
+  if(fab){ console.log('✅ chatFab ADA di DOM'); }
+  else { console.error('❌ chatFab TIDAK ADA di DOM!'); }
+}, 1000);
 </script>
 
 </body>
