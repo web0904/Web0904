@@ -571,27 +571,14 @@ body.dark .typing{background:#101a2e}
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging-compat.js"></script>
 
 <script>
-// ============================================================
-// GLOBAL ERROR HANDLER
-// ============================================================
 window.addEventListener('error', function(e){ console.error('❌ Global error:', e.message, 'at line', e.lineno); });
 window.addEventListener('unhandledrejection', function(e){ console.error('❌ Promise error:', e.reason); });
 
-// ============================================================
-// KONFIGURASI FIREBASE
-// ============================================================
 var FB = {apiKey:"AIzaSyCEttPAa6glm2qHUw3_QIcj2C8qqB9ZwOI",authDomain:"spark-61d51.firebaseapp.com",databaseURL:"https://spark-61d51-default-rtdb.asia-southeast1.firebasedatabase.app/",projectId:"spark-61d51",storageBucket:"spark-61d51.firebasestorage.app",messagingSenderId:"618121526268",appId:"1:618121526268:web:439521109a847c9ec25079"};
 var BOOTSTRAP_ADMIN_EMAIL = "ngudiartosinarutama@gmail.com";
 var VAPID_KEY = "BCLp9zYnmE6YeGU8g_BOla0B0wvAPIUdXfKaFZ_1Vlak7AkUWQ_8m50UkGiiaLbnE2BjyKYymiBq5V_MzYWcEvE";
-
-// ============================================================
-// URL WEB APP GOOGLE APPS SCRIPT
-// ============================================================
 var AI_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbzOt9em2BGunSzateKt1O3Fi-1a64pk2t2v3W-e6EbR22Q7da_z4-SqCiQmQI1u2Pnf/exec";
 
-// ============================================================
-// UTILITAS
-// ============================================================
 function $(id){ return document.getElementById(id); }
 function show(id){ var e = $(id); if(e) e.classList.remove('hide'); }
 function hide(id){ var e = $(id); if(e) e.classList.add('hide'); }
@@ -629,9 +616,6 @@ function avatarHtml(user, size, fontSize, clickable){
   return '<div class="'+cls+'" style="width:'+size+'px;height:'+size+'px;font-size:'+fontSize+'px"'+dataAttr+'>'+esc(initial)+'</div>';
 }
 
-// ============================================================
-// INIT FIREBASE
-// ============================================================
 firebase.initializeApp(FB);
 var auth = firebase.auth();
 var rtdb = firebase.database();
@@ -640,9 +624,6 @@ auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(function(){});
 var messaging = null;
 try { messaging = firebase.messaging(); } catch(e){}
 
-// ============================================================
-// STATE
-// ============================================================
 var me = null, tab = 'home', activeCat = 'umum';
 var feed = [], users = [], polls = [], reports = [];
 var appConfig = { inviteCode: '' };
@@ -759,11 +740,13 @@ function showChatTyping(){
 }
 function hideChatTyping(){ var t = $('chatTyping'); if(t) t.remove(); }
 
+// ★★★ FIX 1: subscribeUsers saat buka chat (agar pengurus RT muncul) ★★★
 function openChat(){
   try {
     var ov = document.getElementById('chatOv');
     if(ov){ ov.classList.add('on'); ov.style.display = 'flex'; ov.style.zIndex = '150'; }
     else { console.error('chatOv tidak ditemukan!'); return; }
+    if(!unsubUsers) subscribeUsers();  // ★ Muat daftar warga
     loadChatHistory();
     renderChat();
     setTimeout(function(){ try { document.getElementById('chatInput').focus(); } catch(e){} }, 300);
@@ -787,7 +770,6 @@ async function sendChatMessage(text){
   _chatBusy = true;
   _chatLastSent = Date.now();
 
-  // Cache version-aware
   var feedVersion = feed.length > 0 ? ((feed[0].id || '') + '_' + feed.length) : 'empty';
   var cacheKey = 'chatcache_' + _aiHash('c', q + '|' + feedVersion);
   try {
@@ -809,27 +791,46 @@ async function sendChatMessage(text){
   $('chatInput').style.height = 'auto';
   showChatTyping();
 
-  var ctxPost = feed.slice(0, 8).map(function(p){
-    return { text: (p.text||'').slice(0, 80), category: p.category, authorName: p.authorName, eventDate: p.eventDate || 0 };
-  });
+  // ★★★ FIX 2: Ambil komentar + slice 200 char + JSON.stringify ★★★
+  var recentPosts = feed.slice(0, 8);
+  var ctxPost = await Promise.all(recentPosts.map(async function(p){
+    var item = {
+      text: (p.text||'').slice(0, 200),
+      category: p.category,
+      authorName: p.authorName,
+      eventDate: p.eventDate || 0
+    };
+    try {
+      var cs = await rtdb.ref('comments/' + p.id).orderByChild('createdAt').limitToLast(3).once('value');
+      var cArr = [];
+      cs.forEach(function(cc){
+        var cv = cc.val() || {};
+        if(cv.text) cArr.push((cv.authorName||'Warga') + ': ' + String(cv.text).slice(0, 150));
+      });
+      if(cArr.length) item.comments = cArr;
+    } catch(e){}
+    return item;
+  }));
+
   var ctxWarga = users.filter(function(u){ return u.role === 'admin'; }).slice(0, 10).map(function(u){
     return { name: u.name, role: u.role, blok: u.blok };
   });
 
   var clientId = (me && me.uid) ? me.uid.substring(0, 20) : 'anon';
+
+  // ★★★ KIRIM SEBAGAI STRING JSON ★★★
   var payload = {
     action: 'chatbot',
     text: q.slice(0, 300),
-    posts: ctxPost,
-    warga: ctxWarga,
+    posts: JSON.stringify(ctxPost),
+    warga: JSON.stringify(ctxWarga),
     clientId: clientId
   };
 
   try {
     var ctrl = new AbortController();
-    // ★ TIMEOUT 90 DETIK (naik dari 45 detik)
     var to = setTimeout(function(){ ctrl.abort(); }, 90000);
-    console.log('[Chat] POST →', AI_WEBAPP_URL);
+    console.log('[Chat] POST →', AI_WEBAPP_URL, '| posts:', ctxPost.length);
     var res = await fetch(AI_WEBAPP_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
@@ -880,7 +881,6 @@ async function sendChatMessage(text){
   } finally { _chatBusy = false; }
 }
 
-// Binding tombol chat (KUAT)
 (function bindChatFab(){
   function attach(){
     var fab = document.getElementById('chatFab');
@@ -1305,6 +1305,7 @@ auth.onAuthStateChanged(function(user){
       syncUser().then(function(){
         loadNotifState();
         subscribeConfig(); subscribeFeed();
+        subscribeUsers();  // ★ Muat warga sejak awal
         setTimeout(function(){ subscribeNotifications(); }, 500);
         setTimeout(function(){
           if(!notifInitDone){ checkLikeNotifications(true); checkCommentNotifications(true).then(function(){ notifInitDone = true; try { localStorage.setItem('spark_notif_init_' + me.uid, '1'); } catch(e){} startCommentNotifPolling(); }); }
@@ -1711,9 +1712,6 @@ $('composeText').addEventListener('input', function(){
   }, 2000);
 });
 
-// ============================================================
-// COMPOSE SUBMIT — auto-clear cache chat setelah posting
-// ============================================================
 $('imgInput').onchange = async function(e){
   var files = Array.from(e.target.files || []); e.target.value = '';
   if(!files.length || uploading) return;
@@ -1754,7 +1752,6 @@ $('composePost').onclick = async function(){
 
     if(ref && ref.key && text.length >= 25){ extractEventDariTeks(ref.key, text); }
 
-    // Bersihkan cache chat agar AI melihat post baru
     clearChatCache();
 
     $('composeSheet').style.display = 'none'; hide('aiSuggest'); hide('aiKatBadge');
@@ -2071,9 +2068,6 @@ function cleanSubs(){
   unsubFeed = unsubUsers = unsubPolls = unsubConfig = unsubReports = unsubNotifs = null;
 }
 
-// ============================================================
-// SERVICE WORKER
-// ============================================================
 if('serviceWorker' in navigator){
   window.addEventListener('load', function(){
     var basePath = getBasePath(); var swUrl = basePath + 'firebase-messaging-sw.js';
@@ -2083,9 +2077,6 @@ if('serviceWorker' in navigator){
   navigator.serviceWorker.addEventListener('message', function(e){ if(e.data && e.data.type === 'OPEN_POST' && e.data.postId){ setTimeout(function(){ if(typeof openPostDetail === 'function') openPostDetail(e.data.postId); }, 800); } });
 }
 
-// ============================================================
-// POLLING NOTIFIKASI
-// ============================================================
 var lastPollTime = parseInt(localStorage.getItem('spark_last_poll') || '0', 10);
 var pollInterval = null;
 function startPolling(){
@@ -2118,9 +2109,6 @@ function startPolling(){
 setTimeout(function(){ if(me && me.uid){ startPolling(); } }, 4000);
 auth.onAuthStateChanged(function(user){ if(user){ setTimeout(function(){ if(!pollInterval) startPolling(); }, 3000); } else { if(pollInterval) clearInterval(pollInterval); pollInterval = null; } });
 
-// ============================================================
-// DEBUG
-// ============================================================
 setTimeout(function(){
   var fab = document.getElementById('chatFab');
   if(fab){ console.log('✅ chatFab ADA di DOM'); }
