@@ -46,7 +46,7 @@ input,textarea,select{font-size:16px!important}
 body.dark{background:#070b14;color:#e2e8f0}
 body.dark .card{background:#101a2e;border-color:rgba(255,255,255,.06)}
 
-/* PERBAIKAN PERFORMA: Blur dihapus, ganti warna solid */
+/* Efek Blur Dihilangkan agar Ringan */
 .header{background:rgba(245,247,251,.95);border-bottom:1px solid rgba(148,163,184,.12);flex-shrink:0;z-index:15}
 body.dark .header{background:rgba(7,11,20,.95);border-color:rgba(255,255,255,.05)}
 .nav{background:rgba(255,255,255,.95);border-top:1px solid rgba(148,163,184,.12);flex-shrink:0}
@@ -102,13 +102,15 @@ body.dark .post-card .title{color:#cbd5e1}
 .notif-badge{position:absolute;top:8px;left:8px;min-width:22px;height:22px;padding:0 7px;border-radius:11px;background:linear-gradient(135deg,#ef4444,#dc2626);color:white;font-size:11.5px;font-weight:800;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 8px -2px rgba(239,68,68,.7),0 0 0 2px rgba(255,255,255,.9);z-index:5}
 body.dark .notif-badge{box-shadow:0 3px 8px -2px rgba(239,68,68,.7),0 0 0 2px rgba(16,26,46,.9)}
 .notif-badge.on{animation:badgePulse 2s ease-in-out infinite}
-.pin-card{background:#fffaf0;border:1.5px solid rgba(245,158,11,.28);border-radius:20px;padding:15px;margin-bottom:11px;cursor:pointer;position:relative}
+.pin-card{background:#fffaf0;border:1.5px solid rgba(245,158,11,.28);border-radius:20px;padding:15px;margin-bottom:11px;cursor:pointer;position:relative;display:flex;gap:12px;align-items:center;}
 body.dark .pin-card{background:#1a1408}
 .pin-card:active{transform:scale(.98)}
-.pin-card .pin-badge{display:inline-flex;align-items:center;gap:5px;background:#f59e0b;color:white;font-size:11px;font-weight:800;padding:4px 10px;border-radius:9px;margin-bottom:9px}
-.pin-card .pin-title{font-size:14.5px;font-weight:800;line-height:1.45;margin-bottom:8px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;color:#0b1220}
+.pin-card .pin-thumb{width:50px;height:50px;border-radius:12px;overflow:hidden;background:#e2e8f0;flex-shrink:0;}
+.pin-card .pin-thumb img{width:100%;height:100%;object-fit:cover;}
+.pin-card .pin-badge{display:inline-flex;align-items:center;gap:5px;background:#f59e0b;color:white;font-size:10px;font-weight:800;padding:3px 8px;border-radius:7px;margin-bottom:6px}
+.pin-card .pin-title{font-size:13.5px;font-weight:800;line-height:1.4;margin-bottom:4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;color:#0b1220}
 body.dark .pin-card .pin-title{color:#e2e8f0}
-.pin-card .pin-meta{display:flex;align-items:center;gap:6px;font-size:12px;color:#64748b;margin-top:8px}
+.pin-card .pin-meta{display:flex;align-items:center;gap:6px;font-size:11px;color:#64748b;font-weight:600}
 .section{margin:22px 16px 0}
 .section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
 .section-title{font-size:16.5px;font-weight:900;letter-spacing:-.02em}
@@ -317,7 +319,7 @@ body.dark .notif-body .n-snippet{background:#1a2540;color:#94a3b8;border-left-co
   <div class="scroll-y grow"><div id="userProfileContent" style="padding:16px 16px 40px"></div></div>
 </div>
 
-<!-- Splash Screen (Static) -->
+<!-- Splash Screen -->
 <div id="splash">
   <div style="position:relative;margin-bottom:30px;z-index:1">
     <img src="./icon-192.png" alt="RT09RW04" style="width:112px;height:112px;border-radius:28px;box-shadow:0 24px 60px -14px rgba(99,102,241,.6),0 0 0 6px rgba(255,255,255,.96);position:relative;z-index:1;object-fit:cover;"/>
@@ -326,13 +328,12 @@ body.dark .notif-body .n-snippet{background:#1a2540;color:#94a3b8;border-left-co
   <div style="font-size:12px;color:#6366f1;margin-top:8px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;">Candisari Wonotingal</div>
 </div>
 
-<!-- Welcome (Login) -->
+<!-- Welcome -->
 <div id="welcomeOv">
   <div style="background:linear-gradient(150deg,#6366f1 0%,#8b5cf6 35%,#ec4899 75%,#f43f5e 100%);padding:calc(env(safe-area-inset-top,0px) + 70px) 24px 100px;position:relative;overflow:hidden">
     <div style="position:relative;z-index:1;max-width:420px;margin:0 auto;text-align:center">
       <div style="width:92px;height:92px;border-radius:26px;background:#fff;display:flex;align-items:center;justify-content:center;margin:0 auto 22px;box-shadow:0 20px 45px -14px rgba(0,0,0,.35),0 0 0 6px rgba(255,255,255,.15);padding:7px"><img src="./icon-192.png" style="width:100%;height:100%;border-radius:20px;object-fit:cover"/></div>
       <div style="font-size:26px;font-weight:900;color:#fff;letter-spacing:-.03em;line-height:1.18">RT09 RW04<br>Candisari Wonotingal</div>
-      <div style="font-size:14px;color:rgba(255,255,255,.92);margin-top:14px;line-height:1.6;font-weight:500">Satu platform digital untuk warga.<br>Informasi, pengumuman, dan suara komunitas.</div>
     </div>
   </div>
   <div style="flex:1;padding:0 20px;margin-top:-50px;max-width:460px;width:100%;margin-left:auto;margin-right:auto;padding-bottom:40px">
@@ -424,17 +425,12 @@ body.dark .notif-body .n-snippet{background:#1a2540;color:#94a3b8;border-left-co
       <div style="font-size:12px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.12em;margin:0 4px 9px">Akun</div>
       <div class="card" style="padding:0;overflow:hidden;margin-bottom:18px;border-radius:18px">
         <button id="myCodeBtn" type="button" class="setting-row"><div class="setting-icon" style="background:rgba(99,102,241,.15);color:#6366f1">🆔</div><div style="flex:1;text-align:left"><div style="font-size:14.5px;font-weight:700">Kode Akun Saya</div><div style="font-size:12.5px;color:#94a3b8;margin-top:2px;font-weight:500">Simpan untuk backup</div></div></button>
-        <button id="rulesBtn" type="button" class="setting-row"><div class="setting-icon" style="background:rgba(245,158,11,.15);color:#f59e0b">📖</div><div style="flex:1;text-align:left"><div style="font-size:14.5px;font-weight:700">Tata Tertib</div><div style="font-size:12.5px;color:#94a3b8;margin-top:2px;font-weight:500">Etika &amp; panduan</div></div></button>
         <button id="switchAccBtn" type="button" class="setting-row"><div class="setting-icon" style="background:rgba(245,158,11,.15);color:#f59e0b">🔄</div><div style="flex:1;text-align:left"><div style="font-size:14.5px;font-weight:700">Ganti Akun</div><div style="font-size:12.5px;color:#94a3b8;margin-top:2px;font-weight:500">Login dengan akun lain</div></div></button>
       </div>
       <div id="adminPanel" class="hide"><div style="font-size:12px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.12em;margin:0 4px 9px">🛡️ Panel Admin RT</div><div class="card" style="padding:0;overflow:hidden;margin-bottom:18px;border-radius:18px">
         <button id="adminInviteCodeBtn" type="button" class="setting-row"><div class="setting-icon" style="background:rgba(16,185,129,.15);color:#059669">🔐</div><div style="flex:1;text-align:left"><div style="font-size:14.5px;font-weight:700">Kode Undangan RT</div><div style="font-size:12.5px;color:#94a3b8;margin-top:2px;font-weight:500">Lihat &amp; ubah</div></div></button>
         <button id="adminVerifyBtn" type="button" class="setting-row"><div class="setting-icon" style="background:rgba(59,130,246,.15);color:#2563eb">👥</div><div style="flex:1;text-align:left"><div style="font-size:14.5px;font-weight:700">Kelola Warga</div><div style="font-size:12.5px;color:#94a3b8;margin-top:2px;font-weight:500">Atur role</div></div></button>
       </div></div>
-      <div style="font-size:12px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.12em;margin:0 4px 9px">Notifikasi</div>
-      <div class="card" style="padding:0;overflow:hidden;margin-bottom:18px;border-radius:18px">
-        <div class="setting-row" style="cursor:default"><div class="setting-icon" style="background:linear-gradient(135deg,#fbbf24,#f59e0b);color:white">🔔</div><div style="flex:1"><div style="font-size:14.5px;font-weight:700">Bunyi Notifikasi</div><div style="font-size:12.5px;color:#94a3b8;margin-top:2px;font-weight:500">Chime saat ada post baru</div></div><button id="soundToggle" type="button" style="width:48px;height:28px;border-radius:14px;border:none;position:relative;background:#cbd5e1;flex-shrink:0;cursor:pointer"><span id="soundKnob" style="position:absolute;top:2px;left:2px;width:24px;height:24px;border-radius:50%;background:#fff;transition:left .25s"></span></button></div>
-      </div>
       <div class="card" style="padding:0;overflow:hidden;border-radius:18px"><button id="logoutBtn" type="button" class="setting-row"><div class="setting-icon" style="background:rgba(148,163,184,.15)">🚪</div><div style="flex:1;text-align:left;font-size:14.5px;font-weight:600">Keluar</div></button></div>
     </section>
   </main>
@@ -505,7 +501,7 @@ var me = null, tab = 'home', activeCat = 'umum';
 var feed = [], users = [], polls = [];
 var activePostId = null, activePost = null;
 var composeImgs = [], composeCat = 'umum', editingPostId = null, uploading = false;
-var unsubFeed = null, unsubUsers = null, unsubNotifs = null;
+var unsubFeed = null, unsubUsers = null, unsubNotifs = null, unsubPolls = null;
 var notifications = [];
 var countdownTimer = null;
 
@@ -525,9 +521,7 @@ function toast(msg, err){ var t = $('toast'); t.textContent = msg; t.style.backg
 function loader(on, msg){ $('loaderMsg').textContent = msg || 'Memproses...'; $('loader').classList.toggle('on', on); }
 function timeAgo(ts){ if(!ts) return 'baru'; var d = Date.now() - ts; if(d<60000) return 'baru'; if(d<3600000) return Math.floor(d/60000)+'m'; if(d<86400000) return Math.floor(d/3600000)+'j'; if(d<604800000) return Math.floor(d/86400000)+'h'; return new Date(ts).toLocaleDateString('id-ID',{day:'numeric',month:'short'}); }
 function fmtDate(ts){ var d = new Date(ts); var m = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des']; return d.getDate()+' '+m[d.getMonth()]+' '+d.getFullYear(); }
-function fmtDateTime(ts){ var d = new Date(ts); var days = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu']; var months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des']; return days[d.getDay()]+', '+d.getDate()+' '+months[d.getMonth()]+' '+d.getFullYear(); }
 function compressImage(file, maxDim, quality){ return new Promise(function(res, rej){ maxDim = maxDim || 1080; quality = quality || 0.72; var r = new FileReader(); r.onload = function(){ var img = new Image(); img.onload = function(){ var w = img.width, h = img.height; if(w > maxDim || h > maxDim){ var ratio = Math.min(maxDim/w, maxDim/h); w = Math.round(w*ratio); h = Math.round(h*ratio); } var c = document.createElement('canvas'); c.width = w; c.height = h; c.getContext('2d').drawImage(img, 0, 0, w, h); res(c.toDataURL('image/jpeg', quality).split(',')[1]); }; img.onerror = rej; img.src = r.result; }; r.onerror = rej; r.readAsDataURL(file); }); }
-function compressAvatar(file){ return new Promise(function(res, rej){ var r = new FileReader(); r.onload = function(){ var img = new Image(); img.onload = function(){ var size = Math.min(img.width, img.height); var sx = (img.width-size)/2, sy = (img.height-size)/2; var c = document.createElement('canvas'); c.width = 260; c.height = 260; c.getContext('2d').drawImage(img, sx, sy, size, size, 0, 0, 260, 260); res(c.toDataURL('image/jpeg', 0.82).split(',')[1]); }; img.onerror = rej; img.src = r.result; }; r.onerror = rej; r.readAsDataURL(file); }); }
 function toArr(obj){ if(!obj) return []; if(Array.isArray(obj)) return obj; return Object.keys(obj).sort(function(a,b){ return (parseInt(a,10)||0) - (parseInt(b,10)||0); }).map(function(k){ return obj[k]; }).filter(function(v){ return v != null; }); }
 function toCount(obj){ if(!obj) return 0; if(Array.isArray(obj)) return obj.length; return Object.keys(obj).length; }
 function avatarHtml(user, size, fontSize, clickable){
@@ -546,15 +540,6 @@ function isAdmin(){ return me && me.role === 'admin'; }
 function getSeenPosts(){ if(!me || !me.uid) return {}; try { return JSON.parse(localStorage.getItem('spark_seen_posts_'+me.uid) || '{}'); } catch(e){ return {}; } }
 function markPostSeen(pid){ if(!me || !me.uid || !pid) return; var seen = getSeenPosts(); seen[pid] = Date.now(); var keys = Object.keys(seen); if(keys.length > 500){ keys.sort(function(a,b){ return seen[b] - seen[a]; }); var ns = {}; for(var i = 0; i < 300; i++) ns[keys[i]] = seen[keys[i]]; seen = ns; } try { localStorage.setItem('spark_seen_posts_'+me.uid, JSON.stringify(seen)); } catch(e){} }
 function markCatSeen(cat){ if(!me || !me.uid) return; var seen = getSeenPosts(); var changed = false; feed.forEach(function(p){ if((p.category||'umum') === cat && p.authorId !== me.uid && !seen[p.id]){ seen[p.id] = Date.now(); changed = true; } }); if(changed){ try { localStorage.setItem('spark_seen_posts_'+me.uid, JSON.stringify(seen)); } catch(e){} } }
-
-function playChime(){
-  if(localStorage.getItem('spark_sound') === 'off') return;
-  try {
-    var ctx = new (window.AudioContext || window.webkitAudioContext)();
-    function tone(freq, start, dur, vol){ var o = ctx.createOscillator(); var g = ctx.createGain(); o.connect(g); g.connect(ctx.destination); o.type = 'sine'; o.frequency.value = freq; vol = vol || 0.15; g.gain.setValueAtTime(0.0001, start); g.gain.exponentialRampToValueAtTime(vol, start + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, start + dur); o.start(start); o.stop(start + dur + 0.02); }
-    var t = ctx.currentTime; tone(1046.5, t, 0.18, 0.14); tone(880, t + 0.10, 0.20, 0.13); tone(659.25, t + 0.22, 0.35, 0.12);
-  } catch(e){}
-}
 
 // NOTIFIKASI & PROFILE
 function subscribeNotifications(){
@@ -631,15 +616,12 @@ $('catTileInformasi').onclick = function(){ activeCat = 'informasi'; setTab('cat
 $('catTileGaleri').onclick = function(){ activeCat = 'galeri'; setTab('category'); };
 $('bellBtn').onclick = function(){ $('notifOv').classList.add('on'); renderNotifPanel(); };
 $('notifBack').onclick = function(){ $('notifOv').classList.remove('on'); };
+$('upBack').onclick = function(){ $('userProfileOv').classList.remove('on'); };
 
 // TEMA
 function applyTheme(t){ document.documentElement.classList.toggle('dark', t==='dark'); document.body.classList.toggle('dark', t==='dark'); if($('themeIconDark')) $('themeIconDark').style.display = t==='dark' ? 'none' : 'block'; if($('themeIconLight')) $('themeIconLight').style.display = t==='dark' ? 'block' : 'none'; var meta = document.querySelector('meta[name=theme-color]'); if(meta) meta.content = t==='dark' ? '#070b14' : '#f5f7fb'; }
 applyTheme(localStorage.getItem('spark_theme') || 'light');
 $('themeBtn').onclick = function(){ var cur = localStorage.getItem('spark_theme') || 'light'; var nxt = cur === 'light' ? 'dark' : 'light'; localStorage.setItem('spark_theme', nxt); applyTheme(nxt); };
-
-function refreshSound(){ var on = localStorage.getItem('spark_sound') !== 'off'; $('soundToggle').style.background = on ? 'linear-gradient(135deg,#6366f1,#8b5cf6)' : '#cbd5e1'; $('soundKnob').style.left = on ? '23px' : '2px'; }
-refreshSound();
-$('soundToggle').onclick = function(){ var cur = localStorage.getItem('spark_sound') !== 'off'; localStorage.setItem('spark_sound', cur ? 'off' : 'on'); refreshSound(); };
 
 // AUTH
 auth.onAuthStateChanged(function(user){
@@ -742,7 +724,10 @@ function renderHome(){
   if(pinned.length){
     pinSec.classList.remove('hide');
     $('pinnedCount').textContent = pinned.length + ' item';
-    $('pinnedList').innerHTML = pinned.slice(0, 5).map(function(p){ return '<div class="pin-card" data-pid="'+p.id+'"><div class="pin-badge">📌 PENTING</div><div class="pin-title">'+esc(p.text || '[Foto]')+'</div><div class="pin-meta">'+avatarHtml({name:p.authorName, photoURL:p.authorPhoto, avatarBase64:p.authorAvatarBase64, uid: p.authorId}, 20, 9, false)+'<span style="font-weight:800">'+esc(p.authorName)+'</span><span>·</span><span>'+timeAgo(p.createdAt)+'</span></div></div>'; }).join('');
+    $('pinnedList').innerHTML = pinned.slice(0, 5).map(function(p){
+      var thumb = (p.images && p.images.length) ? '<div class="pin-thumb"><img src="data:image/jpeg;base64,'+p.images[0]+'" loading="lazy"></div>' : '';
+      return '<div class="pin-card" data-pid="'+p.id+'">'+thumb+'<div style="flex:1;min-width:0;"><div class="pin-badge">📌 PENTING</div><div class="pin-title">'+esc(p.text || '[Foto]')+'</div><div class="pin-meta">'+avatarHtml({name:p.authorName, photoURL:p.authorPhoto, avatarBase64:p.authorAvatarBase64, uid: p.authorId}, 20, 9, false)+'<span style="font-weight:800">'+esc(p.authorName)+'</span><span>·</span><span>'+timeAgo(p.createdAt)+'</span></div></div></div>';
+    }).join('');
     $('pinnedList').querySelectorAll('[data-pid]').forEach(function(c){ c.onclick = function(){ openPostDetail(c.dataset.pid); }; });
   } else pinSec.classList.add('hide');
 }
@@ -977,14 +962,15 @@ $('composePost').onclick = async function(){
   finally { $('composeBtnText').textContent = 'Kirim'; }
 };
 
-// WARGA (Load Once, Not Realtime Listener)
+// WARGA & PROFILE
 function subscribeUsers(){
   if(unsubUsers){ try { unsubUsers(); } catch(e){} }
-  rtdb.ref('users').orderByChild('lastSeen').limitToLast(200).on('value', function(snap){
+  var ref = rtdb.ref('users').orderByChild('lastSeen').limitToLast(200);
+  var listener = ref.on('value', function(snap){
     users = []; snap.forEach(function(child){ users.push(Object.assign({ uid: child.key, id: child.key }, child.val() || {})); }); users.reverse();
     if(tab === 'warga') renderWargaList();
-  });
-  unsubUsers = function(){ rtdb.ref('users').orderByChild('lastSeen').limitToLast(200).off(); };
+  }, function(e){});
+  unsubUsers = function(){ ref.off('value', listener); };
 }
 
 function renderWargaList(){
@@ -1017,10 +1003,109 @@ function renderProfile(){
 $('editProfileBtn').onclick = function(){ toast('Fitur edit profil dimatikan untuk versi ringan.'); };
 $('switchAccBtn').onclick = function(){ auth.signOut().then(function(){ location.reload(); }); };
 
-// Subscriptions for Notifications
+// VOTING
+function subscribePolls(){
+  if(unsubPolls){ try { unsubPolls(); } catch(e){} }
+  var ref = rtdb.ref('polls').orderByChild('createdAt').limitToLast(50);
+  var listener = ref.on('value', function(snap){
+    polls = []; snap.forEach(function(child){ var x = child.val() || {}; polls.push(Object.assign({ id: child.key }, x, { createdAt: x.createdAt || Date.now(), deadline: x.deadline || 0, options: toArr(x.options) })); });
+    polls.reverse();
+    if(tab === 'voting') renderVoting();
+    updateAllBadges();
+  }, function(e){});
+  unsubPolls = function(){ ref.off('value', listener); };
+}
+
+function renderVoting(){
+  var el = $('votingContent'); var html = ''; var now = Date.now();
+  if(isAdmin()) html += '<button id="newPollBtn" class="btn-p" style="width:100%;margin-bottom:14px">➕ Buat Voting Baru</button>';
+  if(!polls.length){ html += '<div class="empty-state"><div class="em">🗳️</div><div class="title">Belum ada voting</div><div class="sub">'+(isAdmin()?'Buat voting pertama':'Tunggu pengurus')+'</div></div>'; el.innerHTML = html; var npb = $('newPollBtn'); if(npb) npb.onclick = openNewPoll; return; }
+  polls.forEach(function(p){
+    var expired = p.deadline > 0 && p.deadline < now;
+    var totalVotes = toCount(p.votes); var myVote = (p.votes||{})[me.uid];
+    html += '<div class="poll-card"><div style="display:flex;justify-content:space-between;align-items:start;gap:9px;margin-bottom:7px">';
+    html += '<div style="font-size:15.5px;font-weight:900;line-height:1.35;flex:1;letter-spacing:-.01em">'+esc(p.title)+'</div>';
+    html += '<span class="badge-pill '+(expired?'pill-gray':'pill-green')+'">'+(expired?'Selesai':'Aktif')+'</span></div>';
+    if(p.description) html += '<div style="font-size:13px;color:#64748b;line-height:1.6;margin-bottom:9px">'+esc(p.description)+'</div>';
+    html += '<div style="font-size:11.5px;color:#94a3b8;margin-bottom:10px;font-weight:600">Oleh '+esc(p.createdByName||'?')+' · '+totalVotes+' suara'+(p.deadline>0?' · deadline '+fmtDate(p.deadline):'')+'</div>';
+    (p.options||[]).forEach(function(opt){
+      var optVotes = 0; Object.keys(p.votes||{}).forEach(function(uid){ if(p.votes[uid] === opt.id) optVotes++; });
+      var pct = totalVotes ? Math.round((optVotes/totalVotes)*100) : 0;
+      var voted = myVote === opt.id; var disabled = expired || myVote;
+      html += '<div class="poll-opt '+(voted?'voted':'')+'" data-vote="'+opt.id+'" data-poll="'+p.id+'" style="'+(disabled?'cursor:default;opacity:'+(myVote && !voted ? .7 : 1):'')+'">';
+      html += '<div style="flex:1;min-width:0"><div style="font-size:13.5px;font-weight:800">'+(voted?'✅ ':'')+esc(opt.text)+'</div>';
+      html += '<div style="height:7px;border-radius:99px;background:#e2e8f0;overflow:hidden;margin-top:7px"><div class="bar" style="width:'+pct+'%"></div></div></div>';
+      html += '<div class="pct">'+pct+'%</div></div>';
+    });
+    if(isAdmin()) html += '<button class="btn-s" style="width:100%;margin-top:12px;padding:9px;font-size:12.5px;font-weight:700" data-poll-del="'+p.id+'">🗑️ Hapus Voting</button>';
+    html += '</div>';
+  });
+  el.innerHTML = html;
+  var npb = $('newPollBtn'); if(npb) npb.onclick = openNewPoll;
+  el.querySelectorAll('[data-vote]').forEach(function(optEl){
+    var p = polls.filter(function(x){ return x.id === optEl.dataset.poll; })[0]; if(!p) return;
+    var expired = p.deadline > 0 && p.deadline < now;
+    var myVote = (p.votes||{})[me.uid];
+    if(expired || myVote) return;
+    optEl.onclick = async function(){ try { await rtdb.ref('polls/' + p.id + '/votes/' + me.uid).set(optEl.dataset.vote); toast('Suara terkirim 🗳️'); } catch(e){ toast('Gagal', true); } };
+  });
+  el.querySelectorAll('[data-poll-del]').forEach(function(b){ b.onclick = async function(){ if(!confirm('Hapus voting ini?')) return; try { await rtdb.ref('polls/' + b.dataset.pollDel).remove(); toast('Voting dihapus'); } catch(e){ toast('Gagal', true); } }; });
+}
+
+function openNewPoll(){
+  openModal('Voting Baru',
+    '<div style="font-size:12px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin-bottom:7px">Judul</div>'+
+    '<input id="pollTitle" type="text" class="dt" maxlength="100" placeholder="Contoh: Jadwal Kerja Bakti" style="margin-bottom:16px"/>'+
+    '<div style="font-size:12px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin-bottom:7px">Deskripsi</div>'+
+    '<textarea id="pollDesc" class="dt" rows="2" placeholder="Keterangan..." style="margin-bottom:16px;resize:none"></textarea>'+
+    '<div style="font-size:12px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin-bottom:7px">Opsi (min 2)</div>'+
+    '<input id="pollOpt1" type="text" class="dt" placeholder="Opsi 1" style="margin-bottom:9px"/>'+
+    '<input id="pollOpt2" type="text" class="dt" placeholder="Opsi 2" style="margin-bottom:9px"/>'+
+    '<input id="pollOpt3" type="text" class="dt" placeholder="Opsi 3 (opsional)" style="margin-bottom:16px"/>'+
+    '<div style="font-size:12px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin-bottom:7px">Deadline (opsional)</div>'+
+    '<input id="pollDeadline" type="datetime-local" class="dt" style="margin-bottom:18px"/>'+
+    '<button id="savePollBtn" class="btn-p" style="width:100%">Buat Voting</button>'
+  );
+  $('savePollBtn').onclick = async function(){
+    var title = $('pollTitle').value.trim();
+    if(!title) return toast('Judul wajib', true);
+    var options = []; [1,2,3].forEach(function(i){ var v = $('pollOpt'+i).value.trim(); if(v) options.push({ id: 'o'+i, text: v }); });
+    if(options.length < 2) return toast('Minimal 2 opsi', true);
+    var deadline = $('pollDeadline').value ? new Date($('pollDeadline').value).getTime() : 0;
+    loader(true, 'Membuat...');
+    try { await rtdb.ref('polls').push({ title: title, description: $('pollDesc').value.trim(), options: options, votes: {}, createdBy: me.uid, createdByName: me.name, deadline: deadline, createdAt: TS }); loader(false); closeModal(); toast('Voting dibuat 🗳️'); }
+    catch(e){ loader(false); toast('Gagal', true); }
+  };
+}
+
+// MODAL
+function openModal(title, html){ $('modalTitle').textContent = title; $('modalBody').innerHTML = html; $('modal').classList.add('on'); }
+function closeModal(){ $('modal').classList.remove('on'); }
+$('modalX').onclick = closeModal;
+$('modal').addEventListener('click', function(e){ if(e.target.id === 'modal') closeModal(); });
+
+// USER PROFILE
+function viewUserProfile(uid){
+  if(!uid) return;
+  var u = users.filter(function(x){ return x.uid === uid || x.id === uid; })[0];
+  if(!u){ var post = feed.filter(function(p){ return p.authorId === uid; })[0]; if(!post){ toast('Warga tidak ditemukan', true); return; } u = { uid: uid, name: post.authorName, avatarBase64: post.authorAvatarBase64, photoURL: post.authorPhoto }; }
+  var userPosts = feed.filter(function(p){ return p.authorId === uid; }).sort(function(a,b){ return b.createdAt - a.createdAt; });
+  var isMe2 = uid === (me && me.uid);
+  var html = '<div style="text-align:center;margin-bottom:22px">'+avatarHtml(u, 100, 38)+'<div style="font-size:19px;font-weight:900;margin-top:14px;word-break:break-word">'+esc(u.name||'Warga')+'</div>';
+  if(u.blok) html += '<div style="font-size:13px;color:#64748b;margin-top:5px;font-weight:600">🏠 Blok '+esc(u.blok)+'</div>';
+  html += '<div style="display:flex;gap:6px;justify-content:center;margin-top:10px">'+((u.role === 'admin') ? '<span class="badge-pill pill-blue">🛡️ Pengurus</span>' : '<span class="badge-pill pill-gray">Warga</span>')+(isMe2 ? '<span class="badge-pill pill-green">Anda</span>' : '')+'</div></div>';
+  var totalLikes = userPosts.reduce(function(s,p){ return s + toCount(p.likedBy); }, 0);
+  var totalComments = userPosts.reduce(function(s,p){ return s + (p.commentCount||0); }, 0);
+  html += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-bottom:22px"><div class="card" style="text-align:center;padding:13px 4px"><div style="font-size:20px;font-weight:900">'+userPosts.length+'</div><div style="font-size:11.5px;color:#94a3b8;margin-top:3px;font-weight:700">Postingan</div></div><div class="card" style="text-align:center;padding:13px 4px"><div style="font-size:20px;font-weight:900">'+totalLikes+'</div><div style="font-size:11.5px;color:#94a3b8;margin-top:3px;font-weight:700">Suka</div></div><div class="card" style="text-align:center;padding:13px 4px"><div style="font-size:20px;font-weight:900">'+totalComments+'</div><div style="font-size:11.5px;color:#94a3b8;margin-top:3px;font-weight:700">Komentar</div></div></div>';
+  if(!userPosts.length){ html += '<div class="empty-state" style="padding:30px 20px"><div class="em">📭</div><div class="title">Belum ada postingan</div></div>'; }
+  else { html += '<div class="grid2">'; userPosts.forEach(function(p){ html += renderPostCard(p); }); html += '</div>'; }
+  $('userProfileContent').innerHTML = html;
+  $('userProfileOv').classList.add('on');
+  $('userProfileContent').querySelectorAll('[data-pid]').forEach(function(el){ el.onclick = function(){ $('userProfileOv').classList.remove('on'); setTimeout(function(){ openPostDetail(el.dataset.pid); }, 200); }; });
+}
+
 window.addEventListener('load', function(){
-  // Delay subscription to not block initial load
-  setTimeout(function(){ subscribeNotifications(); }, 2000);
+  setTimeout(function(){ if(me) subscribeNotifications(); }, 2000);
 });
 </script>
 </body>
