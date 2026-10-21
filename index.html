@@ -522,6 +522,7 @@ function loader(on, msg){ $('loaderMsg').textContent = msg || 'Memproses...'; $(
 function timeAgo(ts){ if(!ts) return 'baru'; var d = Date.now() - ts; if(d<60000) return 'baru'; if(d<3600000) return Math.floor(d/60000)+'m'; if(d<86400000) return Math.floor(d/3600000)+'j'; if(d<604800000) return Math.floor(d/86400000)+'h'; return new Date(ts).toLocaleDateString('id-ID',{day:'numeric',month:'short'}); }
 function fmtDate(ts){ var d = new Date(ts); var m = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des']; return d.getDate()+' '+m[d.getMonth()]+' '+d.getFullYear(); }
 function compressImage(file, maxDim, quality){ return new Promise(function(res, rej){ maxDim = maxDim || 1080; quality = quality || 0.72; var r = new FileReader(); r.onload = function(){ var img = new Image(); img.onload = function(){ var w = img.width, h = img.height; if(w > maxDim || h > maxDim){ var ratio = Math.min(maxDim/w, maxDim/h); w = Math.round(w*ratio); h = Math.round(h*ratio); } var c = document.createElement('canvas'); c.width = w; c.height = h; c.getContext('2d').drawImage(img, 0, 0, w, h); res(c.toDataURL('image/jpeg', quality).split(',')[1]); }; img.onerror = rej; img.src = r.result; }; r.onerror = rej; r.readAsDataURL(file); }); }
+function compressAvatar(file){ return new Promise(function(res, rej){ var r = new FileReader(); r.onload = function(){ var img = new Image(); img.onload = function(){ var size = Math.min(img.width, img.height); var sx = (img.width-size)/2, sy = (img.height-size)/2; var c = document.createElement('canvas'); c.width = 260; c.height = 260; c.getContext('2d').drawImage(img, sx, sy, size, size, 0, 0, 260, 260); res(c.toDataURL('image/jpeg', 0.82).split(',')[1]); }; img.onerror = rej; img.src = r.result; }; r.onerror = rej; r.readAsDataURL(file); }); }
 function toArr(obj){ if(!obj) return []; if(Array.isArray(obj)) return obj; return Object.keys(obj).sort(function(a,b){ return (parseInt(a,10)||0) - (parseInt(b,10)||0); }).map(function(k){ return obj[k]; }).filter(function(v){ return v != null; }); }
 function toCount(obj){ if(!obj) return 0; if(Array.isArray(obj)) return obj.length; return Object.keys(obj).length; }
 function avatarHtml(user, size, fontSize, clickable){
@@ -683,7 +684,6 @@ $('inviteSubmit').onclick = async function(){
   } catch(e){ loader(false); toast('Gagal', true); }
 };
 $('inviteLogout').onclick = async function(){ await auth.signOut(); location.reload(); };
-$('logoutBtn').onclick = function(){ if(confirm('Keluar?')) auth.signOut().then(function(){ location.reload(); }); };
 
 function subscribeFeed(){
   if(unsubFeed){ try { unsubFeed(); } catch(e){} }
@@ -1000,8 +1000,90 @@ function renderProfile(){
   $('adminPanel').classList.toggle('hide', !isAdmin());
 }
 
-$('editProfileBtn').onclick = function(){ toast('Fitur edit profil dimatikan untuk versi ringan.'); };
-$('switchAccBtn').onclick = function(){ auth.signOut().then(function(){ location.reload(); }); };
+$('editProfileBtn').onclick = function(){
+  openModal('Edit Profil',
+    '<div style="text-align:center;margin-bottom:20px"><div id="pvAvatar" style="display:inline-block">'+avatarHtml(me, 90, 32)+'</div></div>'+
+    '<div style="font-size:12px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px">Nama</div>'+
+    '<input id="editName" type="text" value="'+esc(me.name)+'" maxlength="30" class="dt" style="margin-bottom:14px"/>'+
+    '<div style="font-size:12px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px">Blok / No. Rumah</div>'+
+    '<input id="editBlok" type="text" value="'+esc(me.blok||'')+'" maxlength="10" class="dt" style="margin-bottom:14px" placeholder="Contoh: A5"/>'+
+    '<button type="button" id="uploadAvBtn" style="width:100%;padding:13px;border-radius:13px;border:1.5px solid #cbd5e1;background:#fff;font-size:14px;font-weight:700;margin-bottom:8px;cursor:pointer">📷 Upload Foto</button>'+
+    '<button type="button" id="saveProfBtn" class="btn-p" style="width:100%;margin-top:10px">Simpan</button>'
+  );
+  $('uploadAvBtn').onclick = function(){ $('avatarInput').click(); };
+  $('avatarInput').onchange = async function(e){
+    var f = e.target.files[0]; e.target.value = '';
+    if(!f) return;
+    if(f.size > 5*1024*1024) return toast('Max 5MB', true);
+    loader(true, 'Memproses...');
+    try {
+      var b64 = await compressAvatar(f); me.avatarBase64 = b64; 
+      $('pvAvatar').innerHTML = avatarHtml(me, 90, 32);
+      await rtdb.ref('users/' + me.uid).update({ avatarBase64: b64 });
+      loader(false); toast('Foto tersimpan');
+      $('headerAvatarBtn').innerHTML = avatarHtml(me, 32, 13); renderProfile();
+    } catch(e){ loader(false); toast('Gagal', true); }
+  };
+  $('saveProfBtn').onclick = async function(){
+    var n = $('editName').value.trim(); var b = $('editBlok').value.trim();
+    if(n) me.name = n; me.blok = b;
+    closeModal(); loader(true, 'Menyimpan...');
+    await rtdb.ref('users/' + me.uid).update({ name: me.name, blok: b || null });
+    loader(false);
+    $('headerAvatarBtn').innerHTML = avatarHtml(me, 32, 13); renderProfile(); toast('Tersimpan ✓');
+  };
+};
+
+$('myCodeBtn').onclick = function(){
+  var code = me.uid.toUpperCase();
+  openModal('Kode Akun',
+    '<p style="font-size:13.5px;color:#64748b;line-height:1.65;margin:0 0 16px;font-weight:500">Simpan kode ini untuk backup akun Anda.</p>'+
+    '<div style="background:#f8fafc;border-radius:16px;padding:18px;text-align:center;margin-bottom:14px;border:1px solid rgba(99,102,241,.15)"><div style="font-size:11.5px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.12em;margin-bottom:7px">Kode Akun</div><div style="font-family:ui-monospace,monospace;font-size:20px;font-weight:900;letter-spacing:.18em;color:#6366f1;word-break:break-all">'+esc(code)+'</div></div>'+
+    '<button type="button" id="copyCode" class="btn-p" style="width:100%">📋 Salin Kode</button>'
+  );
+  $('copyCode').onclick = async function(){ try { await navigator.clipboard.writeText(code); toast('Tersalin'); } catch(e){ toast('Gagal', true); } };
+};
+
+$('switchAccBtn').onclick = function(){
+  openModal('Ganti Akun',
+    '<div style="padding:15px;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.32);border-radius:16px;margin-bottom:16px"><div style="font-size:13.5px;font-weight:800;color:#92400e;margin-bottom:6px">⚠️ Perhatian</div><div style="font-size:13px;color:#78350f;line-height:1.65;font-weight:500">Login dengan akun berbeda akan jadi warga baru (perlu verifikasi ulang).</div></div>'+
+    '<button type="button" id="switchYes" style="width:100%;padding:14px;border-radius:13px;background:#f59e0b;color:white;font-size:14px;font-weight:800;border:none;cursor:pointer">Ya, Ganti Akun</button>'
+  );
+  $('switchYes').onclick = async function(){ auth.signOut().then(function(){ location.reload(); }); };
+};
+$('logoutBtn').onclick = function(){ if(confirm('Keluar?')) auth.signOut().then(function(){ location.reload(); }); };
+
+$('adminInviteCodeBtn').onclick = function(){
+  rtdb.ref('config/inviteCode').once('value').then(function(snap){
+    var code = snap.val() || '';
+    openModal('Kode Undangan RT',
+      '<div style="background:#f8fafc;border-radius:16px;padding:18px;text-align:center;margin-bottom:16px;border:1px solid rgba(99,102,241,.15)"><div style="font-size:11.5px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.12em;margin-bottom:7px">Kode Aktif</div><div style="font-family:ui-monospace,monospace;font-size:24px;font-weight:900;letter-spacing:.18em;color:#6366f1" id="curInviteCode">'+esc(code||'-')+'</div></div>'+
+      '<div style="font-size:12px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px">Kode Baru</div>'+
+      '<input id="newInviteCode" type="text" class="dt" style="text-transform:uppercase;text-align:center;font-weight:900;letter-spacing:.14em;margin-bottom:16px" placeholder="Contoh: RT09-2025" value="'+esc(code)+'"/>'+
+      '<button id="saveInviteBtn" class="btn-p" style="width:100%">Simpan</button>'
+    );
+    $('saveInviteBtn').onclick = async function(){
+      var nc = $('newInviteCode').value.trim().toUpperCase();
+      if(!nc) return toast('Kode kosong', true);
+      loader(true, 'Menyimpan...');
+      try { await rtdb.ref('config').update({ inviteCode: nc }); loader(false); closeModal(); toast('Kode diperbarui'); }
+      catch(e){ loader(false); toast('Gagal', true); }
+    };
+  });
+};
+
+$('adminVerifyBtn').onclick = function(){
+  openModal('Kelola Warga', '<div id="manageWargaList">Memuat...</div>');
+  rtdb.ref('users').once('value').then(function(snap){
+    var allUsers = []; snap.forEach(function(c){ allUsers.push(Object.assign({uid:c.key}, c.val())); });
+    var el = $('manageWargaList');
+    el.innerHTML = allUsers.map(function(u){
+      var isMe2 = u.uid === me.uid; var role = u.role || 'warga';
+      return '<div class="user-row" style="padding:11px 0;border-bottom:1px solid rgba(148,163,184,.08)">'+avatarHtml(u, 36, 13)+'<div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(u.name||'?')+(isMe2?' (Anda)':'')+'</div><div style="font-size:12px;color:#94a3b8;margin-top:2px;font-weight:500">'+esc(u.email||'')+'</div></div>'+(isMe2 ? '<span class="badge-pill pill-blue">Admin</span>' : '<select data-uid="'+u.uid+'" style="background:#f1f5f9;border:none;border-radius:9px;padding:7px 9px;font-size:12.5px;font-weight:700"><option value="warga"'+(role==='warga'?' selected':'')+'>Warga</option><option value="admin"'+(role==='admin'?' selected':'')+'>Admin</option><option value="blocked"'+(role==='blocked'?' selected':'')+'>Blockir</option></select>')+'</div>';
+    }).join('');
+    el.querySelectorAll('select[data-uid]').forEach(function(sel){ sel.onchange = async function(){ try { await rtdb.ref('users/' + sel.dataset.uid).update({ role: sel.value, verified: sel.value !== 'blocked' }); toast('Role diubah'); } catch(e){ toast('Gagal', true); } }; });
+  });
+};
 
 // VOTING
 function subscribePolls(){
