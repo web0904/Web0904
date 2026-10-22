@@ -34,6 +34,13 @@ input,textarea,select{font-size:16px!important}
 @keyframes connIn{from{opacity:0;transform:translateY(-100%)}to{opacity:1;transform:translateY(0)}}
 @keyframes badgePulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
 @keyframes bellShake{0%,100%{transform:rotate(0)}20%{transform:rotate(-12deg)}40%{transform:rotate(12deg)}60%{transform:rotate(-8deg)}80%{transform:rotate(8deg)}}
+
+/* ANIMASI RUNNING TEXT */
+@keyframes marquee {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+}
+
 .grad-anim{background:linear-gradient(90deg,#6366f1,#a855f7,#ec4899,#6366f1);background-size:200% 100%}
 
 .btn-p{background:linear-gradient(135deg,#6366f1 0%,#8b5cf6 50%,#ec4899 100%);color:white;font-weight:700;border:none;cursor:pointer;border-radius:14px;padding:13px 18px;font-size:15px;transition:transform .15s;box-shadow:0 6px 20px -8px rgba(99,102,241,.65);position:relative;overflow:hidden}
@@ -80,6 +87,17 @@ body.dark .nav-badge{border-color:#0f172a}
 .cat-badge.on{display:flex;animation:pop .3s}
 .cat-detail{display:flex;gap:5px;flex-wrap:wrap;margin-top:10px}
 .cat-detail .chip{padding:4px 10px;border-radius:9px;background:rgba(255,255,255,.24);font-size:11px;font-weight:800;display:inline-flex;align-items:center;gap:3px;color:white}
+
+/* WIDGET TIMER DI KATEGORI */
+.info-timer-widget{
+  position:absolute; right:12px; bottom:12px; 
+  background:rgba(0,0,0,0.2); border-radius:10px; 
+  padding:6px 10px; display:flex; flex-direction:column; align-items:flex-end;
+  z-index: 5; border: 1px solid rgba(255,255,255,0.1);
+}
+.info-timer-widget .timer-title{ font-size:10px; font-weight:600; opacity:0.8; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:2px;}
+.info-timer-widget .timer-count{ font-size:13px; font-weight:800; display:flex; gap:4px;}
+.info-timer-widget .timer-count span { background:rgba(255,255,255,0.2); padding:2px 5px; border-radius:4px;}
 
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .post-card{background:#fff;border-radius:18px;overflow:hidden;cursor:pointer;border:1px solid rgba(148,163,184,.14);display:flex;flex-direction:column;min-height:175px;transition:transform .18s;position:relative}
@@ -397,18 +415,42 @@ body.dark .notif-body .n-snippet{background:#1a2540;color:#94a3b8;border-left-co
   <main id="main" class="scroll-y grow">
     <!-- Home -->
     <section id="view-home" class="pb-nav">
-      <div style="padding:20px 18px 12px"><h2 style="font-size:19.5px;font-weight:900;margin:0;letter-spacing:-.02em">Halo, selamat datang 👋</h2><p style="font-size:13.5px;color:#64748b;margin:5px 0 0;font-weight:500">Pilih kategori untuk mulai berinteraksi</p></div>
+      <div style="padding:20px 18px 12px"><h2 id="greetingName" style="font-size:19.5px;font-weight:900;margin:0;letter-spacing:-.02em">Halo, selamat datang 👋</h2><p style="font-size:13.5px;color:#64748b;margin:5px 0 0;font-weight:500">Pilih kategori untuk mulai berinteraksi</p></div>
       
-      <!-- BANNER INFO BERANDA -->
-      <div id="homeTicker" class="hide" style="margin: 0 16px 16px; background: linear-gradient(135deg, #f59e0b, #d97706); color: white; border-radius: 14px; padding: 14px 16px; box-shadow: 0 6px 15px -6px rgba(245,158,11,.6); display: flex; align-items: flex-start; gap: 12px;">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0; margin-top: 2px;"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
-        <div style="flex: 1; font-size: 13.5px; font-weight: 700; line-height: 1.5;" id="homeTickerText"></div>
-        <button type="button" id="closeTicker" style="background:rgba(255,255,255,0.2); border:none; border-radius:50%; width:24px; height:24px; display:flex; align-items:center; justify-content:center; color:white; cursor:pointer; flex-shrink:0;">✕</button>
+      <!-- BANNER INFO BERANDA (RUNNING TEXT) -->
+      <div id="homeTicker" class="hide" style="margin: 0 16px 16px; background: linear-gradient(135deg, #f59e0b, #d97706); color: white; border-radius: 14px; padding: 10px 0; box-shadow: 0 6px 15px -6px rgba(245,158,11,.6); display: flex; align-items: center; overflow: hidden; position: relative;">
+        <div style="position:absolute; left:0; top:0; bottom:0; width:30px; background:linear-gradient(90deg, #d97706, transparent); z-index:2;"></div>
+        <div style="position:absolute; right:0; top:0; bottom:0; width:30px; background:linear-gradient(-90deg, #d97706, transparent); z-index:2;"></div>
+        
+        <div style="width: 100%; overflow: hidden; white-space: nowrap; padding-left: 10px;">
+          <div id="homeTickerText" style="display: inline-block; font-size: 13.5px; font-weight: 700; animation: marquee 15s linear infinite;"></div>
+        </div>
       </div>
 
       <div style="padding:0 16px;display:flex;flex-direction:column;gap:13px">
         <div id="catTileUmum" class="cat-tile g-umum fade" style="flex-direction:column;align-items:stretch;gap:12px;"><div style="display:flex;align-items:center;gap:15px;"><div class="icon">💬</div><div style="flex:1"><div style="font-size:18px;font-weight:900">Umum</div><div style="font-size:13px;opacity:.92;margin-top:4px">Obrolan santai · Tanya warga</div><div style="display:flex;align-items:baseline;gap:6px;margin-top:8px"><span style="font-size:19px;font-weight:900" id="countUmum">0</span><span style="font-size:11px;opacity:.88;font-weight:800;text-transform:uppercase">Postingan</span></div></div></div><div id="detailUmum" class="cat-detail hide"></div><span id="badgeUmum" class="cat-badge">0</span></div>
-        <div id="catTileInformasi" class="cat-tile g-info fade" style="flex-direction:column;align-items:stretch;gap:12px;"><div style="display:flex;align-items:center;gap:15px;"><div class="icon">📢</div><div style="flex:1"><div style="font-size:18px;font-weight:900">Informasi</div><div style="font-size:13px;opacity:.92;margin-top:4px">Pengumuman + jadwal</div><div style="display:flex;align-items:baseline;gap:6px;margin-top:8px"><span style="font-size:19px;font-weight:900" id="countInformasi">0</span><span style="font-size:11px;opacity:.88;font-weight:800;text-transform:uppercase">Postingan</span></div></div></div><div id="homeInfoCountdown" class="hide"></div><div id="detailInformasi" class="cat-detail hide"></div><span id="badgeInformasi" class="cat-badge">0</span></div>
+        
+        <div id="catTileInformasi" class="cat-tile g-info fade" style="flex-direction:column;align-items:stretch;gap:12px;">
+          <div style="display:flex;align-items:center;gap:15px;padding-right:70px;">
+            <div class="icon">📢</div>
+            <div style="flex:1">
+              <div style="font-size:18px;font-weight:900">Informasi</div>
+              <div style="font-size:13px;opacity:.92;margin-top:4px">Pengumuman + jadwal</div>
+              <div style="display:flex;align-items:baseline;gap:6px;margin-top:8px">
+                <span style="font-size:19px;font-weight:900" id="countInformasi">0</span>
+                <span style="font-size:11px;opacity:.88;font-weight:800;text-transform:uppercase">Postingan</span>
+              </div>
+            </div>
+          </div>
+          <!-- WIDGET TIMER KATEGORI INFO -->
+          <div id="infoTimerWidget" class="info-timer-widget hide">
+            <div class="timer-title">Agenda Terdekat</div>
+            <div class="timer-count" id="infoTimerCount">--</div>
+          </div>
+          <div id="detailInformasi" class="cat-detail hide"></div>
+          <span id="badgeInformasi" class="cat-badge">0</span>
+        </div>
+
         <div id="catTileGaleri" class="cat-tile g-gal fade" style="flex-direction:column;align-items:stretch;gap:12px;"><div style="display:flex;align-items:center;gap:15px;"><div class="icon">📷</div><div style="flex:1"><div style="font-size:18px;font-weight:900">Galeri</div><div style="font-size:13px;opacity:.92;margin-top:4px">Foto &amp; dokumentasi</div><div style="display:flex;align-items:baseline;gap:6px;margin-top:8px"><span style="font-size:19px;font-weight:900" id="countGaleri">0</span><span style="font-size:11px;opacity:.88;font-weight:800;text-transform:uppercase">Foto</span></div></div></div><div id="detailGaleri" class="cat-detail hide"></div><span id="badgeGaleri" class="cat-badge">0</span></div>
       </div>
       <div id="pinnedSection" class="section hide"><div class="section-head"><div class="section-title"><span class="em">📌</span>Pengumuman Penting</div><div class="section-sub" id="pinnedCount">0 item</div></div><div id="pinnedList"></div></div>
@@ -457,7 +499,7 @@ body.dark .notif-body .n-snippet{background:#1a2540;color:#94a3b8;border-left-co
       <div id="adminPanel" class="hide"><div style="font-size:12px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.12em;margin:0 4px 9px">🛡️ Panel Admin RT</div><div class="card" style="padding:0;overflow:hidden;margin-bottom:18px;border-radius:18px">
         <button id="adminInviteCodeBtn" type="button" class="setting-row"><div class="setting-icon" style="background:rgba(16,185,129,.15);color:#059669">🔐</div><div style="flex:1;text-align:left"><div style="font-size:14.5px;font-weight:700">Kode Undangan RT</div><div style="font-size:12.5px;color:#94a3b8;margin-top:2px;font-weight:500">Lihat &amp; ubah</div></div></button>
         <button id="adminVerifyBtn" type="button" class="setting-row"><div class="setting-icon" style="background:rgba(59,130,246,.15);color:#2563eb">👥</div><div style="flex:1;text-align:left"><div style="font-size:14.5px;font-weight:700">Kelola Warga</div><div style="font-size:12.5px;color:#94a3b8;margin-top:2px;font-weight:500">Atur role</div></div></button>
-        <button id="adminTickerBtn" type="button" class="setting-row"><div class="setting-icon" style="background:rgba(236,72,153,.15);color:#ec4899">📢</div><div style="flex:1;text-align:left"><div style="font-size:14.5px;font-weight:700">Info Beranda</div><div style="font-size:12.5px;color:#94a3b8;margin-top:2px;font-weight:500">Teks pengumuman di atas</div></div></button>
+        <button id="adminTickerBtn" type="button" class="setting-row"><div class="setting-icon" style="background:rgba(236,72,153,.15);color:#ec4899">📢</div><div style="flex:1;text-align:left"><div style="font-size:14.5px;font-weight:700">Info Beranda</div><div style="font-size:12.5px;color:#94a3b8;margin-top:2px;font-weight:500">Teks berjalan di atas</div></div></button>
       </div></div>
       <div class="card" style="padding:0;overflow:hidden;border-radius:18px"><button id="logoutBtn" type="button" class="setting-row"><div class="setting-icon" style="background:rgba(148,163,184,.15)">🚪</div><div style="flex:1;text-align:left;font-size:14.5px;font-weight:600">Keluar</div></button></div>
     </section>
@@ -531,7 +573,7 @@ var activePostId = null, activePost = null;
 var composeImgs = [], composeCat = 'umum', editingPostId = null, uploading = false;
 var unsubFeed = null, unsubUsers = null, unsubNotifs = null, unsubPolls = null;
 var notifications = [];
-var miniCountdownTimer = null; // Variabel untuk Timer
+var miniCountdownTimer = null;
 
 function $(id){ return document.getElementById(id); }
 function show(id){ var e = $(id); if(e) e.classList.remove('hide'); }
@@ -574,7 +616,9 @@ function markCatSeen(cat){ if(!me || !me.uid) return; var seen = getSeenPosts();
 function startMiniCountdowns(){
   if(miniCountdownTimer) clearInterval(miniCountdownTimer);
   function tick(){
-    if(document.hidden) return; // Berhenti jika app di background
+    if(document.hidden) return;
+    
+    // Timer di dalam postingan
     document.querySelectorAll('[data-cd]').forEach(function(el){
       var ts = parseInt(el.dataset.cd, 10); if(!ts) return;
       var diff = ts - Date.now();
@@ -582,6 +626,19 @@ function startMiniCountdowns(){
       var d = Math.floor(diff/86400000), h = Math.floor((diff%86400000)/3600000), m = Math.floor((diff%3600000)/60000), s = Math.floor((diff%60000)/1000);
       el.innerHTML = '<div class="cd-m-box"><div class="n">'+d+'</div><div class="l">Hari</div></div><div class="cd-m-box"><div class="n">'+h+'</div><div class="l">Jam</div></div><div class="cd-m-box"><div class="n">'+m+'</div><div class="l">Mnt</div></div><div class="cd-m-box"><div class="n">'+s+'</div><div class="l">Dtk</div></div>';
     });
+
+    // Timer di Kategori Informasi (Widget)
+    var widget = $('infoTimerWidget');
+    var countEl = $('infoTimerCount');
+    if(!widget.classList.contains('hide') && widget.dataset.cd){
+      var ts2 = parseInt(widget.dataset.cd, 10);
+      var diff2 = ts2 - Date.now();
+      if(diff2 <= 0){ countEl.innerHTML = 'Mulai'; } 
+      else {
+        var d2 = Math.floor(diff2/86400000), h2 = Math.floor((diff2%86400000)/3600000), m2 = Math.floor((diff2%3600000)/60000), s2 = Math.floor((diff2%60000)/1000);
+        countEl.innerHTML = (d2>0?d2+'h ':'') + h2+'j '+m2+'m '+s2+'s';
+      }
+    }
   }
   tick(); miniCountdownTimer = setInterval(tick, 1000);
 }
@@ -689,6 +746,7 @@ auth.onAuthStateChanged(function(user){
         else {
           $('app').classList.remove('hide'); $('app').style.display = 'flex';
           $('headerAvatarBtn').innerHTML = avatarHtml(me, 32, 13);
+          $('greetingName').innerHTML = 'Halo, ' + esc(me.name.split(' ')[0]) + ' 👋'; // SAPAAN NAMA
           setTab('home'); subscribeFeed(); subscribeNotifications(); subscribeTicker();
         }
       }, 300);
@@ -738,6 +796,7 @@ $('inviteSubmit').onclick = async function(){
       loader(false); toast('Verifikasi berhasil!');
       $('inviteOv').style.display = 'none'; $('app').classList.remove('hide'); $('app').style.display = 'flex';
       $('headerAvatarBtn').innerHTML = avatarHtml(me, 32, 13);
+      $('greetingName').innerHTML = 'Halo, ' + esc(me.name.split(' ')[0]) + ' 👋';
       setTab('home'); subscribeFeed(); subscribeNotifications(); subscribeTicker();
     } else { loader(false); toast('Kode salah.', true); }
   } catch(e){ loader(false); toast('Gagal', true); }
@@ -778,6 +837,20 @@ function updateAllBadges(){
 
 function renderHome(){
   ['umum','informasi','galeri'].forEach(function(c){ var el = $('count'+cap(c)); if(el) el.textContent = feed.filter(function(p){ return (p.category||'umum') === c; }).length; });
+  
+  // Logika Timer Kategori Informasi
+  var infoPosts = feed.filter(function(p){ return p.category === 'informasi' && p.eventDate && p.eventDate > Date.now(); });
+  infoPosts.sort(function(a,b){ return a.eventDate - b.eventDate; });
+  var widget = $('infoTimerWidget');
+  if(infoPosts.length > 0) {
+    var nearest = infoPosts[0];
+    widget.dataset.cd = nearest.eventDate;
+    widget.classList.remove('hide');
+  } else {
+    widget.dataset.cd = '';
+    widget.classList.add('hide');
+  }
+
   var pinned = feed.filter(function(p){ return p.pinned; }).sort(function(a,b){ return b.createdAt - a.createdAt; });
   var pinSec = $('pinnedSection');
   if(pinned.length){
@@ -785,7 +858,11 @@ function renderHome(){
     $('pinnedCount').textContent = pinned.length + ' item';
     $('pinnedList').innerHTML = pinned.slice(0, 5).map(function(p){
       var thumb = (p.images && p.images.length) ? '<div class="pin-thumb"><img src="data:image/jpeg;base64,'+p.images[0]+'" loading="lazy"></div>' : '';
-      return '<div class="pin-card" data-pid="'+p.id+'">'+thumb+'<div style="flex:1;min-width:0;"><div class="pin-badge">📌 PENTING</div><div class="pin-title">'+esc(p.text || '[Foto]')+'</div><div class="pin-meta">'+avatarHtml({name:p.authorName, photoURL:p.authorPhoto, avatarBase64:p.authorAvatarBase64, uid: p.authorId}, 20, 9, false)+'<span style="font-weight:800">'+esc(p.authorName)+'</span><span>·</span><span>'+timeAgo(p.createdAt)+'</span></div></div></div>';
+      // MENGUBAH [Foto] JIKA TANPA TEKS
+      var displayTitle = p.text ? esc(p.text) : (p.images && p.images.length ? '(Hanya Foto)' : 'Postingan');
+      if(!p.text) displayTitle = '<span style="font-style:italic;color:#94a3b8;">Tanpa Teks</span>';
+      
+      return '<div class="pin-card" data-pid="'+p.id+'">'+thumb+'<div style="flex:1;min-width:0;"><div class="pin-badge">📌 PENTING</div><div class="pin-title">'+displayTitle+'</div><div class="pin-meta">'+avatarHtml({name:p.authorName, photoURL:p.authorPhoto, avatarBase64:p.authorAvatarBase64, uid: p.authorId}, 20, 9, false)+'<span style="font-weight:800">'+esc(p.authorName)+'</span><span>·</span><span>'+timeAgo(p.createdAt)+'</span></div></div></div>';
     }).join('');
     $('pinnedList').querySelectorAll('[data-pid]').forEach(function(c){ c.onclick = function(){ openPostDetail(c.dataset.pid); }; });
   } else pinSec.classList.add('hide');
@@ -811,7 +888,6 @@ function renderPostCard(p){
   
   html += '<div class="body"><div class="title">'+esc(preview)+'</div>';
   
-  // Render Hitung Mundur
   if(hasEvent){
     var diff = p.eventDate - Date.now();
     if(diff <= 0){ html += '<div class="cd-mini"><div class="cd-mini-done">Kegiatan sudah dimulai</div></div>'; }
@@ -1106,6 +1182,7 @@ $('editProfileBtn').onclick = function(){
     await rtdb.ref('users/' + me.uid).update({ name: me.name, blok: b || null });
     loader(false);
     $('headerAvatarBtn').innerHTML = avatarHtml(me, 32, 13); renderProfile(); toast('Tersimpan ✓');
+    $('greetingName').innerHTML = 'Halo, ' + esc(me.name.split(' ')[0]) + ' 👋';
   };
 };
 
@@ -1173,44 +1250,82 @@ $('adminVerifyBtn').onclick = function(){
   });
 };
 
-// FITUR INFO BERANDA (TICKER)
+// FITUR INFO BERANDA (RUNNING TEXT + TIMER EXPIRED)
 function subscribeTicker() {
-  rtdb.ref('config/homeTicker').on('value', function(snap) {
-    var text = snap.val();
+  rtdb.ref('config').on('value', function(snap) {
+    var cfg = snap.val() || {};
+    var text = cfg.homeTicker;
+    var expiry = cfg.tickerExpiry || 0;
     var el = $('homeTicker');
     var txt = $('homeTickerText');
     
-    var isClosed = localStorage.getItem('spark_ticker_closed') === text;
-    
-    if (text && text.trim().length > 0 && !isClosed) {
-      txt.textContent = text;
-      el.classList.remove('hide');
+    if (text && text.trim().length > 0) {
+      if (expiry > 0 && Date.now() > expiry) {
+        // Waktu habis
+        el.classList.add('hide');
+      } else {
+        // Tampilkan
+        txt.textContent = text;
+        // Sesuaikan kecepatan animasi berdasarkan panjang teks (makin panjang makin lama)
+        var duration = Math.max(10, text.length * 0.2); 
+        txt.style.animationDuration = duration + 's';
+        el.classList.remove('hide');
+      }
     } else {
       el.classList.add('hide');
     }
   });
 }
 
-$('closeTicker').onclick = function() {
-  var text = $('homeTickerText').textContent;
-  localStorage.setItem('spark_ticker_closed', text);
-  $('homeTicker').classList.add('hide');
-};
-
 $('adminTickerBtn').onclick = function() {
-  rtdb.ref('config/homeTicker').once('value').then(function(snap){
-    var val = snap.val() || '';
+  rtdb.ref('config').once('value').then(function(snap){
+    var cfg = snap.val() || {};
+    var val = cfg.homeTicker || '';
+    var expiry = cfg.tickerExpiry || 0;
+    
+    // Cek sisa waktu jika ada
+    var statusStr = '(Tidak ada batas waktu)';
+    if(expiry > 0) {
+      if(Date.now() > expiry) statusStr = '(Sudah kedaluwarsa)';
+      else statusStr = '(Aktif sampai ' + new Date(expiry).toLocaleString('id-ID') + ')';
+    }
+
     openModal('Info Beranda',
-      '<div style="font-size:12px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px">Teks Info (Kosongkan untuk menghapus)</div>'+
-      '<textarea id="tickerInput" class="dt" rows="4" placeholder="Contoh: Kerja bakti ditunda menjadi hari Minggu besok jam 7 pagi..." style="margin-bottom:16px;resize:none;line-height:1.5">'+esc(val)+'</textarea>'+
-      '<button id="saveTickerBtn" class="btn-p" style="width:100%">Simpan Info</button>'
+      '<div style="font-size:12px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px">Teks Berjalan (Running Text)</div>'+
+      '<textarea id="tickerInput" class="dt" rows="3" placeholder="Contoh: Kerja bakti ditunda menjadi hari Minggu..." style="margin-bottom:14px;resize:none;line-height:1.5">'+esc(val)+'</textarea>'+
+      
+      '<div style="font-size:12px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px">Hilang Otomatis Dalam</div>'+
+      '<select id="tickerDuration" class="dt" style="margin-bottom:8px;">'+
+        '<option value="0">Jangan hilang otomatis (Manual)</option>'+
+        '<option value="1">1 Jam</option>'+
+        '<option value="6">6 Jam</option>'+
+        '<option value="24">1 Hari (24 Jam)</option>'+
+        '<option value="72">3 Hari</option>'+
+        '<option value="168">1 Minggu</option>'+
+      '</select>'+
+      '<div style="font-size:12px;color:#64748b;margin-bottom:16px;">Status saat ini: '+statusStr+'</div>'+
+      
+      '<button id="saveTickerBtn" class="btn-p" style="width:100%;margin-bottom:10px;">Simpan Info</button>'+
+      '<button id="deleteTickerBtn" class="btn-danger" style="width:100%;">Hapus Teks (Sekarang)</button>'
     );
     
     $('saveTickerBtn').onclick = function() {
       var newVal = $('tickerInput').value.trim();
+      var dur = parseInt($('tickerDuration').value, 10);
+      var newExpiry = dur > 0 ? (Date.now() + dur * 3600000) : 0;
+      
       loader(true, 'Menyimpan...');
-      rtdb.ref('config').update({ homeTicker: newVal }).then(function(){
+      rtdb.ref('config').update({ homeTicker: newVal, tickerExpiry: newExpiry }).then(function(){
         loader(false); closeModal(); toast(newVal ? 'Info beranda diperbarui' : 'Info beranda dihapus');
+      }).catch(function(e){
+        loader(false); toast('Gagal', true);
+      });
+    };
+
+    $('deleteTickerBtn').onclick = function() {
+      loader(true, 'Menghapus...');
+      rtdb.ref('config').update({ homeTicker: '', tickerExpiry: 0 }).then(function(){
+        loader(false); closeModal(); toast('Info beranda dihapus');
       }).catch(function(e){
         loader(false); toast('Gagal', true);
       });
@@ -1317,7 +1432,7 @@ function viewUserProfile(uid){
   $('userProfileContent').innerHTML = html;
   $('userProfileOv').classList.add('on');
   $('userProfileContent').querySelectorAll('[data-pid]').forEach(function(el){ el.onclick = function(){ $('userProfileOv').classList.remove('on'); setTimeout(function(){ openPostDetail(el.dataset.pid); }, 200); }; });
-  startMiniCountdowns(); // Panggil timer di profil warga
+  startMiniCountdowns(); 
 }
 
 window.addEventListener('load', function(){
