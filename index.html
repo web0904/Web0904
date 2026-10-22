@@ -117,6 +117,14 @@ body.dark .pin-card .pin-title{color:#e2e8f0}
 .section-title .em{margin-right:6px}
 .section-sub{font-size:12.5px;color:#94a3b8;font-weight:700}
 
+/* CSS UNTUK HITUNG MUNDUR (COUNTDOWN) */
+.cd-mini{display:flex;gap:4px;margin-top:8px}
+.cd-mini .cd-m-box{flex:1;text-align:center;padding:6px 3px;border-radius:9px;background:linear-gradient(135deg,#3b82f6,#6366f1);color:white}
+.cd-mini .cd-m-box .n{font-weight:800;font-size:15px;line-height:1}
+.cd-mini .cd-m-box .l{font-size:9px;opacity:.9;margin-top:3px;text-transform:uppercase;font-weight:800}
+.cd-mini-done{text-align:center;padding:8px;border-radius:9px;background:#f1f5f9;font-size:12px;font-weight:700;color:#64748b;margin-top:8px;width:100%}
+body.dark .cd-mini-done{background:#1a2540;color:#94a3b8}
+
 #view-post{display:none;flex-direction:column;height:100%}
 #view-post.on{display:flex}
 .post-scroll{flex:1;overflow-y:auto;padding:16px 16px 24px}
@@ -348,14 +356,24 @@ body.dark .notif-body .n-snippet{background:#1a2540;color:#94a3b8;border-left-co
   </div>
 </div>
 
-<!-- Verifikasi -->
+<!-- Verifikasi (DENGAN CHECKBOX) -->
 <div id="inviteOv">
   <div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding:40px 24px;max-width:420px;margin:0 auto;width:100%">
     <div style="width:64px;height:64px;border-radius:20px;background:linear-gradient(135deg,#10b981,#059669);display:flex;align-items:center;justify-content:center;margin-bottom:22px;font-size:30px">🔐</div>
     <h2 style="font-size:22px;font-weight:900;line-height:1.25;margin:0 0 10px">Verifikasi Warga</h2>
     <p style="font-size:14px;color:#64748b;line-height:1.6;margin:0 0 24px">Masukkan kode undangan dari Pengurus RT.</p>
-    <input id="inviteInput" type="text" placeholder="Contoh: RT09-2025" class="dt" style="text-align:center;font-weight:900;letter-spacing:.18em;text-transform:uppercase;margin-bottom:14px;padding:16px">
-    <button id="inviteSubmit" class="btn-p" style="width:100%;margin-bottom:10px">Verifikasi</button>
+    
+    <input id="inviteInput" type="text" placeholder="Contoh: RT09-2025" class="dt" style="text-align:center;font-weight:900;letter-spacing:.18em;text-transform:uppercase;margin-bottom:16px;padding:16px">
+    
+    <label style="display:flex;align-items:flex-start;gap:10px;margin-bottom:16px;cursor:pointer;text-align:left;">
+      <input type="checkbox" id="consentCheck" style="width:18px;height:18px;margin-top:3px;accent-color:#6366f1;flex-shrink:0;">
+      <span style="font-size:12.5px;color:#64748b;line-height:1.5;font-weight:500;">
+        Saya telah membaca dan menyetujui <b>Tata Tertib</b> serta <b>Kebijakan Privasi</b>. Saya memahami bahwa data saya (Nama, Email, Foto, dan Aktivitas) disimpan dengan aman di Firebase dan hanya digunakan untuk keperluan komunitas RT09/RW04.
+      </span>
+    </label>
+
+    <button id="inviteSubmit" class="btn-p" style="width:100%;margin-bottom:10px;opacity:0.5;" disabled>Verifikasi</button>
+    
     <button id="inviteLogout" class="btn-s" style="width:100%;margin-top:14px;background:transparent;font-size:13px;color:#94a3b8">Ganti akun Google</button>
   </div>
 </div>
@@ -380,6 +398,14 @@ body.dark .notif-body .n-snippet{background:#1a2540;color:#94a3b8;border-left-co
     <!-- Home -->
     <section id="view-home" class="pb-nav">
       <div style="padding:20px 18px 12px"><h2 style="font-size:19.5px;font-weight:900;margin:0;letter-spacing:-.02em">Halo, selamat datang 👋</h2><p style="font-size:13.5px;color:#64748b;margin:5px 0 0;font-weight:500">Pilih kategori untuk mulai berinteraksi</p></div>
+      
+      <!-- BANNER INFO BERANDA -->
+      <div id="homeTicker" class="hide" style="margin: 0 16px 16px; background: linear-gradient(135deg, #f59e0b, #d97706); color: white; border-radius: 14px; padding: 14px 16px; box-shadow: 0 6px 15px -6px rgba(245,158,11,.6); display: flex; align-items: flex-start; gap: 12px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0; margin-top: 2px;"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+        <div style="flex: 1; font-size: 13.5px; font-weight: 700; line-height: 1.5;" id="homeTickerText"></div>
+        <button type="button" id="closeTicker" style="background:rgba(255,255,255,0.2); border:none; border-radius:50%; width:24px; height:24px; display:flex; align-items:center; justify-content:center; color:white; cursor:pointer; flex-shrink:0;">✕</button>
+      </div>
+
       <div style="padding:0 16px;display:flex;flex-direction:column;gap:13px">
         <div id="catTileUmum" class="cat-tile g-umum fade" style="flex-direction:column;align-items:stretch;gap:12px;"><div style="display:flex;align-items:center;gap:15px;"><div class="icon">💬</div><div style="flex:1"><div style="font-size:18px;font-weight:900">Umum</div><div style="font-size:13px;opacity:.92;margin-top:4px">Obrolan santai · Tanya warga</div><div style="display:flex;align-items:baseline;gap:6px;margin-top:8px"><span style="font-size:19px;font-weight:900" id="countUmum">0</span><span style="font-size:11px;opacity:.88;font-weight:800;text-transform:uppercase">Postingan</span></div></div></div><div id="detailUmum" class="cat-detail hide"></div><span id="badgeUmum" class="cat-badge">0</span></div>
         <div id="catTileInformasi" class="cat-tile g-info fade" style="flex-direction:column;align-items:stretch;gap:12px;"><div style="display:flex;align-items:center;gap:15px;"><div class="icon">📢</div><div style="flex:1"><div style="font-size:18px;font-weight:900">Informasi</div><div style="font-size:13px;opacity:.92;margin-top:4px">Pengumuman + jadwal</div><div style="display:flex;align-items:baseline;gap:6px;margin-top:8px"><span style="font-size:19px;font-weight:900" id="countInformasi">0</span><span style="font-size:11px;opacity:.88;font-weight:800;text-transform:uppercase">Postingan</span></div></div></div><div id="homeInfoCountdown" class="hide"></div><div id="detailInformasi" class="cat-detail hide"></div><span id="badgeInformasi" class="cat-badge">0</span></div>
@@ -425,11 +451,13 @@ body.dark .notif-body .n-snippet{background:#1a2540;color:#94a3b8;border-left-co
       <div style="font-size:12px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.12em;margin:0 4px 9px">Akun</div>
       <div class="card" style="padding:0;overflow:hidden;margin-bottom:18px;border-radius:18px">
         <button id="myCodeBtn" type="button" class="setting-row"><div class="setting-icon" style="background:rgba(99,102,241,.15);color:#6366f1">🆔</div><div style="flex:1;text-align:left"><div style="font-size:14.5px;font-weight:700">Kode Akun Saya</div><div style="font-size:12.5px;color:#94a3b8;margin-top:2px;font-weight:500">Simpan untuk backup</div></div></button>
+        <button id="rulesBtn" type="button" class="setting-row"><div class="setting-icon" style="background:rgba(245,158,11,.15);color:#f59e0b">📖</div><div style="flex:1;text-align:left"><div style="font-size:14.5px;font-weight:700">Tata Tertib</div><div style="font-size:12.5px;color:#94a3b8;margin-top:2px;font-weight:500">Etika &amp; panduan</div></div></button>
         <button id="switchAccBtn" type="button" class="setting-row"><div class="setting-icon" style="background:rgba(245,158,11,.15);color:#f59e0b">🔄</div><div style="flex:1;text-align:left"><div style="font-size:14.5px;font-weight:700">Ganti Akun</div><div style="font-size:12.5px;color:#94a3b8;margin-top:2px;font-weight:500">Login dengan akun lain</div></div></button>
       </div>
       <div id="adminPanel" class="hide"><div style="font-size:12px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.12em;margin:0 4px 9px">🛡️ Panel Admin RT</div><div class="card" style="padding:0;overflow:hidden;margin-bottom:18px;border-radius:18px">
         <button id="adminInviteCodeBtn" type="button" class="setting-row"><div class="setting-icon" style="background:rgba(16,185,129,.15);color:#059669">🔐</div><div style="flex:1;text-align:left"><div style="font-size:14.5px;font-weight:700">Kode Undangan RT</div><div style="font-size:12.5px;color:#94a3b8;margin-top:2px;font-weight:500">Lihat &amp; ubah</div></div></button>
         <button id="adminVerifyBtn" type="button" class="setting-row"><div class="setting-icon" style="background:rgba(59,130,246,.15);color:#2563eb">👥</div><div style="flex:1;text-align:left"><div style="font-size:14.5px;font-weight:700">Kelola Warga</div><div style="font-size:12.5px;color:#94a3b8;margin-top:2px;font-weight:500">Atur role</div></div></button>
+        <button id="adminTickerBtn" type="button" class="setting-row"><div class="setting-icon" style="background:rgba(236,72,153,.15);color:#ec4899">📢</div><div style="flex:1;text-align:left"><div style="font-size:14.5px;font-weight:700">Info Beranda</div><div style="font-size:12.5px;color:#94a3b8;margin-top:2px;font-weight:500">Teks pengumuman di atas</div></div></button>
       </div></div>
       <div class="card" style="padding:0;overflow:hidden;border-radius:18px"><button id="logoutBtn" type="button" class="setting-row"><div class="setting-icon" style="background:rgba(148,163,184,.15)">🚪</div><div style="flex:1;text-align:left;font-size:14.5px;font-weight:600">Keluar</div></button></div>
     </section>
@@ -503,7 +531,7 @@ var activePostId = null, activePost = null;
 var composeImgs = [], composeCat = 'umum', editingPostId = null, uploading = false;
 var unsubFeed = null, unsubUsers = null, unsubNotifs = null, unsubPolls = null;
 var notifications = [];
-var countdownTimer = null;
+var miniCountdownTimer = null; // Variabel untuk Timer
 
 function $(id){ return document.getElementById(id); }
 function show(id){ var e = $(id); if(e) e.classList.remove('hide'); }
@@ -541,6 +569,22 @@ function isAdmin(){ return me && me.role === 'admin'; }
 function getSeenPosts(){ if(!me || !me.uid) return {}; try { return JSON.parse(localStorage.getItem('spark_seen_posts_'+me.uid) || '{}'); } catch(e){ return {}; } }
 function markPostSeen(pid){ if(!me || !me.uid || !pid) return; var seen = getSeenPosts(); seen[pid] = Date.now(); var keys = Object.keys(seen); if(keys.length > 500){ keys.sort(function(a,b){ return seen[b] - seen[a]; }); var ns = {}; for(var i = 0; i < 300; i++) ns[keys[i]] = seen[keys[i]]; seen = ns; } try { localStorage.setItem('spark_seen_posts_'+me.uid, JSON.stringify(seen)); } catch(e){} }
 function markCatSeen(cat){ if(!me || !me.uid) return; var seen = getSeenPosts(); var changed = false; feed.forEach(function(p){ if((p.category||'umum') === cat && p.authorId !== me.uid && !seen[p.id]){ seen[p.id] = Date.now(); changed = true; } }); if(changed){ try { localStorage.setItem('spark_seen_posts_'+me.uid, JSON.stringify(seen)); } catch(e){} } }
+
+// TIMER COUNTDOWN
+function startMiniCountdowns(){
+  if(miniCountdownTimer) clearInterval(miniCountdownTimer);
+  function tick(){
+    if(document.hidden) return; // Berhenti jika app di background
+    document.querySelectorAll('[data-cd]').forEach(function(el){
+      var ts = parseInt(el.dataset.cd, 10); if(!ts) return;
+      var diff = ts - Date.now();
+      if(diff <= 0){ el.innerHTML = '<div class="cd-mini-done">Kegiatan sudah dimulai</div>'; return; }
+      var d = Math.floor(diff/86400000), h = Math.floor((diff%86400000)/3600000), m = Math.floor((diff%3600000)/60000), s = Math.floor((diff%60000)/1000);
+      el.innerHTML = '<div class="cd-m-box"><div class="n">'+d+'</div><div class="l">Hari</div></div><div class="cd-m-box"><div class="n">'+h+'</div><div class="l">Jam</div></div><div class="cd-m-box"><div class="n">'+m+'</div><div class="l">Mnt</div></div><div class="cd-m-box"><div class="n">'+s+'</div><div class="l">Dtk</div></div>';
+    });
+  }
+  tick(); miniCountdownTimer = setInterval(tick, 1000);
+}
 
 // NOTIFIKASI & PROFILE
 function subscribeNotifications(){
@@ -645,7 +689,7 @@ auth.onAuthStateChanged(function(user){
         else {
           $('app').classList.remove('hide'); $('app').style.display = 'flex';
           $('headerAvatarBtn').innerHTML = avatarHtml(me, 32, 13);
-          setTab('home'); subscribeFeed(); subscribeNotifications();
+          setTab('home'); subscribeFeed(); subscribeNotifications(); subscribeTicker();
         }
       }, 300);
     });
@@ -665,9 +709,24 @@ $('googleBtn').onclick = async function(){
     $('googleBtn').disabled = false;
   }
 };
+
+// LOGIKA CHECKBOX PERSETUJUAN
+$('consentCheck').addEventListener('change', function() {
+  var btn = $('inviteSubmit');
+  if (this.checked) {
+    btn.disabled = false;
+    btn.style.opacity = '1';
+  } else {
+    btn.disabled = true;
+    btn.style.opacity = '0.5';
+  }
+});
+
 $('inviteSubmit').onclick = async function(){
   var code = $('inviteInput').value.trim().toUpperCase();
   if(!code) return toast('Masukkan kode', true);
+  if(!$('consentCheck').checked) return toast('Centang persetujuan terlebih dahulu', true);
+  
   loader(true, 'Memverifikasi...');
   try {
     var snap = await rtdb.ref('config/inviteCode').once('value');
@@ -679,7 +738,7 @@ $('inviteSubmit').onclick = async function(){
       loader(false); toast('Verifikasi berhasil!');
       $('inviteOv').style.display = 'none'; $('app').classList.remove('hide'); $('app').style.display = 'flex';
       $('headerAvatarBtn').innerHTML = avatarHtml(me, 32, 13);
-      setTab('home'); subscribeFeed(); subscribeNotifications();
+      setTab('home'); subscribeFeed(); subscribeNotifications(); subscribeTicker();
     } else { loader(false); toast('Kode salah.', true); }
   } catch(e){ loader(false); toast('Gagal', true); }
 };
@@ -730,6 +789,7 @@ function renderHome(){
     }).join('');
     $('pinnedList').querySelectorAll('[data-pid]').forEach(function(c){ c.onclick = function(){ openPostDetail(c.dataset.pid); }; });
   } else pinSec.classList.add('hide');
+  startMiniCountdowns();
 }
 
 function renderPostCard(p){
@@ -742,11 +802,25 @@ function renderPostCard(p){
   var seen = getSeenPosts();
   var showNew = !isMine && !seen[p.id] && !p.pinned;
   var likeCount = toCount(p.likedBy);
+  var hasEvent = p.eventDate && p.eventDate > 0;
+
   var html = '<div class="post-card" data-pid="'+p.id+'"><div class="strip '+stripCls+'"></div>';
   if(showNew) html += '<div class="post-new-dot"></div>';
   if(p.pinned) html += '<div class="pin-tag">📌 PIN</div>';
   if(firstImg) html += '<div class="thumb"><img src="data:image/jpeg;base64,'+firstImg+'" loading="lazy"/></div>';
+  
   html += '<div class="body"><div class="title">'+esc(preview)+'</div>';
+  
+  // Render Hitung Mundur
+  if(hasEvent){
+    var diff = p.eventDate - Date.now();
+    if(diff <= 0){ html += '<div class="cd-mini"><div class="cd-mini-done">Kegiatan sudah dimulai</div></div>'; }
+    else { 
+      var dd = Math.floor(diff/86400000), hh = Math.floor((diff%86400000)/3600000), mm = Math.floor((diff%3600000)/60000), ss = Math.floor((diff%60000)/1000); 
+      html += '<div class="cd-mini" data-cd="'+p.eventDate+'"><div class="cd-m-box"><div class="n">'+dd+'</div><div class="l">Hari</div></div><div class="cd-m-box"><div class="n">'+hh+'</div><div class="l">Jam</div></div><div class="cd-m-box"><div class="n">'+mm+'</div><div class="l">Mnt</div></div><div class="cd-m-box"><div class="n">'+ss+'</div><div class="l">Dtk</div></div></div>'; 
+    }
+  }
+
   html += '<div class="meta">'+(p.commentCount ? '<span>💬 '+p.commentCount+'</span>' : '')+(likeCount ? '<span>❤️ '+likeCount+'</span>' : '')+(totalImgs ? '<span>📷 '+totalImgs+'</span>' : '')+'<span style="margin-left:auto">'+timeAgo(p.createdAt)+'</span></div></div>';
   html += '<div class="foot">'+avatarHtml({name:p.authorName, photoURL:p.authorPhoto, avatarBase64:p.authorAvatarBase64, uid: p.authorId}, 20, 9, false)+'<span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(p.authorName)+'</span></div></div>';
   return html;
@@ -763,6 +837,7 @@ function renderCategory(){
   hide('catEmpty');
   grid.innerHTML = list.map(renderPostCard).join('');
   grid.querySelectorAll('[data-pid]').forEach(function(el){ el.onclick = function(){ openPostDetail(el.dataset.pid); }; });
+  startMiniCountdowns();
 }
 
 function openPostDetail(postId){
@@ -1034,6 +1109,19 @@ $('editProfileBtn').onclick = function(){
   };
 };
 
+$('rulesBtn').onclick = function(){
+  openModal('📖 Tata Tertib',
+    '<div style="font-size:13.5px;line-height:1.8;color:#334155">'+
+    '<p><b>1. Sopan &amp; hormat</b> — Gunakan bahasa yang baik, hindari SARA, hoax, dan spam.</p>'+
+    '<p><b>2. Terbuka</b> — Semua postingan dapat dilihat seluruh warga.</p>'+
+    '<p><b>3. Kategori</b> — Pilih kategori sesuai: Umum / Informasi / Galeri.</p>'+
+    '<p><b>4. Konsekuensi</b> — Pelanggaran dapat ditindak oleh Pengurus RT.</p>'+
+    '<p><b>5. Perlindungan Data (Privasi)</b> — Aplikasi ini dikelola oleh warga untuk warga. Data pribadi (Nama, Email, Foto) hanya disimpan untuk keperluan identifikasi komunitas. Pembuat aplikasi tidak bertanggung jawab atas penyalahgunaan data yang disebabkan oleh kelalaian pengguna (misalnya membagikan kata sandi/kode kepada orang lain).</p>'+
+    '<p style="text-align:center;color:#94a3b8;font-size:12px;margin-top:20px">Terima kasih telah menjaga kerukunan 🤝</p>'+
+    '</div>'
+  );
+};
+
 $('myCodeBtn').onclick = function(){
   var code = me.uid.toUpperCase();
   openModal('Kode Akun',
@@ -1082,6 +1170,51 @@ $('adminVerifyBtn').onclick = function(){
       return '<div class="user-row" style="padding:11px 0;border-bottom:1px solid rgba(148,163,184,.08)">'+avatarHtml(u, 36, 13)+'<div style="flex:1;min-width:0"><div style="font-size:14px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(u.name||'?')+(isMe2?' (Anda)':'')+'</div><div style="font-size:12px;color:#94a3b8;margin-top:2px;font-weight:500">'+esc(u.email||'')+'</div></div>'+(isMe2 ? '<span class="badge-pill pill-blue">Admin</span>' : '<select data-uid="'+u.uid+'" style="background:#f1f5f9;border:none;border-radius:9px;padding:7px 9px;font-size:12.5px;font-weight:700"><option value="warga"'+(role==='warga'?' selected':'')+'>Warga</option><option value="admin"'+(role==='admin'?' selected':'')+'>Admin</option><option value="blocked"'+(role==='blocked'?' selected':'')+'>Blockir</option></select>')+'</div>';
     }).join('');
     el.querySelectorAll('select[data-uid]').forEach(function(sel){ sel.onchange = async function(){ try { await rtdb.ref('users/' + sel.dataset.uid).update({ role: sel.value, verified: sel.value !== 'blocked' }); toast('Role diubah'); } catch(e){ toast('Gagal', true); } }; });
+  });
+};
+
+// FITUR INFO BERANDA (TICKER)
+function subscribeTicker() {
+  rtdb.ref('config/homeTicker').on('value', function(snap) {
+    var text = snap.val();
+    var el = $('homeTicker');
+    var txt = $('homeTickerText');
+    
+    var isClosed = localStorage.getItem('spark_ticker_closed') === text;
+    
+    if (text && text.trim().length > 0 && !isClosed) {
+      txt.textContent = text;
+      el.classList.remove('hide');
+    } else {
+      el.classList.add('hide');
+    }
+  });
+}
+
+$('closeTicker').onclick = function() {
+  var text = $('homeTickerText').textContent;
+  localStorage.setItem('spark_ticker_closed', text);
+  $('homeTicker').classList.add('hide');
+};
+
+$('adminTickerBtn').onclick = function() {
+  rtdb.ref('config/homeTicker').once('value').then(function(snap){
+    var val = snap.val() || '';
+    openModal('Info Beranda',
+      '<div style="font-size:12px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px">Teks Info (Kosongkan untuk menghapus)</div>'+
+      '<textarea id="tickerInput" class="dt" rows="4" placeholder="Contoh: Kerja bakti ditunda menjadi hari Minggu besok jam 7 pagi..." style="margin-bottom:16px;resize:none;line-height:1.5">'+esc(val)+'</textarea>'+
+      '<button id="saveTickerBtn" class="btn-p" style="width:100%">Simpan Info</button>'
+    );
+    
+    $('saveTickerBtn').onclick = function() {
+      var newVal = $('tickerInput').value.trim();
+      loader(true, 'Menyimpan...');
+      rtdb.ref('config').update({ homeTicker: newVal }).then(function(){
+        loader(false); closeModal(); toast(newVal ? 'Info beranda diperbarui' : 'Info beranda dihapus');
+      }).catch(function(e){
+        loader(false); toast('Gagal', true);
+      });
+    };
   });
 };
 
@@ -1184,6 +1317,7 @@ function viewUserProfile(uid){
   $('userProfileContent').innerHTML = html;
   $('userProfileOv').classList.add('on');
   $('userProfileContent').querySelectorAll('[data-pid]').forEach(function(el){ el.onclick = function(){ $('userProfileOv').classList.remove('on'); setTimeout(function(){ openPostDetail(el.dataset.pid); }, 200); }; });
+  startMiniCountdowns(); // Panggil timer di profil warga
 }
 
 window.addEventListener('load', function(){
