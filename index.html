@@ -88,17 +88,6 @@ body.dark .nav-badge{border-color:#0f172a}
 .cat-detail{display:flex;gap:5px;flex-wrap:wrap;margin-top:10px}
 .cat-detail .chip{padding:4px 10px;border-radius:9px;background:rgba(255,255,255,.24);font-size:11px;font-weight:800;display:inline-flex;align-items:center;gap:3px;color:white}
 
-/* WIDGET TIMER DI KATEGORI */
-.info-timer-widget{
-  position:absolute; right:12px; bottom:12px; 
-  background:rgba(0,0,0,0.2); border-radius:10px; 
-  padding:6px 10px; display:flex; flex-direction:column; align-items:flex-end;
-  z-index: 5; border: 1px solid rgba(255,255,255,0.1);
-}
-.info-timer-widget .timer-title{ font-size:10px; font-weight:600; opacity:0.8; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:2px;}
-.info-timer-widget .timer-count{ font-size:13px; font-weight:800; display:flex; gap:4px;}
-.info-timer-widget .timer-count span { background:rgba(255,255,255,0.2); padding:2px 5px; border-radius:4px;}
-
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .post-card{background:#fff;border-radius:18px;overflow:hidden;cursor:pointer;border:1px solid rgba(148,163,184,.14);display:flex;flex-direction:column;min-height:175px;transition:transform .18s;position:relative}
 body.dark .post-card{background:#101a2e;border-color:rgba(255,255,255,.06)}
@@ -431,7 +420,7 @@ body.dark .notif-body .n-snippet{background:#1a2540;color:#94a3b8;border-left-co
         <div id="catTileUmum" class="cat-tile g-umum fade" style="flex-direction:column;align-items:stretch;gap:12px;"><div style="display:flex;align-items:center;gap:15px;"><div class="icon">💬</div><div style="flex:1"><div style="font-size:18px;font-weight:900">Umum</div><div style="font-size:13px;opacity:.92;margin-top:4px">Obrolan santai · Tanya warga</div><div style="display:flex;align-items:baseline;gap:6px;margin-top:8px"><span style="font-size:19px;font-weight:900" id="countUmum">0</span><span style="font-size:11px;opacity:.88;font-weight:800;text-transform:uppercase">Postingan</span></div></div></div><div id="detailUmum" class="cat-detail hide"></div><span id="badgeUmum" class="cat-badge">0</span></div>
         
         <div id="catTileInformasi" class="cat-tile g-info fade" style="flex-direction:column;align-items:stretch;gap:12px;">
-          <div style="display:flex;align-items:center;gap:15px;padding-right:70px;">
+          <div style="display:flex;align-items:center;gap:15px;">
             <div class="icon">📢</div>
             <div style="flex:1">
               <div style="font-size:18px;font-weight:900">Informasi</div>
@@ -442,11 +431,16 @@ body.dark .notif-body .n-snippet{background:#1a2540;color:#94a3b8;border-left-co
               </div>
             </div>
           </div>
-          <!-- WIDGET TIMER KATEGORI INFO -->
-          <div id="infoTimerWidget" class="info-timer-widget hide">
-            <div class="timer-title">Agenda Terdekat</div>
-            <div class="timer-count" id="infoTimerCount">--</div>
+          
+          <!-- WIDGET TIMER KATEGORI INFO (DIPERCANTIK) -->
+          <div id="infoTimerWidget" class="hide" style="background:rgba(0,0,0,0.15); border-radius:10px; padding:8px 12px; display:flex; align-items:center; justify-content:space-between; border: 1px solid rgba(255,255,255,0.1);">
+            <div style="font-size:12px; font-weight:700; opacity:0.9; display:flex; align-items:center; gap:6px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+              Agenda Terdekat
+            </div>
+            <div id="infoTimerCount" style="font-size:13px; font-weight:900; background:rgba(255,255,255,0.25); padding:4px 8px; border-radius:6px; letter-spacing:0.5px;">--</div>
           </div>
+          
           <div id="detailInformasi" class="cat-detail hide"></div>
           <span id="badgeInformasi" class="cat-badge">0</span>
         </div>
@@ -573,7 +567,6 @@ var activePostId = null, activePost = null;
 var composeImgs = [], composeCat = 'umum', editingPostId = null, uploading = false;
 var unsubFeed = null, unsubUsers = null, unsubNotifs = null, unsubPolls = null;
 var notifications = [];
-var miniCountdownTimer = null;
 
 function $(id){ return document.getElementById(id); }
 function show(id){ var e = $(id); if(e) e.classList.remove('hide'); }
@@ -611,37 +604,6 @@ function isAdmin(){ return me && me.role === 'admin'; }
 function getSeenPosts(){ if(!me || !me.uid) return {}; try { return JSON.parse(localStorage.getItem('spark_seen_posts_'+me.uid) || '{}'); } catch(e){ return {}; } }
 function markPostSeen(pid){ if(!me || !me.uid || !pid) return; var seen = getSeenPosts(); seen[pid] = Date.now(); var keys = Object.keys(seen); if(keys.length > 500){ keys.sort(function(a,b){ return seen[b] - seen[a]; }); var ns = {}; for(var i = 0; i < 300; i++) ns[keys[i]] = seen[keys[i]]; seen = ns; } try { localStorage.setItem('spark_seen_posts_'+me.uid, JSON.stringify(seen)); } catch(e){} }
 function markCatSeen(cat){ if(!me || !me.uid) return; var seen = getSeenPosts(); var changed = false; feed.forEach(function(p){ if((p.category||'umum') === cat && p.authorId !== me.uid && !seen[p.id]){ seen[p.id] = Date.now(); changed = true; } }); if(changed){ try { localStorage.setItem('spark_seen_posts_'+me.uid, JSON.stringify(seen)); } catch(e){} } }
-
-// TIMER COUNTDOWN
-function startMiniCountdowns(){
-  if(miniCountdownTimer) clearInterval(miniCountdownTimer);
-  function tick(){
-    if(document.hidden) return;
-    
-    // Timer di dalam postingan
-    document.querySelectorAll('[data-cd]').forEach(function(el){
-      var ts = parseInt(el.dataset.cd, 10); if(!ts) return;
-      var diff = ts - Date.now();
-      if(diff <= 0){ el.innerHTML = '<div class="cd-mini-done">Kegiatan sudah dimulai</div>'; return; }
-      var d = Math.floor(diff/86400000), h = Math.floor((diff%86400000)/3600000), m = Math.floor((diff%3600000)/60000), s = Math.floor((diff%60000)/1000);
-      el.innerHTML = '<div class="cd-m-box"><div class="n">'+d+'</div><div class="l">Hari</div></div><div class="cd-m-box"><div class="n">'+h+'</div><div class="l">Jam</div></div><div class="cd-m-box"><div class="n">'+m+'</div><div class="l">Mnt</div></div><div class="cd-m-box"><div class="n">'+s+'</div><div class="l">Dtk</div></div>';
-    });
-
-    // Timer di Kategori Informasi (Widget)
-    var widget = $('infoTimerWidget');
-    var countEl = $('infoTimerCount');
-    if(!widget.classList.contains('hide') && widget.dataset.cd){
-      var ts2 = parseInt(widget.dataset.cd, 10);
-      var diff2 = ts2 - Date.now();
-      if(diff2 <= 0){ countEl.innerHTML = 'Mulai'; } 
-      else {
-        var d2 = Math.floor(diff2/86400000), h2 = Math.floor((diff2%86400000)/3600000), m2 = Math.floor((diff2%3600000)/60000), s2 = Math.floor((diff2%60000)/1000);
-        countEl.innerHTML = (d2>0?d2+'h ':'') + h2+'j '+m2+'m '+s2+'s';
-      }
-    }
-  }
-  tick(); miniCountdownTimer = setInterval(tick, 1000);
-}
 
 // NOTIFIKASI & PROFILE
 function subscribeNotifications(){
@@ -858,15 +820,13 @@ function renderHome(){
     $('pinnedCount').textContent = pinned.length + ' item';
     $('pinnedList').innerHTML = pinned.slice(0, 5).map(function(p){
       var thumb = (p.images && p.images.length) ? '<div class="pin-thumb"><img src="data:image/jpeg;base64,'+p.images[0]+'" loading="lazy"></div>' : '';
-      // MENGUBAH [Foto] JIKA TANPA TEKS
-      var displayTitle = p.text ? esc(p.text) : (p.images && p.images.length ? '(Hanya Foto)' : 'Postingan');
-      if(!p.text) displayTitle = '<span style="font-style:italic;color:#94a3b8;">Tanpa Teks</span>';
+      // MENGUBAH [Foto] JIKA TANPA TEKS JADI KOSONG
+      var displayTitle = p.text ? esc(p.text) : '';
       
-      return '<div class="pin-card" data-pid="'+p.id+'">'+thumb+'<div style="flex:1;min-width:0;"><div class="pin-badge">📌 PENTING</div><div class="pin-title">'+displayTitle+'</div><div class="pin-meta">'+avatarHtml({name:p.authorName, photoURL:p.authorPhoto, avatarBase64:p.authorAvatarBase64, uid: p.authorId}, 20, 9, false)+'<span style="font-weight:800">'+esc(p.authorName)+'</span><span>·</span><span>'+timeAgo(p.createdAt)+'</span></div></div></div>';
+      return '<div class="pin-card" data-pid="'+p.id+'">'+thumb+'<div style="flex:1;min-width:0;"><div class="pin-badge">📌 PENTING</div><div class="pin-title" style="'+(displayTitle===''?'display:none;':'')+'">'+displayTitle+'</div><div class="pin-meta">'+avatarHtml({name:p.authorName, photoURL:p.authorPhoto, avatarBase64:p.authorAvatarBase64, uid: p.authorId}, 20, 9, false)+'<span style="font-weight:800">'+esc(p.authorName)+'</span><span>·</span><span>'+timeAgo(p.createdAt)+'</span></div></div></div>';
     }).join('');
     $('pinnedList').querySelectorAll('[data-pid]').forEach(function(c){ c.onclick = function(){ openPostDetail(c.dataset.pid); }; });
   } else pinSec.classList.add('hide');
-  startMiniCountdowns();
 }
 
 function renderPostCard(p){
@@ -888,6 +848,7 @@ function renderPostCard(p){
   
   html += '<div class="body"><div class="title">'+esc(preview)+'</div>';
   
+  // Timer di dalam Card
   if(hasEvent){
     var diff = p.eventDate - Date.now();
     if(diff <= 0){ html += '<div class="cd-mini"><div class="cd-mini-done">Kegiatan sudah dimulai</div></div>'; }
@@ -913,7 +874,6 @@ function renderCategory(){
   hide('catEmpty');
   grid.innerHTML = list.map(renderPostCard).join('');
   grid.querySelectorAll('[data-pid]').forEach(function(el){ el.onclick = function(){ openPostDetail(el.dataset.pid); }; });
-  startMiniCountdowns();
 }
 
 function openPostDetail(postId){
@@ -1432,8 +1392,54 @@ function viewUserProfile(uid){
   $('userProfileContent').innerHTML = html;
   $('userProfileOv').classList.add('on');
   $('userProfileContent').querySelectorAll('[data-pid]').forEach(function(el){ el.onclick = function(){ $('userProfileOv').classList.remove('on'); setTimeout(function(){ openPostDetail(el.dataset.pid); }, 200); }; });
-  startMiniCountdowns(); 
 }
+
+// ==========================================
+// LOGIKA TIMER GLOBAL (BERJALAN OTOMATIS & BERDETAK)
+// ==========================================
+setInterval(function(){
+  if(document.hidden) return;
+  var now = Date.now();
+  
+  // 1. Update Hitung Mundur di dalam Card Postingan
+  document.querySelectorAll('[data-cd]').forEach(function(el){
+    var ts = parseInt(el.dataset.cd, 10); if(!ts) return;
+    var diff = ts - now;
+    if(diff <= 0){
+      el.innerHTML = '<div class="cd-mini-done">Kegiatan sudah dimulai</div>';
+      return;
+    }
+    var d = Math.floor(diff/86400000), h = Math.floor((diff%86400000)/3600000), m = Math.floor((diff%3600000)/60000), s = Math.floor((diff%60000)/1000);
+    
+    // Update text tanpa re-render full HTML agar tidak berkedip
+    var boxes = el.querySelectorAll('.cd-m-box .n');
+    if(boxes.length === 4){
+      boxes[0].textContent = d;
+      boxes[1].textContent = h;
+      boxes[2].textContent = m;
+      boxes[3].textContent = s;
+    } else {
+      el.innerHTML = '<div class="cd-m-box"><div class="n">'+d+'</div><div class="l">Hari</div></div><div class="cd-m-box"><div class="n">'+h+'</div><div class="l">Jam</div></div><div class="cd-m-box"><div class="n">'+m+'</div><div class="l">Mnt</div></div><div class="cd-m-box"><div class="n">'+s+'</div><div class="l">Dtk</div></div>';
+    }
+  });
+
+  // 2. Update Widget Timer di Kategori Informasi
+  var widget = $('infoTimerWidget');
+  if(widget && !widget.classList.contains('hide') && widget.dataset.cd){
+    var ts2 = parseInt(widget.dataset.cd, 10);
+    var diff2 = ts2 - now;
+    var countEl = $('infoTimerCount');
+    if(diff2 <= 0){
+      countEl.textContent = 'Mulai';
+    } else {
+      var d2 = Math.floor(diff2/86400000), h2 = Math.floor((diff2%86400000)/3600000), m2 = Math.floor((diff2%3600000)/60000), s2 = Math.floor((diff2%60000)/1000);
+      var txt = '';
+      if(d2 > 0) txt += d2 + 'h ';
+      txt += h2 + 'j ' + m2 + 'm ' + s2 + 's';
+      countEl.textContent = txt;
+    }
+  }
+}, 1000);
 
 window.addEventListener('load', function(){
   setTimeout(function(){ if(me) subscribeNotifications(); }, 2000);
