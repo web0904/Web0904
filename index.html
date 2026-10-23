@@ -302,6 +302,7 @@ body.dark .typing{background:#101a2e}
 .chat-quick::-webkit-scrollbar{display:none}
 .chat-quick button{padding:8px 14px;border-radius:14px;background:rgba(99,102,241,.08);border:1.5px solid rgba(99,102,241,.2);color:#6366f1;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap}
 .chat-quick button:active{transform:scale(.95);background:rgba(99,102,241,.15)}
+
 /* ============================================================
    ANTI-SAVE GAMBAR
    Blokir long-press "Simpan Gambar" & drag-save di mobile/desktop.
@@ -344,6 +345,21 @@ img {
   -webkit-user-drag: none;
   user-drag: none;
   cursor: zoom-out;
+}
+
+/* Kunci gambar secara global agar tidak bisa di-long-press/drag */
+img {
+  pointer-events: none !important;
+  -webkit-touch-callout: none !important;
+  -webkit-user-select: none !important;
+  user-select: none !important;
+  -webkit-user-drag: none !important;
+  user-drag: none !important;
+}
+
+/* Pastikan parent gambar punya posisi relatif untuk overlay */
+.pg-item, .thumb, .thumb-sm, .avatar, .pin-thumb {
+  position: relative;
 }
 </style>
 </head>
@@ -1623,7 +1639,8 @@ window.addEventListener('load', function(){
   setTimeout(function(){ if(me) subscribeNotifications(); }, 2000);
 });
 
-  // ============================================================
+
+// ============================================================
 // TAMBAHAN: FIX EDIT POST & KOMENTAR
 // (Tidak mengubah kode lama — hanya menambah & wrap runtime)
 // ============================================================
@@ -1767,78 +1784,98 @@ setInterval(function(){
   if (tab === 'post') injectCommentEditButtons();
 }, 1500);
 
-   // ============================================================
-// ANTI-SAVE GAMBAR (fix untuk Chrome Android & browser modern)
-// Murni tambahan — tidak mengubah kode lama sama sekali
 // ============================================================
-(function(){
-  // 1. Block context menu (klik kanan / long-press menu)
-  document.addEventListener('contextmenu', function(e){
+// ANTI-SAVE GAMBAR V2 — Fix Chrome Android
+// Ganti blok sebelumnya dengan ini
+// ============================================================
+(function() {
+  // 1. Block context menu di mana pun
+  document.addEventListener('contextmenu', function(e) {
+    var t = e.target;
+    if (t && (t.tagName === 'IMG' || (t.closest && t.closest('[data-imgshield="1"]')))) {
+      e.preventDefault();
+      return false;
+    }
+  }, true);
+  
+  // 2. Block drag-save desktop
+  document.addEventListener('dragstart', function(e) {
     if (e.target && e.target.tagName === 'IMG') {
       e.preventDefault();
       return false;
     }
   }, true);
-
-  // 2. Block drag-save (desktop)
-  document.addEventListener('dragstart', function(e){
-    if (e.target && e.target.tagName === 'IMG') {
-      e.preventDefault();
-      return false;
-    }
-  }, true);
-
-  // 3. Overlay per-gambar: menutupi <img> sehingga browser tidak mengenalinya
-  //    sebagai target long-press, sementara tap tetap jalan lewat img.click()
+  
+  // 3. Overlay pelindung
   function protectImage(img) {
     if (!img || img.tagName !== 'IMG') return;
     if (img.dataset.noSaveShield === '1') return;
-
-    // Khusus lightbox: tidak perlu overlay, cukup matikan pointer
+    
+    // Lightbox: cukup matikan pointer
     if (img.closest('#lightbox')) {
       img.dataset.noSaveShield = '1';
       img.style.pointerEvents = 'none';
       img.style.webkitUserSelect = 'none';
       img.style.userSelect = 'none';
+      img.style.webkitTouchCallout = 'none';
       return;
     }
-
+    
     var parent = img.parentNode;
     if (!parent) return;
-
-    // Pastikan parent bisa jadi anchor overlay
+    
+    // Parent harus relative agar overlay tepat menutup
     var cs = getComputedStyle(parent);
     if (cs.position === 'static') parent.style.position = 'relative';
-
-    // Buat overlay transparan
+    
+    // Cek apakah sudah ada overlay (hindari dobel)
+    if (parent.querySelector(':scope > [data-imgshield="1"]')) {
+      img.style.pointerEvents = 'none';
+      img.dataset.noSaveShield = '1';
+      return;
+    }
+    
     var ov = document.createElement('div');
     ov.setAttribute('data-imgshield', '1');
-    ov.style.cssText = 'position:absolute;inset:0;z-index:5;background:transparent;' +
-      'cursor:pointer;-webkit-tap-highlight-color:transparent;';
-
-    // Tap overlay → forward ke img asli (buka lightbox, buka post, dsb)
-    ov.addEventListener('click', function(e){
+    // KUNCI FIX:
+    // - pakai top/left/right/bottom (bukan inset)
+    // - background rgba(0,0,0,0.01), BUKAN transparent
+    //   (memaksa Chrome hit-test ke overlay, tidak tembus ke img)
+    ov.style.cssText =
+      'position:absolute;top:0;left:0;right:0;bottom:0;z-index:99;' +
+      'background:rgba(0,0,0,0.01);cursor:pointer;' +
+      '-webkit-tap-highlight-color:transparent;' +
+      '-webkit-touch-callout:none;' +
+      '-webkit-user-select:none;user-select:none;';
+    
+    ov.addEventListener('click', function(e) {
       e.stopPropagation();
       img.click();
     });
-
+    
+    ov.addEventListener('contextmenu', function(e) {
+      e.preventDefault();
+      return false;
+    });
+    
     parent.appendChild(ov);
     img.style.pointerEvents = 'none';
     img.style.webkitUserSelect = 'none';
     img.style.userSelect = 'none';
+    img.style.webkitTouchCallout = 'none';
     img.setAttribute('draggable', 'false');
     img.dataset.noSaveShield = '1';
   }
-
+  
   function protectAll() {
     document.querySelectorAll('img').forEach(protectImage);
   }
-
-  // 4. Observer: lindungi gambar baru yang muncul (render feed, komentar, dll)
-  var obs = new MutationObserver(function(muts){
+  
+  var obs = new MutationObserver(function(muts) {
     var found = false;
-    muts.forEach(function(m){
-      m.addedNodes && m.addedNodes.forEach(function(n){
+    muts.forEach(function(m) {
+      if (!m.addedNodes) return;
+      m.addedNodes.forEach(function(n) {
         if (n.nodeType !== 1) return;
         if (n.tagName === 'IMG') found = true;
         else if (n.querySelector && n.querySelector('img')) found = true;
@@ -1847,17 +1884,16 @@ setInterval(function(){
     if (found) setTimeout(protectAll, 30);
   });
   obs.observe(document.body, { childList: true, subtree: true });
-
-  // 5. Backup interval (jaga-jaga jika observer miss)
-  setInterval(protectAll, 2000);
-
-  // 6. Initial run
+  
+  setInterval(protectAll, 1500);
+  
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', protectAll);
   } else {
     protectAll();
   }
 })();
+
 </script>
 </body>
 </html>
