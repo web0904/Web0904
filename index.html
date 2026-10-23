@@ -34,12 +34,8 @@ input,textarea,select{font-size:16px!important}
 @keyframes connIn{from{opacity:0;transform:translateY(-100%)}to{opacity:1;transform:translateY(0)}}
 @keyframes badgePulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
 @keyframes bellShake{0%,100%{transform:rotate(0)}20%{transform:rotate(-12deg)}40%{transform:rotate(12deg)}60%{transform:rotate(-8deg)}80%{transform:rotate(8deg)}}
-
-/* ANIMASI RUNNING TEXT */
-@keyframes marquee {
-  0% { transform: translateX(100%); }
-  100% { transform: translateX(-100%); }
-}
+@keyframes marquee {0% { transform: translateX(100%); }100% { transform: translateX(-100%); }}
+@keyframes typingDot{0%,60%,100%{opacity:.3}30%{opacity:1}}
 
 .grad-anim{background:linear-gradient(90deg,#6366f1,#a855f7,#ec4899,#6366f1);background-size:200% 100%}
 
@@ -53,7 +49,6 @@ input,textarea,select{font-size:16px!important}
 body.dark{background:#070b14;color:#e2e8f0}
 body.dark .card{background:#101a2e;border-color:rgba(255,255,255,.06)}
 
-/* Efek Blur Dihilangkan agar Ringan */
 .header{background:rgba(245,247,251,.95);border-bottom:1px solid rgba(148,163,184,.12);flex-shrink:0;z-index:15}
 body.dark .header{background:rgba(7,11,20,.95);border-color:rgba(255,255,255,.05)}
 .nav{background:rgba(255,255,255,.95);border-top:1px solid rgba(148,163,184,.12);flex-shrink:0}
@@ -286,6 +281,28 @@ body.dark .notif-body .n-title b{color:#e2e8f0}
 .notif-body .n-snippet{font-size:12.5px;color:#64748b;margin-top:5px;line-height:1.45;padding:7px 10px;background:#f8fafc;border-radius:9px;border-left:3px solid #cbd5e1;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word}
 body.dark .notif-body .n-snippet{background:#1a2540;color:#94a3b8;border-left-color:#334155}
 .notif-body .n-time{font-size:11.5px;color:#94a3b8;margin-top:6px;font-weight:600}
+
+/* CSS CHAT AI */
+#view-ai { display: none; flex-direction: column; height: 100%; }
+#view-ai.on { display: flex; }
+.chat-msg{display:flex;gap:10px;margin-bottom:14px}
+.chat-msg.user{flex-direction:row-reverse}
+.chat-msg .bubble{max-width:80%;padding:11px 15px;border-radius:16px;font-size:14.5px;line-height:1.55;word-wrap:break-word;white-space:pre-wrap}
+.chat-msg.bot .bubble{background:#fff;color:#0b1220;border-radius:16px 16px 16px 4px;box-shadow:0 1px 3px rgba(15,23,42,.08)}
+body.dark .chat-msg.bot .bubble{background:#101a2e;color:#e2e8f0}
+.chat-msg.user .bubble{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;border-radius:16px 16px 4px 16px}
+.chat-msg .avatar-sm{width:34px;height:34px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:16px;background:linear-gradient(135deg,#10b981,#059669);color:white}
+.chat-time{font-size:11px;color:#94a3b8;margin-top:6px;font-weight:600}
+.typing{display:flex;gap:4px;padding:12px 16px;background:#fff;border-radius:16px;width:fit-content;box-shadow:0 1px 3px rgba(15,23,42,.08)}
+body.dark .typing{background:#101a2e}
+.typing span{width:8px;height:8px;border-radius:50%;background:#94a3b8;animation:typingDot 1.4s infinite}
+.typing span:nth-child(2){animation-delay:.2s}
+.typing span:nth-child(3){animation-delay:.4s}
+.chat-quick{display:flex;gap:7px;flex-wrap:wrap;padding:8px 16px 4px;overflow-x:auto}
+.chat-quick::-webkit-scrollbar{display:none}
+.chat-quick button{padding:8px 14px;border-radius:14px;background:rgba(99,102,241,.08);border:1.5px solid rgba(99,102,241,.2);color:#6366f1;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap}
+.chat-quick button:active{transform:scale(.95);background:rgba(99,102,241,.15)}
+
 </style>
 </head>
 <body>
@@ -363,7 +380,7 @@ body.dark .notif-body .n-snippet{background:#1a2540;color:#94a3b8;border-left-co
   </div>
 </div>
 
-<!-- Verifikasi (DENGAN CHECKBOX) -->
+<!-- Verifikasi -->
 <div id="inviteOv">
   <div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding:40px 24px;max-width:420px;margin:0 auto;width:100%">
     <div style="width:64px;height:64px;border-radius:20px;background:linear-gradient(135deg,#10b981,#059669);display:flex;align-items:center;justify-content:center;margin-bottom:22px;font-size:30px">🔐</div>
@@ -375,12 +392,11 @@ body.dark .notif-body .n-snippet{background:#1a2540;color:#94a3b8;border-left-co
     <label style="display:flex;align-items:flex-start;gap:10px;margin-bottom:16px;cursor:pointer;text-align:left;">
       <input type="checkbox" id="consentCheck" style="width:18px;height:18px;margin-top:3px;accent-color:#6366f1;flex-shrink:0;">
       <span style="font-size:12.5px;color:#64748b;line-height:1.5;font-weight:500;">
-        Saya telah membaca dan menyetujui <b>Tata Tertib</b> serta <b>Kebijakan Privasi</b>. Saya memahami bahwa data saya (Nama, Email, Foto, dan Aktivitas) disimpan dengan aman di Firebase dan hanya digunakan untuk keperluan komunitas RT09/RW04.
+        Saya telah membaca dan menyetujui <b>Tata Tertib</b> serta <b>Kebijakan Privasi</b>. Saya memahami bahwa data saya disimpan dengan aman di Firebase.
       </span>
     </label>
 
     <button id="inviteSubmit" class="btn-p" style="width:100%;margin-bottom:10px;opacity:0.5;" disabled>Verifikasi</button>
-    
     <button id="inviteLogout" class="btn-s" style="width:100%;margin-top:14px;background:transparent;font-size:13px;color:#94a3b8">Ganti akun Google</button>
   </div>
 </div>
@@ -410,7 +426,6 @@ body.dark .notif-body .n-snippet{background:#1a2540;color:#94a3b8;border-left-co
       <div id="homeTicker" class="hide" style="margin: 0 16px 16px; background: linear-gradient(135deg, #f59e0b, #d97706); color: white; border-radius: 14px; padding: 10px 0; box-shadow: 0 6px 15px -6px rgba(245,158,11,.6); display: flex; align-items: center; overflow: hidden; position: relative;">
         <div style="position:absolute; left:0; top:0; bottom:0; width:30px; background:linear-gradient(90deg, #d97706, transparent); z-index:2;"></div>
         <div style="position:absolute; right:0; top:0; bottom:0; width:30px; background:linear-gradient(-90deg, #d97706, transparent); z-index:2;"></div>
-        
         <div style="width: 100%; overflow: hidden; white-space: nowrap; padding-left: 10px;">
           <div id="homeTickerText" style="display: inline-block; font-size: 13.5px; font-weight: 700; animation: marquee 15s linear infinite;"></div>
         </div>
@@ -432,7 +447,7 @@ body.dark .notif-body .n-snippet{background:#1a2540;color:#94a3b8;border-left-co
             </div>
           </div>
           
-          <!-- WIDGET TIMER KATEGORI INFO (DIPERCANTIK) -->
+          <!-- WIDGET TIMER KATEGORI INFO -->
           <div id="infoTimerWidget" class="hide" style="background:rgba(0,0,0,0.15); border-radius:10px; padding:8px 12px; display:flex; align-items:center; justify-content:space-between; border: 1px solid rgba(255,255,255,0.1);">
             <div style="font-size:12px; font-weight:700; opacity:0.9; display:flex; align-items:center; gap:6px;">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
@@ -473,6 +488,31 @@ body.dark .notif-body .n-snippet{background:#1a2540;color:#94a3b8;border-left-co
     <!-- Voting -->
     <section id="view-voting" class="hide" style="padding:16px 16px 100px"><div id="votingContent"></div></section>
 
+    <!-- AI Chatbot (BARU) -->
+    <section id="view-ai" class="hide">
+      <div id="aiChatBody" class="scroll-y grow" style="padding:16px; background:#f5f7fb;">
+        <div class="chat-msg bot">
+          <div class="avatar-sm">🤖</div>
+          <div>
+            <div class="bubble">Halo! 👋 Saya Asisten RT. Tanya apa saja tentang jadwal, pengurus, atau info warga. Saya bantu jawab dari data komunitas 😊</div>
+            <div class="chat-time">baru</div>
+          </div>
+        </div>
+      </div>
+      <div class="chat-quick" id="aiChatQuick">
+        <button data-q="Kapan posyandu diadakan?">📅 Jadwal posyandu</button>
+        <button data-q="Siapa saja pengurus RT?">👥 Pengurus RT</button>
+        <button data-q="Info kerja bakti terbaru?">🧹 Kerja bakti</button>
+        <button data-q="Bagaimana cara bayar iuran?">💰 Iuran</button>
+      </div>
+      <div class="post-input-bar" style="padding-bottom:calc(11px + env(safe-area-inset-bottom, 0px))">
+        <div class="comment-input">
+          <textarea id="aiChatInput" rows="1" placeholder="Tanya apa saja tentang RT..."></textarea>
+          <button type="button" id="aiChatSend" class="send-btn"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg></button>
+        </div>
+      </div>
+    </section>
+
     <!-- Profile -->
     <section id="view-profile" class="hide" style="padding:16px 16px 100px">
       <div style="border-radius:22px;padding:2px;background:linear-gradient(135deg,#6366f1,#a855f7,#ec4899);margin-bottom:18px"><div style="border-radius:20px;background:#fff;padding:20px">
@@ -502,10 +542,12 @@ body.dark .notif-body .n-snippet{background:#1a2540;color:#94a3b8;border-left-co
   <button id="fab" type="button" class="fab"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8"><path d="M12 5v14M5 12h14"/></svg></button>
 
   <nav class="nav safe-b">
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;padding:8px 6px">
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr;padding:8px 2px">
       <button data-tab="home" type="button" class="nav-btn on"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 22V12h6v10"/></svg><span>Beranda</span><span id="navBadgeHome" class="nav-badge">0</span></button>
       <button data-tab="warga" type="button" class="nav-btn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/></svg><span>Warga</span></button>
       <button data-tab="voting" type="button" class="nav-btn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg><span>Voting</span><span id="votingBadge" class="nav-badge">0</span></button>
+      <!-- TOMBOL AI DI FOOTER -->
+      <button data-tab="ai" type="button" class="nav-btn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg><span>Asisten</span></button>
       <button data-tab="profile" type="button" class="nav-btn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0116 0"/></svg><span>Saya</span></button>
     </div>
   </nav>
@@ -554,6 +596,7 @@ body.dark .notif-body .n-snippet{background:#1a2540;color:#94a3b8;border-left-co
 <script>
 var FB = {apiKey:"AIzaSyCEttPAa6glm2qHUw3_QIcj2C8qqB9ZwOI",authDomain:"spark-61d51.firebaseapp.com",databaseURL:"https://spark-61d51-default-rtdb.asia-southeast1.firebasedatabase.app/",projectId:"spark-61d51",storageBucket:"spark-61d51.firebasestorage.app",messagingSenderId:"618121526268",appId:"1:618121526268:web:439521109a847c9ec25079"};
 var BOOTSTRAP_ADMIN_EMAIL = "ngudiartosinarutama@gmail.com";
+var AI_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbzOt9em2BGunSzateKt1O3Fi-1a64pk2t2v3W-e6EbR22Q7da_z4-SqCiQmQI1u2Pnf/exec";
 
 firebase.initializeApp(FB);
 var auth = firebase.auth();
@@ -567,6 +610,7 @@ var activePostId = null, activePost = null;
 var composeImgs = [], composeCat = 'umum', editingPostId = null, uploading = false;
 var unsubFeed = null, unsubUsers = null, unsubNotifs = null, unsubPolls = null;
 var notifications = [];
+var _chatBusy = false;
 
 function $(id){ return document.getElementById(id); }
 function show(id){ var e = $(id); if(e) e.classList.remove('hide'); }
@@ -655,12 +699,12 @@ function renderNotifPanel(){
 
 function setTab(t){
   tab = t;
-  ['home','category','post','warga','voting','profile'].forEach(function(x){ var el = $('view-'+x); if(!el) return; if(x === 'post'){ el.classList.toggle('on', x === t); el.classList.toggle('hide', x !== t); } else el.classList.toggle('hide', x !== t); });
-  $('main').style.overflow = (t === 'post') ? 'hidden' : '';
+  ['home','category','post','warga','voting','ai','profile'].forEach(function(x){ var el = $('view-'+x); if(!el) return; if(x === 'post'){ el.classList.toggle('on', x === t); el.classList.toggle('hide', x !== t); } else el.classList.toggle('hide', x !== t); });
+  $('main').style.overflow = (t === 'post' || t === 'ai') ? 'hidden' : '';
   $('backBtn').classList.toggle('hide', t !== 'category' && t !== 'post');
-  $('fab').classList.toggle('hide', t === 'warga' || t === 'voting' || t === 'profile' || t === 'post');
+  $('fab').classList.toggle('hide', t === 'warga' || t === 'voting' || t === 'profile' || t === 'post' || t === 'ai');
   document.querySelectorAll('.nav-btn').forEach(function(b){ b.classList.toggle('on', b.dataset.tab === t); });
-  var titles = { home:['RT09RW04','Candisari Wonotingal'], category:['','Semua postingan'], post:['Postingan','Detail & komentar'], warga:['Warga','Daftar warga terverifikasi'], voting:['Voting','Suara warga RT'], profile:['Akun Saya','Status & pengaturan'] };
+  var titles = { home:['RT09RW04','Candisari Wonotingal'], category:['','Semua postingan'], post:['Postingan','Detail & komentar'], warga:['Warga','Daftar warga terverifikasi'], voting:['Voting','Suara warga RT'], ai:['Asisten AI','Tanya jawab otomatis'], profile:['Akun Saya','Status & pengaturan'] };
   if(t === 'category'){ titles.category[0] = ({umum:'Umum',informasi:'Informasi',galeri:'Galeri'})[activeCat]; }
   $('topTitle').textContent = titles[t] ? titles[t][0] : 'RT09RW04';
   $('topSub').textContent = titles[t] ? titles[t][1] : '';
@@ -669,7 +713,7 @@ function setTab(t){
   if(t === 'warga'){ if(!unsubUsers) subscribeUsers(); renderWargaList(); }
   if(t === 'voting'){ if(!unsubPolls) subscribePolls(); renderVoting(); updateAllBadges(); }
   if(t === 'profile'){ renderProfile(); }
-  if(t !== 'post') $('main').scrollTop = 0;
+  if(t !== 'post' && t !== 'ai') $('main').scrollTop = 0;
 }
 
 document.querySelectorAll('.nav-btn').forEach(function(b){ b.onclick = function(){ setTab(b.dataset.tab); }; });
@@ -708,7 +752,7 @@ auth.onAuthStateChanged(function(user){
         else {
           $('app').classList.remove('hide'); $('app').style.display = 'flex';
           $('headerAvatarBtn').innerHTML = avatarHtml(me, 32, 13);
-          $('greetingName').innerHTML = 'Halo, ' + esc(me.name.split(' ')[0]) + ' 👋'; // SAPAAN NAMA
+          $('greetingName').innerHTML = 'Halo, ' + esc(me.name.split(' ')[0]) + ' 👋';
           setTab('home'); subscribeFeed(); subscribeNotifications(); subscribeTicker();
         }
       }, 300);
@@ -730,16 +774,10 @@ $('googleBtn').onclick = async function(){
   }
 };
 
-// LOGIKA CHECKBOX PERSETUJUAN
 $('consentCheck').addEventListener('change', function() {
   var btn = $('inviteSubmit');
-  if (this.checked) {
-    btn.disabled = false;
-    btn.style.opacity = '1';
-  } else {
-    btn.disabled = true;
-    btn.style.opacity = '0.5';
-  }
+  if (this.checked) { btn.disabled = false; btn.style.opacity = '1'; } 
+  else { btn.disabled = true; btn.style.opacity = '0.5'; }
 });
 
 $('inviteSubmit').onclick = async function(){
@@ -800,7 +838,6 @@ function updateAllBadges(){
 function renderHome(){
   ['umum','informasi','galeri'].forEach(function(c){ var el = $('count'+cap(c)); if(el) el.textContent = feed.filter(function(p){ return (p.category||'umum') === c; }).length; });
   
-  // Logika Timer Kategori Informasi
   var infoPosts = feed.filter(function(p){ return p.category === 'informasi' && p.eventDate && p.eventDate > Date.now(); });
   infoPosts.sort(function(a,b){ return a.eventDate - b.eventDate; });
   var widget = $('infoTimerWidget');
@@ -820,9 +857,7 @@ function renderHome(){
     $('pinnedCount').textContent = pinned.length + ' item';
     $('pinnedList').innerHTML = pinned.slice(0, 5).map(function(p){
       var thumb = (p.images && p.images.length) ? '<div class="pin-thumb"><img src="data:image/jpeg;base64,'+p.images[0]+'" loading="lazy"></div>' : '';
-      // MENGUBAH [Foto] JIKA TANPA TEKS JADI KOSONG
       var displayTitle = p.text ? esc(p.text) : '';
-      
       return '<div class="pin-card" data-pid="'+p.id+'">'+thumb+'<div style="flex:1;min-width:0;"><div class="pin-badge">📌 PENTING</div><div class="pin-title" style="'+(displayTitle===''?'display:none;':'')+'">'+displayTitle+'</div><div class="pin-meta">'+avatarHtml({name:p.authorName, photoURL:p.authorPhoto, avatarBase64:p.authorAvatarBase64, uid: p.authorId}, 20, 9, false)+'<span style="font-weight:800">'+esc(p.authorName)+'</span><span>·</span><span>'+timeAgo(p.createdAt)+'</span></div></div></div>';
     }).join('');
     $('pinnedList').querySelectorAll('[data-pid]').forEach(function(c){ c.onclick = function(){ openPostDetail(c.dataset.pid); }; });
@@ -848,7 +883,6 @@ function renderPostCard(p){
   
   html += '<div class="body"><div class="title">'+esc(preview)+'</div>';
   
-  // Timer di dalam Card
   if(hasEvent){
     var diff = p.eventDate - Date.now();
     if(diff <= 0){ html += '<div class="cd-mini"><div class="cd-mini-done">Kegiatan sudah dimulai</div></div>'; }
@@ -1067,7 +1101,7 @@ $('composePost').onclick = async function(){
     if(composeCat === 'informasi' && $('eventDate').value){ payload.eventDate = new Date($('eventDate').value).getTime(); payload.eventLocation = $('eventLocation').value.trim(); }
     if(isAdmin() && $('pinCheck').checked) payload.pinned = true;
     await rtdb.ref('posts').push(payload);
-    markPostSeen(Date.now()); // Dummy, not used
+    markPostSeen(Date.now());
     $('composeSheet').style.display = 'none'; setTab('home'); toast('Postingan terkirim');
   } catch(e){ toast('Gagal', true); $('composePost').disabled = false; }
   finally { $('composeBtnText').textContent = 'Kirim'; }
@@ -1221,12 +1255,9 @@ function subscribeTicker() {
     
     if (text && text.trim().length > 0) {
       if (expiry > 0 && Date.now() > expiry) {
-        // Waktu habis
         el.classList.add('hide');
       } else {
-        // Tampilkan
         txt.textContent = text;
-        // Sesuaikan kecepatan animasi berdasarkan panjang teks (makin panjang makin lama)
         var duration = Math.max(10, text.length * 0.2); 
         txt.style.animationDuration = duration + 's';
         el.classList.remove('hide');
@@ -1243,7 +1274,6 @@ $('adminTickerBtn').onclick = function() {
     var val = cfg.homeTicker || '';
     var expiry = cfg.tickerExpiry || 0;
     
-    // Cek sisa waktu jika ada
     var statusStr = '(Tidak ada batas waktu)';
     if(expiry > 0) {
       if(Date.now() > expiry) statusStr = '(Sudah kedaluwarsa)';
@@ -1394,14 +1424,125 @@ function viewUserProfile(uid){
   $('userProfileContent').querySelectorAll('[data-pid]').forEach(function(el){ el.onclick = function(){ $('userProfileOv').classList.remove('on'); setTimeout(function(){ openPostDetail(el.dataset.pid); }, 200); }; });
 }
 
+// ============================================================
+// LOGIKA CHATBOT AI (BARU)
+// ============================================================
+var chatHistory = [];
+var _chatBusy = false;
+
+function loadChatHistory() {
+  try {
+    var saved = localStorage.getItem('spark_ai_chat');
+    if(saved) chatHistory = JSON.parse(saved);
+    else chatHistory = [{ role: 'bot', text: 'Halo! 👋 Saya Asisten RT09/RW04.\n\nTanya apa saja: jadwal kegiatan, pengurus, atau info warga. Saya bantu jawab dari data komunitas 😊', t: Date.now() }];
+  } catch(e) { chatHistory = []; }
+}
+
+function saveChatHistory() {
+  try { localStorage.setItem('spark_ai_chat', JSON.stringify(chatHistory.slice(-30))); } catch(e){}
+}
+
+function renderAiChat() {
+  var el = $('aiChatBody'); if(!el) return;
+  var html = '';
+  chatHistory.forEach(function(m){
+    var isUser = m.role === 'user';
+    html += '<div class="chat-msg ' + (isUser ? 'user' : 'bot') + '">';
+    html += '<div class="avatar-sm">' + (isUser ? '👤' : '🤖') + '</div>';
+    html += '<div><div class="bubble">' + esc(m.text) + '</div><div class="chat-time">' + timeAgo(m.t) + '</div></div>';
+    html += '</div>';
+  });
+  if(_chatBusy) html += '<div id="aiTyping" class="chat-msg bot"><div class="avatar-sm">🤖</div><div class="typing"><span></span><span></span><span></span></div></div>';
+  el.innerHTML = html;
+  setTimeout(function(){ el.scrollTop = el.scrollHeight; }, 100);
+}
+
+async function sendAiMessage(text) {
+  if(!text || !text.trim() || _chatBusy) return;
+  var q = text.trim();
+  _chatBusy = true;
+  
+  chatHistory.push({ role: 'user', text: q, t: Date.now() });
+  saveChatHistory(); renderAiChat();
+  $('aiChatInput').value = '';
+  $('aiChatInput').style.height = 'auto';
+
+  // Siapkan konteks dari Firebase
+  var ctxPost = feed.slice(0, 8).map(function(p){
+    return { text: (p.text||'').slice(0, 200), category: p.category, authorName: p.authorName, eventDate: p.eventDate || 0 };
+  });
+  var ctxWarga = users.filter(function(u){ return u.role === 'admin'; }).slice(0, 10).map(function(u){
+    return { name: u.name, role: u.role, blok: u.blok };
+  });
+
+  var payload = {
+    action: 'chatbot',
+    text: q.slice(0, 300),
+    posts: JSON.stringify(ctxPost),
+    warga: JSON.stringify(ctxWarga),
+    clientId: me ? me.uid.substring(0, 20) : 'anon'
+  };
+
+  try {
+    var ctrl = new AbortController();
+    var to = setTimeout(function(){ ctrl.abort(); }, 90000); // Timeout 90 detik
+    var res = await fetch(AI_WEBAPP_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(payload),
+      redirect: 'follow',
+      signal: ctrl.signal
+    });
+    clearTimeout(to);
+    
+    if(!res.ok) throw new Error('HTTP ' + res.status);
+    
+    var raw = await res.text();
+    var clean = raw.replace(/^\uFEFF/, '').replace(/^\)\]\}'\n/, '');
+    var data = JSON.parse(clean);
+
+    _chatBusy = false;
+    
+    if(data && data.ok && data.data && data.data.jawaban) {
+      chatHistory.push({ role: 'bot', text: data.data.jawaban, t: Date.now() });
+    } else if(data && data.error) {
+      chatHistory.push({ role: 'bot', text: '⚠️ ' + data.error, t: Date.now() });
+    } else {
+      chatHistory.push({ role: 'bot', text: 'Maaf, tidak bisa menjawab sekarang. Coba lagi 🙏', t: Date.now() });
+    }
+  } catch(e) {
+    _chatBusy = false;
+    var msg = 'Koneksi bermasalah. Coba lagi ya 🙏';
+    if(e.name === 'AbortError') msg = 'Server terlalu lama merespon. Coba lagi 🙏';
+    chatHistory.push({ role: 'bot', text: msg, t: Date.now() });
+  } finally {
+    saveChatHistory(); renderAiChat();
+  }
+}
+
+// Event Listeners untuk Chat AI
+$('aiChatSend').onclick = function(){ sendAiMessage($('aiChatInput').value); };
+$('aiChatInput').addEventListener('keydown', function(e){ if(e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); $('aiChatSend').click(); } });
+$('aiChatInput').addEventListener('input', function(e){ e.target.style.height = 'auto'; e.target.style.height = Math.min(e.target.scrollHeight, 80) + 'px'; });
+document.querySelectorAll('#aiChatQuick button').forEach(function(b){ b.onclick = function(){ sendAiMessage(b.dataset.q); }; });
+
+// Inisialisasi awal saat buka tab AI
+var _aiInit = false;
+document.querySelector('[data-tab="ai"]').addEventListener('click', function(){
+  if(!_aiInit) {
+    loadChatHistory();
+    renderAiChat();
+    _aiInit = true;
+  }
+});
+
 // ==========================================
-// LOGIKA TIMER GLOBAL (BERJALAN OTOMATIS & BERDETAK)
+// LOGIKA TIMER GLOBAL
 // ==========================================
 setInterval(function(){
   if(document.hidden) return;
   var now = Date.now();
   
-  // 1. Update Hitung Mundur di dalam Card Postingan
   document.querySelectorAll('[data-cd]').forEach(function(el){
     var ts = parseInt(el.dataset.cd, 10); if(!ts) return;
     var diff = ts - now;
@@ -1411,19 +1552,14 @@ setInterval(function(){
     }
     var d = Math.floor(diff/86400000), h = Math.floor((diff%86400000)/3600000), m = Math.floor((diff%3600000)/60000), s = Math.floor((diff%60000)/1000);
     
-    // Update text tanpa re-render full HTML agar tidak berkedip
     var boxes = el.querySelectorAll('.cd-m-box .n');
     if(boxes.length === 4){
-      boxes[0].textContent = d;
-      boxes[1].textContent = h;
-      boxes[2].textContent = m;
-      boxes[3].textContent = s;
+      boxes[0].textContent = d; boxes[1].textContent = h; boxes[2].textContent = m; boxes[3].textContent = s;
     } else {
       el.innerHTML = '<div class="cd-m-box"><div class="n">'+d+'</div><div class="l">Hari</div></div><div class="cd-m-box"><div class="n">'+h+'</div><div class="l">Jam</div></div><div class="cd-m-box"><div class="n">'+m+'</div><div class="l">Mnt</div></div><div class="cd-m-box"><div class="n">'+s+'</div><div class="l">Dtk</div></div>';
     }
   });
 
-  // 2. Update Widget Timer di Kategori Informasi
   var widget = $('infoTimerWidget');
   if(widget && !widget.classList.contains('hide') && widget.dataset.cd){
     var ts2 = parseInt(widget.dataset.cd, 10);
