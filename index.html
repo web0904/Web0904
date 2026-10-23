@@ -302,7 +302,49 @@ body.dark .typing{background:#101a2e}
 .chat-quick::-webkit-scrollbar{display:none}
 .chat-quick button{padding:8px 14px;border-radius:14px;background:rgba(99,102,241,.08);border:1.5px solid rgba(99,102,241,.2);color:#6366f1;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap}
 .chat-quick button:active{transform:scale(.95);background:rgba(99,102,241,.15)}
+/* ============================================================
+   ANTI-SAVE GAMBAR
+   Blokir long-press "Simpan Gambar" & drag-save di mobile/desktop.
+   Teks & form TIDAK terpengaruh (tetap bisa di-copy/ketik normal).
+   ============================================================ */
 
+/* 1. Semua gambar: nonaktifkan drag, select, dan menu context (long-press iOS) */
+img {
+  -webkit-user-drag: none;
+  -moz-user-drag: none;
+  -ms-user-drag: none;
+  user-drag: none;
+  -webkit-touch-callout: none;   /* iOS: hilangkan menu "Save Image / Copy" */
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  pointer-events: auto;          /* tetap bisa diklik (buka lightbox, avatar, dll) */
+}
+
+/* 2. Cegah juga seleksi area thumbnail & foto grid */
+.thumb img,
+.thumb-sm img,
+.pg-item img,
+.photo-grid img,
+.pin-thumb img,
+.avatar img {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-user-drag: none;
+  user-drag: none;
+}
+
+/* 3. Lightbox: tetap bisa tap untuk close/zoom-out, tapi tidak bisa disimpan */
+#lightbox img {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-user-drag: none;
+  user-drag: none;
+  cursor: zoom-out;
+}
 </style>
 </head>
 <body>
