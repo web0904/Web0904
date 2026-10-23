@@ -304,50 +304,8 @@ body.dark .typing{background:#101a2e}
 .chat-quick button:active{transform:scale(.95);background:rgba(99,102,241,.15)}
 
 /* ============================================================
-   ANTI-SAVE GAMBAR
-   Blokir long-press "Simpan Gambar" & drag-save di mobile/desktop.
-   Teks & form TIDAK terpengaruh (tetap bisa di-copy/ketik normal).
+   CSS ANTI-SAVE GAMBAR
    ============================================================ */
-
-/* 1. Semua gambar: nonaktifkan drag, select, dan menu context (long-press iOS) */
-img {
-  -webkit-user-drag: none;
-  -moz-user-drag: none;
-  -ms-user-drag: none;
-  user-drag: none;
-  -webkit-touch-callout: none;   /* iOS: hilangkan menu "Save Image / Copy" */
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  pointer-events: auto;          /* tetap bisa diklik (buka lightbox, avatar, dll) */
-}
-
-/* 2. Cegah juga seleksi area thumbnail & foto grid */
-.thumb img,
-.thumb-sm img,
-.pg-item img,
-.photo-grid img,
-.pin-thumb img,
-.avatar img {
-  -webkit-user-select: none;
-  user-select: none;
-  -webkit-touch-callout: none;
-  -webkit-user-drag: none;
-  user-drag: none;
-}
-
-/* 3. Lightbox: tetap bisa tap untuk close/zoom-out, tapi tidak bisa disimpan */
-#lightbox img {
-  -webkit-user-select: none;
-  user-select: none;
-  -webkit-touch-callout: none;
-  -webkit-user-drag: none;
-  user-drag: none;
-  cursor: zoom-out;
-}
-
-/* Kunci gambar secara global agar tidak bisa di-long-press/drag */
 img {
   pointer-events: none !important;
   -webkit-touch-callout: none !important;
@@ -356,11 +314,8 @@ img {
   -webkit-user-drag: none !important;
   user-drag: none !important;
 }
-
-/* Pastikan parent gambar punya posisi relatif untuk overlay */
-.pg-item, .thumb, .thumb-sm, .avatar, .pin-thumb {
-  position: relative;
-}
+.pg-item, .thumb, .thumb-sm, .avatar, .pin-thumb { position: relative; }
+#lightbox img { pointer-events: none !important; cursor: zoom-out; }
 </style>
 </head>
 <body>
@@ -546,7 +501,7 @@ img {
     <!-- Voting -->
     <section id="view-voting" class="hide" style="padding:16px 16px 100px"><div id="votingContent"></div></section>
 
-    <!-- AI Chatbot (BARU) -->
+    <!-- AI Chatbot -->
     <section id="view-ai" class="hide">
       <div id="aiChatBody" class="scroll-y grow" style="padding:16px; background:#f5f7fb;">
         <div class="chat-msg bot">
@@ -604,7 +559,6 @@ img {
       <button data-tab="home" type="button" class="nav-btn on"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 22V12h6v10"/></svg><span>Beranda</span><span id="navBadgeHome" class="nav-badge">0</span></button>
       <button data-tab="warga" type="button" class="nav-btn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/></svg><span>Warga</span></button>
       <button data-tab="voting" type="button" class="nav-btn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg><span>Voting</span><span id="votingBadge" class="nav-badge">0</span></button>
-      <!-- TOMBOL AI DI FOOTER -->
       <button data-tab="ai" type="button" class="nav-btn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg><span>Asisten</span></button>
       <button data-tab="profile" type="button" class="nav-btn"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0116 0"/></svg><span>Saya</span></button>
     </div>
@@ -653,7 +607,6 @@ img {
 
 <script>
 var FB = {apiKey:"AIzaSyCEttPAa6glm2qHUw3_QIcj2C8qqB9ZwOI",authDomain:"spark-61d51.firebaseapp.com",databaseURL:"https://spark-61d51-default-rtdb.asia-southeast1.firebasedatabase.app/",projectId:"spark-61d51",storageBucket:"spark-61d51.firebasestorage.app",messagingSenderId:"618121526268",appId:"1:618121526268:web:439521109a847c9ec25079"};
-var BOOTSTRAP_ADMIN_EMAIL = "ngudiartosinarutama@gmail.com";
 var AI_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbzOt9em2BGunSzateKt1O3Fi-1a64pk2t2v3W-e6EbR22Q7da_z4-SqCiQmQI1u2Pnf/exec";
 
 firebase.initializeApp(FB);
@@ -789,19 +742,19 @@ function applyTheme(t){ document.documentElement.classList.toggle('dark', t==='d
 applyTheme(localStorage.getItem('spark_theme') || 'light');
 $('themeBtn').onclick = function(){ var cur = localStorage.getItem('spark_theme') || 'light'; var nxt = cur === 'light' ? 'dark' : 'light'; localStorage.setItem('spark_theme', nxt); applyTheme(nxt); };
 
-// AUTH
+// AUTH (Diperbarui: Email Admin dihapus dari frontend, keamanan via Firebase Rules)
 auth.onAuthStateChanged(function(user){
   if(user){
     me = { uid: user.uid, name: user.displayName || (user.email||'').split('@')[0] || 'Warga', email: user.email || '', photoURL: user.photoURL || null, avatarBase64: null, role: 'warga', verified: false };
     $('loginLoading').classList.add('on');
     rtdb.ref('users/' + user.uid).once('value').then(function(snap){
       var d = snap.val() || {};
-      var isBootstrapAdmin = BOOTSTRAP_ADMIN_EMAIL && (me.email === BOOTSTRAP_ADMIN_EMAIL);
+      
       if(d.avatarBase64) me.avatarBase64 = d.avatarBase64;
       if(d.name) me.name = d.name;
       if(d.role) me.role = d.role;
       if(d.verified) me.verified = true;
-      if(isBootstrapAdmin && me.role !== 'admin'){ me.role = 'admin'; me.verified = true; rtdb.ref('users/' + user.uid).update({ role: 'admin', verified: true }); }
+
       rtdb.ref('users/' + me.uid).update({ uid: me.uid, name: me.name, email: me.email, photoURL: me.photoURL, role: me.role, verified: !!me.verified, lastSeen: TS });
       
       setTimeout(function(){
@@ -1483,7 +1436,7 @@ function viewUserProfile(uid){
 }
 
 // ============================================================
-// LOGIKA CHATBOT AI (BARU)
+// LOGIKA CHATBOT AI
 // ============================================================
 var chatHistory = [];
 var _chatBusy = false;
@@ -1584,7 +1537,6 @@ $('aiChatInput').addEventListener('keydown', function(e){ if(e.key === 'Enter' &
 $('aiChatInput').addEventListener('input', function(e){ e.target.style.height = 'auto'; e.target.style.height = Math.min(e.target.scrollHeight, 80) + 'px'; });
 document.querySelectorAll('#aiChatQuick button').forEach(function(b){ b.onclick = function(){ sendAiMessage(b.dataset.q); }; });
 
-// Inisialisasi awal saat buka tab AI
 var _aiInit = false;
 document.querySelector('[data-tab="ai"]').addEventListener('click', function(){
   if(!_aiInit) {
@@ -1639,13 +1591,12 @@ window.addEventListener('load', function(){
   setTimeout(function(){ if(me) subscribeNotifications(); }, 2000);
 });
 
-
 // ============================================================
-// TAMBAHAN: FIX EDIT POST & KOMENTAR
-// (Tidak mengubah kode lama — hanya menambah & wrap runtime)
+// TAMBAHAN: EDIT POST, EDIT KOMENTAR, & PROTEKSI GAMBAR
+// (Tidak mengubah logika asli, murni penambahan dari bawah)
 // ============================================================
 
-// 1. Fungsi openEditPost — dipanggil tombol edit tapi belum ada
+// 1. FUNGSI EDIT POST
 function openEditPost(p) {
   editingPostId = p.id;
   composeImgs = (p.images || []).slice();
@@ -1679,14 +1630,13 @@ function openEditPost(p) {
   setTimeout(function(){ $('composeText').focus(); }, 300);
 }
 
-// 2. Wrapper composePost.onclick — dukung mode edit
+// 2. WRAPPER SIMPAN POST (Dukung Mode Edit)
 (function(){
   var btn = $('composePost');
-  var origHandler = btn.onclick; // simpan handler asli
+  var origHandler = btn.onclick; 
   btn.onclick = async function(e){
-    if (!editingPostId) return origHandler.call(btn, e); // mode baru → jalankan asli
+    if (!editingPostId) return origHandler.call(btn, e); 
 
-    // ---- Mode EDIT ----
     if (uploading) return toast('Tunggu proses', true);
     var text = $('composeText').value.trim();
     if (composeCat === 'galeri' && !composeImgs.length) return toast('Galeri wajib ada foto', true);
@@ -1717,7 +1667,7 @@ function openEditPost(p) {
   };
 })();
 
-// 3. Fungsi edit komentar
+// 3. FUNGSI EDIT KOMENTAR
 async function openEditComment(cid) {
   if (!activePostId) return;
   loader(true, 'Memuat...');
@@ -1753,7 +1703,7 @@ async function openEditComment(cid) {
   }
 }
 
-// 4. Inject tombol edit ke komentar (renderComments lama TIDAK diubah)
+// 4. INJECT TOMBOL EDIT KE KOMENTAR (Tanpa ubah renderComments asli)
 function injectCommentEditButtons() {
   var list = $('commentsList');
   if (!list) return;
@@ -1770,12 +1720,12 @@ function injectCommentEditButtons() {
     editBtn.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 20h9M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4z"/></svg>';
     editBtn.onclick = function(ev){ ev.stopPropagation(); openEditComment(cid); };
 
-    actions.insertBefore(editBtn, actions.firstChild); // letakkan sebelum tombol hapus
+    actions.insertBefore(editBtn, actions.firstChild); 
     item.dataset.editInjected = '1';
   });
 }
 
-// 5. Observer + backup interval (auto-inject setelah render komentar)
+// 5. OBSERVER UNTUK TOMBOL EDIT KOMENTAR
 var _commentObs = new MutationObserver(function(){
   if (tab === 'post') injectCommentEditButtons();
 });
@@ -1784,34 +1734,27 @@ setInterval(function(){
   if (tab === 'post') injectCommentEditButtons();
 }, 1500);
 
-// ============================================================
-// ANTI-SAVE GAMBAR V2 — Fix Chrome Android
-// Ganti blok sebelumnya dengan ini
-// ============================================================
-(function() {
-  // 1. Block context menu di mana pun
-  document.addEventListener('contextmenu', function(e) {
+// 6. PROTEKSI GAMBAR (ANTI-SAVE)
+(function(){
+  document.addEventListener('contextmenu', function(e){
     var t = e.target;
     if (t && (t.tagName === 'IMG' || (t.closest && t.closest('[data-imgshield="1"]')))) {
       e.preventDefault();
       return false;
     }
   }, true);
-  
-  // 2. Block drag-save desktop
-  document.addEventListener('dragstart', function(e) {
+
+  document.addEventListener('dragstart', function(e){
     if (e.target && e.target.tagName === 'IMG') {
       e.preventDefault();
       return false;
     }
   }, true);
-  
-  // 3. Overlay pelindung
+
   function protectImage(img) {
     if (!img || img.tagName !== 'IMG') return;
     if (img.dataset.noSaveShield === '1') return;
-    
-    // Lightbox: cukup matikan pointer
+
     if (img.closest('#lightbox')) {
       img.dataset.noSaveShield = '1';
       img.style.pointerEvents = 'none';
@@ -1820,44 +1763,38 @@ setInterval(function(){
       img.style.webkitTouchCallout = 'none';
       return;
     }
-    
+
     var parent = img.parentNode;
     if (!parent) return;
-    
-    // Parent harus relative agar overlay tepat menutup
+
     var cs = getComputedStyle(parent);
     if (cs.position === 'static') parent.style.position = 'relative';
-    
-    // Cek apakah sudah ada overlay (hindari dobel)
+
     if (parent.querySelector(':scope > [data-imgshield="1"]')) {
       img.style.pointerEvents = 'none';
       img.dataset.noSaveShield = '1';
       return;
     }
-    
+
     var ov = document.createElement('div');
     ov.setAttribute('data-imgshield', '1');
-    // KUNCI FIX:
-    // - pakai top/left/right/bottom (bukan inset)
-    // - background rgba(0,0,0,0.01), BUKAN transparent
-    //   (memaksa Chrome hit-test ke overlay, tidak tembus ke img)
-    ov.style.cssText =
+    ov.style.cssText = 
       'position:absolute;top:0;left:0;right:0;bottom:0;z-index:99;' +
       'background:rgba(0,0,0,0.01);cursor:pointer;' +
       '-webkit-tap-highlight-color:transparent;' +
       '-webkit-touch-callout:none;' +
       '-webkit-user-select:none;user-select:none;';
-    
-    ov.addEventListener('click', function(e) {
+
+    ov.addEventListener('click', function(e){
       e.stopPropagation();
       img.click();
     });
-    
-    ov.addEventListener('contextmenu', function(e) {
+
+    ov.addEventListener('contextmenu', function(e){
       e.preventDefault();
       return false;
     });
-    
+
     parent.appendChild(ov);
     img.style.pointerEvents = 'none';
     img.style.webkitUserSelect = 'none';
@@ -1866,16 +1803,16 @@ setInterval(function(){
     img.setAttribute('draggable', 'false');
     img.dataset.noSaveShield = '1';
   }
-  
+
   function protectAll() {
     document.querySelectorAll('img').forEach(protectImage);
   }
-  
-  var obs = new MutationObserver(function(muts) {
+
+  var obs = new MutationObserver(function(muts){
     var found = false;
-    muts.forEach(function(m) {
+    muts.forEach(function(m){
       if (!m.addedNodes) return;
-      m.addedNodes.forEach(function(n) {
+      m.addedNodes.forEach(function(n){
         if (n.nodeType !== 1) return;
         if (n.tagName === 'IMG') found = true;
         else if (n.querySelector && n.querySelector('img')) found = true;
@@ -1884,16 +1821,15 @@ setInterval(function(){
     if (found) setTimeout(protectAll, 30);
   });
   obs.observe(document.body, { childList: true, subtree: true });
-  
+
   setInterval(protectAll, 1500);
-  
+
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', protectAll);
   } else {
     protectAll();
   }
 })();
-
 </script>
 </body>
 </html>
