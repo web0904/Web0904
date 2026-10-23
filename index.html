@@ -1766,6 +1766,98 @@ _commentObs.observe($('postScroll'), { childList: true, subtree: true });
 setInterval(function(){
   if (tab === 'post') injectCommentEditButtons();
 }, 1500);
+
+   // ============================================================
+// ANTI-SAVE GAMBAR (fix untuk Chrome Android & browser modern)
+// Murni tambahan — tidak mengubah kode lama sama sekali
+// ============================================================
+(function(){
+  // 1. Block context menu (klik kanan / long-press menu)
+  document.addEventListener('contextmenu', function(e){
+    if (e.target && e.target.tagName === 'IMG') {
+      e.preventDefault();
+      return false;
+    }
+  }, true);
+
+  // 2. Block drag-save (desktop)
+  document.addEventListener('dragstart', function(e){
+    if (e.target && e.target.tagName === 'IMG') {
+      e.preventDefault();
+      return false;
+    }
+  }, true);
+
+  // 3. Overlay per-gambar: menutupi <img> sehingga browser tidak mengenalinya
+  //    sebagai target long-press, sementara tap tetap jalan lewat img.click()
+  function protectImage(img) {
+    if (!img || img.tagName !== 'IMG') return;
+    if (img.dataset.noSaveShield === '1') return;
+
+    // Khusus lightbox: tidak perlu overlay, cukup matikan pointer
+    if (img.closest('#lightbox')) {
+      img.dataset.noSaveShield = '1';
+      img.style.pointerEvents = 'none';
+      img.style.webkitUserSelect = 'none';
+      img.style.userSelect = 'none';
+      return;
+    }
+
+    var parent = img.parentNode;
+    if (!parent) return;
+
+    // Pastikan parent bisa jadi anchor overlay
+    var cs = getComputedStyle(parent);
+    if (cs.position === 'static') parent.style.position = 'relative';
+
+    // Buat overlay transparan
+    var ov = document.createElement('div');
+    ov.setAttribute('data-imgshield', '1');
+    ov.style.cssText = 'position:absolute;inset:0;z-index:5;background:transparent;' +
+      'cursor:pointer;-webkit-tap-highlight-color:transparent;';
+
+    // Tap overlay → forward ke img asli (buka lightbox, buka post, dsb)
+    ov.addEventListener('click', function(e){
+      e.stopPropagation();
+      img.click();
+    });
+
+    parent.appendChild(ov);
+    img.style.pointerEvents = 'none';
+    img.style.webkitUserSelect = 'none';
+    img.style.userSelect = 'none';
+    img.setAttribute('draggable', 'false');
+    img.dataset.noSaveShield = '1';
+  }
+
+  function protectAll() {
+    document.querySelectorAll('img').forEach(protectImage);
+  }
+
+  // 4. Observer: lindungi gambar baru yang muncul (render feed, komentar, dll)
+  var obs = new MutationObserver(function(muts){
+    var found = false;
+    muts.forEach(function(m){
+      m.addedNodes && m.addedNodes.forEach(function(n){
+        if (n.nodeType !== 1) return;
+        if (n.tagName === 'IMG') found = true;
+        else if (n.querySelector && n.querySelector('img')) found = true;
+      });
+    });
+    if (found) setTimeout(protectAll, 30);
+  });
+  obs.observe(document.body, { childList: true, subtree: true });
+
+  // 5. Backup interval (jaga-jaga jika observer miss)
+  setInterval(protectAll, 2000);
+
+  // 6. Initial run
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', protectAll);
+  } else {
+    protectAll();
+  }
+})();
 </script>
 </body>
 </html>
