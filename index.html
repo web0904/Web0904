@@ -699,7 +699,7 @@ function renderNotifPanel(){
 
 function setTab(t){
   tab = t;
-  ['home','category','post','warga','voting','ai','profile'].forEach(function(x){ var el = $('view-'+x); if(!el) return; if(x === 'post'){ el.classList.toggle('on', x === t); el.classList.toggle('hide', x !== t); } else el.classList.toggle('hide', x !== t); });
+  ['home','category','post','warga','voting','ai','profile'].forEach(function(x){ var el = $('view-'+x); if(!el) return; if(x === 'post' || x === 'ai'){ el.classList.toggle('on', x === t); el.classList.toggle('hide', x !== t); } else el.classList.toggle('hide', x !== t); });
   $('main').style.overflow = (t === 'post' || t === 'ai') ? 'hidden' : '';
   $('backBtn').classList.toggle('hide', t !== 'category' && t !== 'post');
   $('fab').classList.toggle('hide', t === 'warga' || t === 'voting' || t === 'profile' || t === 'post' || t === 'ai');
