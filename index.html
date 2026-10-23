@@ -1580,6 +1580,150 @@ setInterval(function(){
 window.addEventListener('load', function(){
   setTimeout(function(){ if(me) subscribeNotifications(); }, 2000);
 });
+
+  // ============================================================
+// TAMBAHAN: FIX EDIT POST & KOMENTAR
+// (Tidak mengubah kode lama — hanya menambah & wrap runtime)
+// ============================================================
+
+// 1. Fungsi openEditPost — dipanggil tombol edit tapi belum ada
+function openEditPost(p) {
+  editingPostId = p.id;
+  composeImgs = (p.images || []).slice();
+  composeCat = p.category || 'umum';
+
+  $('composeText').value = p.text || '';
+  $('composeAvatar').innerHTML = avatarHtml(me, 40, 15);
+  $('composeName').textContent = me.name;
+  $('composeTitle').textContent = 'Edit Postingan';
+  $('composeBtnText').textContent = 'Simpan';
+  $('pinCheck').checked = !!p.pinned;
+
+  if (p.eventDate) {
+    var d = new Date(p.eventDate);
+    var pad = function(n){ return n < 10 ? '0' + n : '' + n; };
+    $('eventDate').value = d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' +
+      pad(d.getDate()) + 'T' + pad(d.getHours()) + ':' + pad(d.getMinutes());
+  } else {
+    $('eventDate').value = '';
+  }
+  $('eventLocation').value = p.eventLocation || '';
+
+  renderAttach();
+  document.querySelectorAll('#composeCats .cat-btn').forEach(function(x){
+    x.classList.toggle('on', x.dataset.c === composeCat);
+  });
+  updateComposeUI();
+  $('composePost').disabled = false;
+  $('composePost').style.opacity = '1';
+  $('composeSheet').style.display = 'flex';
+  setTimeout(function(){ $('composeText').focus(); }, 300);
+}
+
+// 2. Wrapper composePost.onclick — dukung mode edit
+(function(){
+  var btn = $('composePost');
+  var origHandler = btn.onclick; // simpan handler asli
+  btn.onclick = async function(e){
+    if (!editingPostId) return origHandler.call(btn, e); // mode baru → jalankan asli
+
+    // ---- Mode EDIT ----
+    if (uploading) return toast('Tunggu proses', true);
+    var text = $('composeText').value.trim();
+    if (composeCat === 'galeri' && !composeImgs.length) return toast('Galeri wajib ada foto', true);
+    if (!text && !composeImgs.length) return;
+
+    btn.disabled = true; $('composeBtnText').textContent = '...';
+    try {
+      var payload = { text: text, images: composeImgs.slice(), category: composeCat, editedAt: TS };
+      if (composeCat === 'informasi' && $('eventDate').value) {
+        payload.eventDate = new Date($('eventDate').value).getTime();
+        payload.eventLocation = $('eventLocation').value.trim();
+      } else if (composeCat === 'informasi') {
+        payload.eventDate = 0;
+        payload.eventLocation = null;
+      }
+      if (isAdmin()) payload.pinned = $('pinCheck').checked;
+
+      await rtdb.ref('posts/' + editingPostId).update(payload);
+      editingPostId = null;
+      $('composeSheet').style.display = 'none';
+      toast('Postingan diperbarui ✓');
+    } catch (err) {
+      toast('Gagal menyimpan', true);
+      btn.disabled = false;
+    } finally {
+      $('composeBtnText').textContent = 'Simpan';
+    }
+  };
+})();
+
+// 3. Fungsi edit komentar
+async function openEditComment(cid) {
+  if (!activePostId) return;
+  loader(true, 'Memuat...');
+  try {
+    var snap = await rtdb.ref('comments/' + activePostId + '/' + cid).once('value');
+    var c = snap.val();
+    if (!c) { loader(false); return toast('Komentar tidak ditemukan', true); }
+    if (c.authorId !== me.uid && !isAdmin()) {
+      loader(false); return toast('Tidak bisa edit komentar ini', true);
+    }
+    loader(false);
+
+    openModal('Edit Komentar',
+      '<div style="font-size:12px;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px">Komentar</div>' +
+      '<textarea id="editCommentText" class="dt" rows="4" style="margin-bottom:14px;resize:none;line-height:1.5;font-size:16px">' + esc(c.text) + '</textarea>' +
+      '<button id="saveCommentEditBtn" class="btn-p" style="width:100%">Simpan Perubahan</button>'
+    );
+
+    $('saveCommentEditBtn').onclick = async function(){
+      var newText = $('editCommentText').value.trim();
+      if (!newText) return toast('Komentar tidak boleh kosong', true);
+      loader(true, 'Menyimpan...');
+      try {
+        await rtdb.ref('comments/' + activePostId + '/' + cid).update({ text: newText, editedAt: TS });
+        loader(false); closeModal(); toast('Komentar diperbarui ✓');
+        loadComments(activePostId);
+      } catch (err) {
+        loader(false); toast('Gagal menyimpan', true);
+      }
+    };
+  } catch (e) {
+    loader(false); toast('Gagal memuat', true);
+  }
+}
+
+// 4. Inject tombol edit ke komentar (renderComments lama TIDAK diubah)
+function injectCommentEditButtons() {
+  var list = $('commentsList');
+  if (!list) return;
+  list.querySelectorAll('.comment-item[data-cid]').forEach(function(item){
+    if (item.dataset.editInjected === '1') return;
+    var actions = item.querySelector('.comment-actions');
+    if (!actions) { item.dataset.editInjected = '1'; return; }
+
+    var cid = item.dataset.cid;
+    var editBtn = document.createElement('button');
+    editBtn.type = 'button';
+    editBtn.className = 'edit';
+    editBtn.setAttribute('aria-label', 'Edit komentar');
+    editBtn.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 20h9M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4z"/></svg>';
+    editBtn.onclick = function(ev){ ev.stopPropagation(); openEditComment(cid); };
+
+    actions.insertBefore(editBtn, actions.firstChild); // letakkan sebelum tombol hapus
+    item.dataset.editInjected = '1';
+  });
+}
+
+// 5. Observer + backup interval (auto-inject setelah render komentar)
+var _commentObs = new MutationObserver(function(){
+  if (tab === 'post') injectCommentEditButtons();
+});
+_commentObs.observe($('postScroll'), { childList: true, subtree: true });
+setInterval(function(){
+  if (tab === 'post') injectCommentEditButtons();
+}, 1500);
 </script>
 </body>
 </html>
