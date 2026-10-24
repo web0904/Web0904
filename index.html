@@ -319,6 +319,25 @@ img {
 }
 .pg-item, .thumb, .thumb-sm, .avatar, .pin-thumb { position: relative; }
 #lightbox img { pointer-events: none !important; cursor: zoom-out; }
+
+/* ============================================================
+   TAMBAHAN: CUSTOM DIALOG POPUP
+   ============================================================ */
+#customDialog { position: fixed; inset: 0; z-index: 9999; background: rgba(15,23,42,.65); display: none; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(3px); }
+#customDialog.on { display: flex; animation: fade .2s ease-out; }
+.cd-box { background: #fff; width: 100%; max-width: 320px; border-radius: 22px; padding: 24px 20px; text-align: center; box-shadow: 0 20px 40px -10px rgba(0,0,0,.3); transform: scale(0.9); animation: pop .25s cubic-bezier(.34,1.56,.64,1) forwards; }
+body.dark .cd-box { background: #101a2e; color: #fff; border: 1px solid rgba(255,255,255,.08); }
+.cd-icon { font-size: 36px; margin-bottom: 12px; display: inline-block; }
+.cd-title { font-size: 16.5px; font-weight: 900; margin-bottom: 8px; color: #0b1220; }
+body.dark .cd-title { color: #e2e8f0; }
+.cd-desc { font-size: 13.5px; color: #64748b; line-height: 1.5; margin-bottom: 20px; font-weight: 500; }
+body.dark .cd-desc { color: #94a3b8; }
+.cd-actions { display: flex; gap: 10px; }
+.cd-actions button { flex: 1; padding: 12px; border-radius: 12px; font-size: 14px; font-weight: 800; border: none; cursor: pointer; transition: transform .15s; font-family: inherit; }
+.cd-actions button:active { transform: scale(.95); }
+.cd-btn-cancel { background: #f1f5f9; color: #475569; }
+body.dark .cd-btn-cancel { background: #1a2540; color: #cbd5e1; }
+.cd-btn-confirm { background: linear-gradient(135deg, #f43f5e, #e11d48); color: white; box-shadow: 0 6px 15px -5px rgba(244,63,94,.5); }
 </style>
 </head>
 <body>
@@ -613,6 +632,21 @@ img {
 <input id="imgInput" type="file" accept="image/*" multiple style="display:none">
 <input id="avatarInput" type="file" accept="image/*" style="display:none">
 <input id="collabInput" type="file" accept="image/*" multiple style="display:none">
+
+<!-- ============================================================
+     TAMBAHAN: POPUP KUSTOM HTML
+     ============================================================ -->
+<div id="customDialog">
+  <div class="cd-box">
+    <div class="cd-icon" id="cdIcon">⚠️</div>
+    <div class="cd-title" id="cdTitle">Konfirmasi</div>
+    <div class="cd-desc" id="cdDesc">Apakah Anda yakin?</div>
+    <div class="cd-actions">
+      <button type="button" class="cd-btn-cancel" id="cdCancel">Batal</button>
+      <button type="button" class="cd-btn-confirm" id="cdConfirm">Ya, Lanjutkan</button>
+    </div>
+  </div>
+</div>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
@@ -1843,6 +1877,153 @@ setInterval(function(){
     protectAll();
   }
 })();
+
+// ============================================================
+// TAMBAHAN: CUSTOM DIALOG POPUP & HAPUS AKUN (SOFT DELETE)
+// ============================================================
+
+// 1. FUNGSI POPUP KUSTOM (PENGGANTI ALERT/CONFIRM BAWAAN)
+window.showDialog = function(title, desc, onConfirm, icon = '⚠️', btnText = 'Ya, Lanjutkan', btnCancel = 'Batal') {
+  const d = $('customDialog');
+  $('cdTitle').textContent = title;
+  $('cdDesc').textContent = desc;
+  $('cdIcon').textContent = icon;
+  $('cdConfirm').textContent = btnText;
+  $('cdCancel').textContent = btnCancel || 'Batal';
+  $('cdCancel').style.display = btnCancel === null ? 'none' : 'block';
+  d.classList.add('on');
+  
+  const btnConfirm = $('cdConfirm').cloneNode(true);
+  const btnCancel = $('cdCancel').cloneNode(true);
+  $('cdConfirm').replaceWith(btnConfirm);
+  $('cdCancel').replaceWith(btnCancel);
+
+  btnConfirm.onclick = function() { d.classList.remove('on'); if(onConfirm) onConfirm(); };
+  btnCancel.onclick = function() { d.classList.remove('on'); };
+  d.onclick = function(e) { if (e.target === d) d.classList.remove('on'); };
+};
+
+// 2. FUNGSI HAPUS AKUN MANDIRI (SOFT DELETE)
+window.deleteMyAccount = function() {
+  showDialog(
+    'Hapus Akun?', 
+    'Profil Anda akan dihapus secara permanen. Postingan dan komentar lama Anda tetap ada di RT, namun nama Anda akan diganti menjadi "Warga Dihapus".',
+    async function() {
+      loader(true, 'Menghapus akun...');
+      try {
+        // Ubah nama di semua postingannya jadi "Warga Dihapus"
+        var snapPosts = await rtdb.ref('posts').orderByChild('authorId').equalTo(me.uid).once('value');
+        var updates = {};
+        snapPosts.forEach(function(child) {
+          updates['posts/' + child.key + '/authorName'] = 'Warga Dihapus';
+          updates['posts/' + child.key + '/authorAvatarBase64'] = null;
+        });
+        if (Object.keys(updates).length > 0) await rtdb.ref().update(updates);
+
+        // Hapus profil user dari database
+        await rtdb.ref('users/' + me.uid).remove();
+        
+        // Hapus Auth Google
+        var user = auth.currentUser;
+        if (user) await user.delete();
+        
+        loader(false);
+        showDialog('Berhasil', 'Akun Anda telah dihapus. Terima kasih telah bergabung.', function(){
+          location.reload();
+        }, '✅', 'Tutup', null);
+        
+      } catch (error) {
+        loader(false);
+        if (error.code === 'auth/requires-recent-login') {
+          showDialog('Sesi Kedaluwarsa', 'Demi keamanan, silakan login ulang (Ganti Akun) sebelum menghapus.', function(){
+            auth.signOut().then(function(){ location.reload(); });
+          }, '🔐', 'Login Ulang');
+        } else {
+          showDialog('Gagal', 'Terjadi kesalahan: ' + error.message, null, '❌', 'Tutup', null);
+        }
+      }
+    },
+    '🗑️',
+    'Ya, Hapus Akun'
+  );
+};
+
+// 3. SUNTIK TOMBOL HAPUS AKUN KE PROFIL
+setInterval(function() {
+  var logoutBtn = $('logoutBtn');
+  if (logoutBtn && !$('btnHapusAkun')) {
+    var delBtn = document.createElement('button');
+    delBtn.id = 'btnHapusAkun';
+    delBtn.type = 'button';
+    delBtn.className = 'setting-row';
+    delBtn.innerHTML = '<div class="setting-icon" style="background:rgba(244,63,94,.15);color:#f43f5e">🗑️</div><div style="flex:1;text-align:left;font-size:14.5px;font-weight:600;color:#f43f5e">Hapus Akun Saya</div>';
+    delBtn.onclick = function() { window.deleteMyAccount(); };
+    logoutBtn.parentNode.insertBefore(delBtn, logoutBtn);
+  }
+}, 1000);
+
+// 4. FITUR ADMIN KELUARKAN WARGA (DARI MENU KELOLA WARGA)
+var _adminMonitor = setInterval(function() {
+  var manageList = $('manageWargaList');
+  if (!manageList) return;
+  
+  // Cari dropdown role yang belum disuntik tombol hapus
+  manageList.querySelectorAll('select[data-uid]').forEach(function(sel) {
+    if (sel.dataset.delInjected === '1') return;
+    
+    var uid = sel.dataset.uid;
+    var delBtn = document.createElement('button');
+    delBtn.innerHTML = '🗑️';
+    delBtn.type = 'button';
+    delBtn.style.cssText = 'background:rgba(244,63,94,.15);color:#f43f5e;border:none;border-radius:8px;padding:7px 10px;margin-left:6px;cursor:pointer;font-size:14px;';
+    delBtn.title = 'Keluarkan Warga';
+    
+    delBtn.onclick = function() {
+      window.showDialog(
+        'Keluarkan Warga?', 
+        'Warga ini akan dihapus dari daftar. Postingannya tetap ada namun namanya menjadi "Warga Dihapus".',
+        async function() {
+          loader(true, 'Memproses...');
+          try {
+            // Ambil nama user
+            var userSnap = await rtdb.ref('users/' + uid).once('value');
+            var uName = userSnap.val() ? userSnap.val().name : 'Warga Dihapus';
+
+            // Ganti nama postingannya
+            var snapPosts = await rtdb.ref('posts').orderByChild('authorId').equalTo(uid).once('value');
+            var updates = {};
+            snapPosts.forEach(function(child) {
+              updates['posts/' + child.key + '/authorName'] = 'Warga Dihapus';
+              updates['posts/' + child.key + '/authorAvatarBase64'] = null;
+            });
+            if (Object.keys(updates).length > 0) await rtdb.ref().update(updates);
+
+            // Ubah role jadi blocked dan ganti namanya
+            await rtdb.ref('users/' + uid).update({ 
+              name: 'Warga Dihapus', 
+              role: 'blocked', 
+              verified: false,
+              email: 'dihapus@rt.com'
+            });
+            
+            loader(false);
+            showDialog('Berhasil', 'Warga telah dikeluarkan.', function() {
+              closeModal(); // Tutup modal kelola warga
+            }, '✅', 'Tutup', null);
+          } catch(e) {
+            loader(false);
+            showDialog('Gagal', e.message, null, '❌', 'Tutup', null);
+          }
+        },
+        '🚫',
+        'Ya, Keluarkan'
+      );
+    };
+    
+    sel.parentNode.insertBefore(delBtn, sel.nextSibling);
+    sel.dataset.delInjected = '1';
+  });
+}, 1000);
 </script>
 </body>
 </html>
