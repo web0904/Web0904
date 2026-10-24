@@ -34,7 +34,10 @@ input,textarea,select{font-size:16px!important}
 @keyframes connIn{from{opacity:0;transform:translateY(-100%)}to{opacity:1;transform:translateY(0)}}
 @keyframes badgePulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
 @keyframes bellShake{0%,100%{transform:rotate(0)}20%{transform:rotate(-12deg)}40%{transform:rotate(12deg)}60%{transform:rotate(-8deg)}80%{transform:rotate(8deg)}}
-@keyframes marquee {0% { transform: translateX(100%); }100% { transform: translateX(-100%); }}
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-100%); }
+}
 @keyframes typingDot{0%,60%,100%{opacity:.3}30%{opacity:1}}
 
 .grad-anim{background:linear-gradient(90deg,#6366f1,#a855f7,#ec4899,#6366f1);background-size:200% 100%}
@@ -436,14 +439,24 @@ img {
       <div style="padding:20px 18px 12px"><h2 id="greetingName" style="font-size:19.5px;font-weight:900;margin:0;letter-spacing:-.02em">Halo, selamat datang 👋</h2><p style="font-size:13.5px;color:#64748b;margin:5px 0 0;font-weight:500">Pilih kategori untuk mulai berinteraksi</p></div>
       
       <!-- BANNER INFO BERANDA (RUNNING TEXT) -->
-      <div id="homeTicker" class="hide" style="margin: 0 16px 16px; background: linear-gradient(135deg, #f59e0b, #d97706); color: white; border-radius: 14px; padding: 10px 0; box-shadow: 0 6px 15px -6px rgba(245,158,11,.6); display: flex; align-items: center; overflow: hidden; position: relative;">
-        <div style="position:absolute; left:0; top:0; bottom:0; width:30px; background:linear-gradient(90deg, #d97706, transparent); z-index:2;"></div>
-        <div style="position:absolute; right:0; top:0; bottom:0; width:30px; background:linear-gradient(-90deg, #d97706, transparent); z-index:2;"></div>
-        <div style="width: 100%; overflow: hidden; white-space: nowrap; padding-left: 10px;">
-          <div id="homeTickerText" style="display: inline-block; font-size: 13.5px; font-weight: 700; animation: marquee 15s linear infinite;"></div>
-        </div>
-      </div>
+     <!-- BANNER INFO BERANDA (RUNNING TEXT) -->
+<div id="homeTicker" class="hide" style="margin: 0 16px 16px; background: linear-gradient(135deg, #f59e0b, #d97706); color: white; border-radius: 14px; box-shadow: 0 6px 15px -6px rgba(245,158,11,.6); display: flex; align-items: stretch; overflow: hidden; position: relative; height: 44px;">
+  
+  <!-- Label Ikon di Kiri -->
+  <div style="background: rgba(0,0,0,0.15); padding: 0 12px; display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 12px; font-weight: 900; letter-spacing: 0.5px; z-index: 3; flex-shrink: 0; border-right: 1px solid rgba(255,255,255,0.2);">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+    INFO
+  </div>
 
+  <!-- Area Teks Berjalan -->
+  <div style="flex: 1; overflow: hidden; position: relative; display: flex; align-items: center;">
+    <!-- Efek Fade Kanan -->
+    <div style="position:absolute; right:0; top:0; bottom:0; width:20px; background:linear-gradient(-90deg, #d97706, transparent); z-index:2; pointer-events:none;"></div>
+    
+    <div id="homeTickerText" style="display: inline-block; white-space: nowrap; font-size: 13.5px; font-weight: 700; padding-left: 100%; animation: marquee 15s linear infinite;"></div>
+  </div>
+
+</div>
       <div style="padding:0 16px;display:flex;flex-direction:column;gap:13px">
         <div id="catTileUmum" class="cat-tile g-umum fade" style="flex-direction:column;align-items:stretch;gap:12px;"><div style="display:flex;align-items:center;gap:15px;"><div class="icon">💬</div><div style="flex:1"><div style="font-size:18px;font-weight:900">Umum</div><div style="font-size:13px;opacity:.92;margin-top:4px">Obrolan santai · Tanya warga</div><div style="display:flex;align-items:baseline;gap:6px;margin-top:8px"><span style="font-size:19px;font-weight:900" id="countUmum">0</span><span style="font-size:11px;opacity:.88;font-weight:800;text-transform:uppercase">Postingan</span></div></div></div><div id="detailUmum" class="cat-detail hide"></div><span id="badgeUmum" class="cat-badge">0</span></div>
         
