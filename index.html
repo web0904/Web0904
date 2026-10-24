@@ -1029,10 +1029,11 @@ function renderPostDetail(){
   var editBtn = $('editPostBtn'); if(editBtn) editBtn.onclick = function(){ openEditPost(p); };
   var delBtn = $('delPostBtn');
   if(delBtn) delBtn.onclick = async function(){
-    if(!confirm('Hapus postingan ini?')) return;
-    loader(true, 'Menghapus...');
-    try { await rtdb.ref('posts/' + p.id).remove(); try { await rtdb.ref('comments/' + p.id).remove(); } catch(err){} loader(false); toast('Postingan terhapus ✓'); setTab('home'); }
-    catch(e){ loader(false); toast('Gagal hapus', true); }
+    window.showDialog('Hapus Postingan?', 'Postingan dan komentar di dalamnya akan dihapus permanen.', async function() {
+      loader(true, 'Menghapus...');
+      try { await rtdb.ref('posts/' + p.id).remove(); try { await rtdb.ref('comments/' + p.id).remove(); } catch(err){} loader(false); toast('Postingan terhapus ✓'); setTab('home'); }
+      catch(e){ loader(false); toast('Gagal hapus', true); }
+    }, '🗑️', 'Hapus', 'Batal');
   };
 }
 
@@ -1076,13 +1077,14 @@ function renderComments(list){
   el.querySelectorAll('[data-del-cid]').forEach(function(b){ 
     b.onclick = async function(){ 
       var cid = b.dataset.delCid; 
-      if(!confirm('Hapus komentar?')) return; 
-      loader(true, 'Menghapus...');
-      try { 
-        await rtdb.ref('comments/' + activePostId + '/' + cid).remove(); 
-        try { await rtdb.ref('posts/' + activePostId + '/commentCount').transaction(function(c){ return Math.max(0, (c || 0) - 1); }); } catch(e){} 
-        loader(false); toast('Komentar dihapus ✓'); loadComments(activePostId); 
-      } catch(e){ loader(false); toast('Gagal', true); }
+      window.showDialog('Hapus Komentar?', 'Komentar ini akan dihapus permanen.', async function() {
+        loader(true, 'Menghapus...');
+        try { 
+          await rtdb.ref('comments/' + activePostId + '/' + cid).remove(); 
+          try { await rtdb.ref('posts/' + activePostId + '/commentCount').transaction(function(c){ return Math.max(0, (c || 0) - 1); }); } catch(e){} 
+          loader(false); toast('Komentar dihapus ✓'); loadComments(activePostId); 
+        } catch(e){ loader(false); toast('Gagal', true); }
+      }, '🗑️', 'Hapus', 'Batal');
     }; 
   });
 }
@@ -1272,7 +1274,11 @@ $('switchAccBtn').onclick = function(){
   );
   $('switchYes').onclick = async function(){ auth.signOut().then(function(){ location.reload(); }); };
 };
-$('logoutBtn').onclick = function(){ if(confirm('Keluar?')) auth.signOut().then(function(){ location.reload(); }); };
+$('logoutBtn').onclick = function(){ 
+  window.showDialog('Keluar Aplikasi?', 'Anda yakin ingin keluar dari akun ini?', function() {
+    auth.signOut().then(function(){ location.reload(); });
+  }, '🚪', 'Keluar', 'Batal');
+};
 
 $('adminInviteCodeBtn').onclick = function(){
   rtdb.ref('config/inviteCode').once('value').then(function(snap){
@@ -1431,7 +1437,11 @@ function renderVoting(){
     if(expired || myVote) return;
     optEl.onclick = async function(){ try { await rtdb.ref('polls/' + p.id + '/votes/' + me.uid).set(optEl.dataset.vote); toast('Suara terkirim 🗳️'); } catch(e){ toast('Gagal', true); } };
   });
-  el.querySelectorAll('[data-poll-del]').forEach(function(b){ b.onclick = async function(){ if(!confirm('Hapus voting ini?')) return; try { await rtdb.ref('polls/' + b.dataset.pollDel).remove(); toast('Voting dihapus'); } catch(e){ toast('Gagal', true); } }; });
+  el.querySelectorAll('[data-poll-del]').forEach(function(b){ b.onclick = async function(){ 
+    window.showDialog('Hapus Voting?', 'Data suara warga akan hilang.', async function() {
+      try { await rtdb.ref('polls/' + b.dataset.pollDel).remove(); toast('Voting dihapus'); } catch(e){ toast('Gagal', true); }
+    }, '🗑️', 'Hapus', 'Batal');
+  }; });
 }
 
 function openNewPoll(){
